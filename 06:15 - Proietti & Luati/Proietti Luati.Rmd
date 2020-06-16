@@ -177,16 +177,32 @@ $$
 
 ### Question en suspens
 
-- Dans la désaisonnalisation,  que se passe-t-il quand la tendance est mal estimée ? mauvaise décomposition TC+I ?
+1. Mieux d'utiliser un filtre asymétrique optimisé qu'un filtre symétrique plus court ?
 
-- Dans la désaisonnalisation, les filtres sont appliqués sur la séries linéarisées :
+2. Dans la désaisonnalisation,  que se passe-t-il quand la tendance est mal estimée ? mauvaise décomposition TC+I ?
+
+3. Dans la désaisonnalisation, les filtres sont appliqués sur la séries linéarisées :
 
   * les points de retournement sont-ils vraiment détectables ? Ne sont-ils pas considérés comme du bruit (correction automatique de X11) ?
   
   * impact d'une mauvaise spécification/estimation lors du pré-ajustement ?
   
-- on considère des tendances déterministes, quid des retournements liés aux tendances stochastiques ?
+4. on considère des tendances déterministes, quid des retournements liés aux tendances stochastiques ?
 
+### Réponses de Jean (1/2)
 
+1. Mieux d'utiliser un filtre asymétrique optimisé qu'un filtre symétrique plus court ?  
+\faArrowCircleRight{} a priori pas très différent, si on prend un filtre asymétrique en minimisant la phase, on devrait trouver des coefficients proches d'un filtre symétrique court. Doit pouvoir se vérifier facilement.
+
+2. Dans la désaisonnalisation,  que se passe-t-il quand la tendance est mal estimée ? mauvaise décomposition TC+I ?  
+\faArrowCircleRight{} a priori oui, problème plutôt annexe à la désaisonnalisation. On pourrait tester d'appliquer ces méthodes aux filtres saisonniers, en faisant par exemple une hypothèse de constance des coefficients saisonniers en fin de période.   
+Intuition de Jean : ne change pas grand chose
+
+### Réponses de Jean (2/2)
+
+3. \faArrowCircleRight{} modèle ARIMA ne sera pas capable d'estimer le point de retournement, les points de retournement devrait rester visibles.
+
+4. on considère des tendances déterministes, quid des retournements liés aux tendances stochastiques ?  
+\faArrowCircleRight{} ces filtres asymétriques ne doivent pas être utilisés de façon automatique mais de façon intelligente, lorsque l'on a des informations extérieures qui nous guident économiquement. Ces filtres devraient bien marcher en cas de retournement mais pas forcément ailleurs, il faudrait le tester.
 
 
