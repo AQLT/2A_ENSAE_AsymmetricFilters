@@ -330,27 +330,78 @@ MSRE=\frac{1}{n-2h-1}\sum_{t=h+1}^{n-h}(\hat{m}_{t}-\hat{m}_{t\mid t})^{2}
 \begin{frame}{Question en suspens}
 \protect\hypertarget{question-en-suspens}{}
 
-\begin{itemize}
+\begin{enumerate}
+\item
+  Mieux d'utiliser un filtre asymétrique optimisé qu'un filtre
+  symétrique plus court ?
 \item
   Dans la désaisonnalisation, que se passe-t-il quand la tendance est
   mal estimée ? mauvaise décomposition TC+I ?
 \item
   Dans la désaisonnalisation, les filtres sont appliqués sur la séries
   linéarisées :
+\end{enumerate}
 
-  \begin{itemize}
-  \item
-    les points de retournement sont-ils vraiment détectables ? Ne
-    sont-ils pas considérés comme du bruit (correction automatique de
-    X11) ?
-  \item
-    impact d'une mauvaise spécification/estimation lors du
-    pré-ajustement ?
-  \end{itemize}
+\begin{itemize}
+\item
+  les points de retournement sont-ils vraiment détectables ? Ne sont-ils
+  pas considérés comme du bruit (correction automatique de X11) ?
+\item
+  impact d'une mauvaise spécification/estimation lors du pré-ajustement
+  ?
+\end{itemize}
+
+\begin{enumerate}
+\setcounter{enumi}{3}
+\tightlist
 \item
   on considère des tendances déterministes, quid des retournements liés
   aux tendances stochastiques ?
-\end{itemize}
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Réponses de Jean (1/2)}
+\protect\hypertarget{ruxe9ponses-de-jean-12}{}
+
+\begin{enumerate}
+\item
+  Mieux d'utiliser un filtre asymétrique optimisé qu'un filtre
+  symétrique plus court ?\\
+  \faArrowCircleRight{} la variance devrait augmenter mais a priori pas
+  très différent. Si on prend un filtre asymétrique en minimisant la
+  phase, on devrait trouver des coefficients proches d'un filtre
+  symétrique court. Doit pouvoir se vérifier facilement.
+\item
+  Dans la désaisonnalisation, que se passe-t-il quand la tendance est
+  mal estimée ? mauvaise décomposition TC+I ?\\
+  \faArrowCircleRight{} a priori oui, problème plutôt annexe à la
+  désaisonnalisation. On pourrait tester d'appliquer ces méthodes aux
+  filtres saisonniers, en faisant par exemple une hypothèse de constance
+  des coefficients saisonniers en fin de période.\\
+  Intuition de Jean : ne change pas grand chose
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Réponses de Jean (2/2)}
+\protect\hypertarget{ruxe9ponses-de-jean-22}{}
+
+\begin{enumerate}
+\setcounter{enumi}{2}
+\item
+  \faArrowCircleRight{} modèle ARIMA ne sera pas capable d'estimer le
+  point de retournement, les points de retournement devrait rester
+  visibles.
+\item
+  on considère des tendances déterministes, quid des retournements liés
+  aux tendances stochastiques ?\\
+  \faArrowCircleRight{} ces filtres asymétriques ne doivent pas être
+  utilisés de façon automatique mais de façon intelligente, lorsque l'on
+  a des informations extérieures qui nous guident économiquement. Ces
+  filtres devraient bien marcher en cas de retournement mais pas
+  forcément ailleurs, il faudrait le tester.
+\end{enumerate}
 
 \end{frame}
 
