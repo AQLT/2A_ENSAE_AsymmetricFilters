@@ -36,15 +36,18 @@ shinyUI(fluidPage(
                                       step=0.1, 
                                       min = 0, max = 20))
             ),
-            uiOutput("q0")
+            uiOutput("q0"),
+            width = 3.
             
         ),
         
         # Show a plot of the generated distribution
         mainPanel(
             plotOutput("coefs"),
-            plotOutput("gain"),
-            plotOutput("phase")
+            fluidRow(
+                column(6,plotOutput(outputId="gain")),  
+                column(6,plotOutput(outputId="phase"))
+            )
         )
     )
 ))

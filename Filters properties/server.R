@@ -8,6 +8,7 @@
 #
 
 library(shiny)
+# devtools::install_github("AQLT/rjdfilters")
 library(rjdfilters)
 
 # Define server logic required to draw a histogram
@@ -24,23 +25,29 @@ shinyServer(function(input, output) {
     # Plot
     output$coefs <- renderPlot({ 
         plot_coef(filters_properties()$filters.coef,
-                  q = input$q)
+                  q = as.numeric(input$q),
+                  legend = TRUE)
     })
     output$gain <- renderPlot({ 
         plot_gain(filters_properties()$filters.gain,
-                  q = input$q)
+                  q = as.numeric(input$q))
     })
     output$phase <- renderPlot({ 
         plot_phase(filters_properties()$asymmetricfilter.phase,
-                  q = input$q)
+                  q = as.numeric(input$q))
     })
+    
     
     # UI
     output$q0 <- renderUI({
+        choices <- seq(0, input$horizon)
         default_value <- input$horizon
-        sliderInput("q", "q",
-                    min = 0, max = input$horizon, step = 1,
-                    value = default_value)
+        checkboxGroupInput(inputId = "q",
+                           label = "Select q",
+                           choices = choices,
+                           selected = default_value,
+                           inline = TRUE)
     })
+    
 
 })
