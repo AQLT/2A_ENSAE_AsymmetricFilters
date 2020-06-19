@@ -13,3 +13,7 @@ Le calcul et les propriétés des moyennes mobiles symétriques et asymétriques
 - D'autres stratégies ont été proposées pour estimer les points récents de la tendance : Kyung-Joon et Schucany (1998) utilisent une régression non paramétrique par noyau, Vasyechko et Grun-Rehomme (2014) proposent des filtres basés sur le noyau d'Epanechnikov et les critères de minimisation de Henderson, etc.
 
 L’objectif du stage est de faire une comparaison théorique de ces filtres et d’évaluer leurs performances sur données réelles.
+
+# Avancée du stage
+
+- 16/06 : lecture de Proietti, Luati, Real Time Estimation in Local Polynomial Regression, with Application to Trend-Cycle Analysis (2008), https://aqlt.github.io/AsymmetricFilters/06:15%20-%20Proietti%20%26%20Luati/Proietti-Luati.pdf
