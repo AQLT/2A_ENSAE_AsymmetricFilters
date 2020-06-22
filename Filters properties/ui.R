@@ -21,7 +21,7 @@ shinyUI(fluidPage(
         sidebarPanel(
             selectInput(inputId = "kernel",
                         label = "Select kernel",
-                        choices = c("Henderson", "Uniform", "Biweight", "Triweight", "Tricube", "Gaussian", "Triangular", "Parabolic"),
+                        choices = c("Henderson", "Uniform", "Biweight", "Trapezoidal", "Triweight", "Tricube", "Gaussian", "Triangular", "Parabolic"),
                         selected = "Henderson"
             ),
             selectInput(inputId = "endpoints",

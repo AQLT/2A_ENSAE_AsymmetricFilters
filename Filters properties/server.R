@@ -24,16 +24,16 @@ shinyServer(function(input, output) {
     
     # Plot
     output$coefs <- renderPlot({ 
-        plot_coef(filters_properties()$filters.coef,
+        plot_coef(filters_properties(),
                   q = as.numeric(input$q),
                   legend = TRUE)
     })
     output$gain <- renderPlot({ 
-        plot_gain(filters_properties()$filters.gain,
+        plot_gain(filters_properties(),
                   q = as.numeric(input$q))
     })
     output$phase <- renderPlot({ 
-        plot_phase(filters_properties()$asymmetricfilter.phase,
+        plot_phase(filters_properties(),
                   q = as.numeric(input$q))
     })
     
