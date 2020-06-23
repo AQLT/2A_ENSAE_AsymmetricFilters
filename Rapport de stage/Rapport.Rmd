@@ -14,6 +14,7 @@ output:
         keep_tex: yes
 themeoptions: "coding=utf8,language=french"
 classoption: 'french'
+lang: "french"
 fontsize: 12pt
 header-includes:
 - \usepackage{setspace}
@@ -107,7 +108,7 @@ $$\kappa_j^{TW}=\left(
 \right)^3$$
 
 \item $r = s = 3$ tricube kernel :
-$$\kappa_j^{TR}=\left(
+$$\kappa_j^{TC}=\left(
   1-
   \left\lvert
   \frac j {h+1}
@@ -130,7 +131,7 @@ $$
 
 \item Trapezoidal kernel :
 $$
-\kappa_j=
+\kappa_j^{TP}=
 \begin{cases}
   \frac{1}{3(2h-1)} & \text{ si }j=\pm h 
   \\
@@ -141,3 +142,42 @@ $$
 
 \end{itemize}
 \end{multicols}
+
+Soit $x\in ]0,1[$ et $f_x(a,b)=\left(1-x^{a}\right)^{b}$
+on a :
+\begin{align*}
+\frac{\partial}{\partial a}f(a,b) &=-ax^{a-1}(1-x^{a})^{b}<0 \\
+\frac{\partial}{\partial b}f(a,b)&=\ln(1-x^{a})(1-x^{a})^{b} <0
+\end{align*}
+Donc $f$ est décroissante. Il vient :
+$$
+\kappa_j^{TC}
+\leq\kappa_j^{TW}
+\leq\kappa_j^{BW}
+\leq\kappa_j^E
+\leq\kappa_j^T
+\leq\kappa_j^U
+$$
+
+### Cas particuliers
+
+Lorsque $p=0$ (ajustement local par une constante) on retrouve l'estimateur de Nadaraya-Watson
+
+Avec le noyau uniforme, le filtre trouvé est le filtre de Macaulay. Dans le cas où $p=0,1$, ce filtre est la moyenne mobile arithmétique : $w_j=w=\frac{1}{2h+1}$.
+
+Epanechnikov utilise le filtre suivant :
+$$\kappa_j^E=\left(
+  1-
+  \left\lvert
+  \frac j {h+1}
+  \right\lvert^2
+\right)$$
+Ce noyau est souvent recommandé comme le noyau optimal minimisant la moyenne quadratique d'une estimation par polynôme local.
+
+Loess est une régression polynomiale locale pondérée utilisant le noyau tricube. Sa particularité est qu'il utilise la bande passante du plus proche voisin.
+
+Le filtre de Henderson est un cas particulier de l'ajustement cubique $p=3$.
+Henderson a cherché la fonction de poids qui donnait l'estimation la plus lisse de la tendance pour $h$ fixé et $p=3$.
+Le critère de lissage utilisé par Henderson est basé sur la variance des différences d'ordre 3 des estimations de la tendances
+Le critère de lissage adopté par Henderson est basé sur la variance des troisièmes différences des estimations de la tendance. Plus la variance est petite, plus le degré de lissage est élevé, car l'accélération de la tendance est sujette à moins de variations.
+
