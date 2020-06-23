@@ -1,0 +1,116 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<style>
+  .col2 {
+    columns: 2 200px;         /* number of columns and width in pixels*/
+    -webkit-columns: 2 200px; /* chrome, safari */
+    -moz-columns: 2 200px;    /* firefox */
+  }
+</style>
+
+<!-- <div class="col2"> -->
+<!-- équation 1 : -->
+<!-- $$x+1=3$$ -->
+
+<!-- équation 3 : -->
+<!-- $$x^2=-1$$ -->
+
+<!-- </div> -->
+
+Most of the kernels are derived from Beta Kernels. 
+Up to a proportionality factor (so that $\sum_{j=-h}^h\kappa_j=1$) the coefficients of this kernel are:
+$$
+\kappa_j = \left(
+  1-
+  \left\lvert
+  \frac j {h+1}
+  \right\lvert^r
+\right)^s
+$$
+The kernels used in `rjdfilters` are:
+
+<div class="col2">
+
+- $r=1,s=0$ uniform kernel: 
+$$\kappa_j^U=1$$
+
+- $r=s=1$ triangle kernel:
+$$\kappa_j^T=\left(
+  1-
+  \left\lvert
+  \frac j {h+1}
+  \right\lvert
+\right)$$
+
+- $r=2,s=1$  Parabolic (or Epanechnikov) kernel:
+$$\kappa_j^E=\left(
+  1-
+  \left\lvert
+  \frac j {h+1}
+  \right\lvert^2
+\right)$$
+
+- $r=s=2$ biweight kernel:
+$$\kappa_j^{BW}=\left(
+  1-
+  \left\lvert
+  \frac j {h+1}
+  \right\lvert^2
+\right)^2$$
+
+- $r = 2, s = 3$ triweight kernel:
+$$\kappa_j^{TW}=\left(
+  1-
+  \left\lvert
+  \frac j {h+1}
+  \right\lvert^2
+\right)^3$$
+
+- $r = s = 3$ tricube kernel:
+$$\kappa_j^{TC}=\left(
+  1-
+  \left\lvert
+  \frac j {h+1}
+  \right\lvert^3
+\right)^3$$
+
+- Gaussian kernel:
+$$
+\kappa_j^G=\exp\left(
+-\frac{
+  j^2
+}{
+  4h^2
+}\right)
+$$
+- Henderson kernel:
+$$
+\kappa_{j}=\left[(h+1)^{2}-j^{2}\right]\left[(h+2)^{2}-j^{2}\right]\left[(h+3)^{2}-j^{2}\right]
+$$
+
+- Trapezoidal kernel:
+$$
+\kappa_j^{TP}=
+\begin{cases}
+  \frac{1}{3(2h-1)} & \text{ if }j=\pm h 
+  \\
+  \frac{2}{3(2h-1)} & \text{ if }j=\pm (h-1)\\
+  \frac{1}{2h-1}& \text{ otherwise}
+\end{cases}
+$$
+</div>
+We have:
+$$
+\kappa_j^{TC}
+\leq\kappa_j^{TW}
+\leq\kappa_j^{BW}
+\leq\kappa_j^E
+\leq\kappa_j^T
+\leq\kappa_j^U
+$$

@@ -8,11 +8,8 @@
 #
 
 library(shiny)
-
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
-    tags$head(tags$script(src = "message-handler.js")),
-
     # Application title
     titlePanel("Properties of asymmetric filters"),
 
@@ -43,11 +40,34 @@ shinyUI(fluidPage(
         
         # Show a plot of the generated distribution
         mainPanel(
-            plotOutput("coefs"),
-            fluidRow(
-                column(6,plotOutput(outputId="gain")),  
-                column(6,plotOutput(outputId="phase"))
-            )
+            tabsetPanel(type = "tabs",
+                        tabPanel("General results",
+                                 plotOutput("plotFilterProperties", height = "80vh")),
+                        tabPanel("Fixed endpoints",
+                                 tabsetPanel(type = "tabs",
+                                   tabPanel("Coefficients",
+                                            plotOutput("coefplot_endpoints", height = "75vh")),
+                                   tabPanel("Gain",
+                                            plotOutput("gainplot_endpoints", height = "75vh")),
+                                   tabPanel("Phase",
+                                            plotOutput("phaseplot_endpoints", height = "75vh"))
+                                 )),
+                        tabPanel("Fixed kernel",
+                                 tabsetPanel(type = "tabs",
+                                             tabPanel("Coefficients",
+                                                      plotOutput("coefplot_kernel", height = "75vh")),
+                                             tabPanel("Gain",
+                                                      plotOutput("gainplot_kernel", height = "75vh")),
+                                             tabPanel("Phase",
+                                                      plotOutput("phaseplot_kernel", height = "75vh"))
+                                 )),
+                        tabPanel("More",
+                                 tabsetPanel(type = "tabs",
+                                             tabPanel("Kernels",
+                                                      includeHTML('kernels_def.html'))
+                                 ))
+                        )
+                        
         )
     )
 ))
