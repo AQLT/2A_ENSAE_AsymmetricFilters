@@ -175,7 +175,7 @@ $$\kappa_j^{TW}=\left(
 \right)^3$$
 
 \item $r = s = 3$ tricube kernel :
-$$\kappa_j^{TR}=\left(
+$$\kappa_j^{TC}=\left(
   1-
   \left\lvert
   \frac j {h+1}
@@ -213,10 +213,15 @@ $$
 Soit \(x\in ]0,1[\) et \(f_x(a,b)=\left(1-x^{a}\right)^{b}\)
 on a :
 \begin{align*}
-\frac{\partial}{\partial a}f(a,b) &=-ax^{a-1}(1-x^{a})^{b}<0 \\
+\frac{\partial}{\partial a}f(a,b) &=-a\ln (x)x^a(1-x^{a})^{b}>0 \\
 \frac{\partial}{\partial b}f(a,b)&=\ln(1-x^{a})(1-x^{a})^{b} <0
 \end{align*}
-Donc \(f\) est décroissante
+Donc :
+\begin{align*}
+\kappa_j^{E}&\geq \kappa_j^{BW} \geq \kappa_j^{TW} \\
+\kappa_j^{E}&\geq \kappa_j^T \\
+\kappa_j^{TC} &\geq \kappa_j^{TW}
+\end{align*}
 
 \hypertarget{cas-particuliers}{%
 \subsubsection{Cas particuliers}\label{cas-particuliers}}

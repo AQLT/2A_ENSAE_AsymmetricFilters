@@ -146,18 +146,15 @@ $$
 Soit $x\in ]0,1[$ et $f_x(a,b)=\left(1-x^{a}\right)^{b}$
 on a :
 \begin{align*}
-\frac{\partial}{\partial a}f(a,b) &=-ax^{a-1}(1-x^{a})^{b}<0 \\
+\frac{\partial}{\partial a}f(a,b) &=-a\ln (x)x^a(1-x^{a})^{b}>0 \\
 \frac{\partial}{\partial b}f(a,b)&=\ln(1-x^{a})(1-x^{a})^{b} <0
 \end{align*}
-Donc $f$ est décroissante. Il vient :
-$$
-\kappa_j^{TC}
-\leq\kappa_j^{TW}
-\leq\kappa_j^{BW}
-\leq\kappa_j^E
-\leq\kappa_j^T
-\leq\kappa_j^U
-$$
+Donc :
+\begin{align*}
+\kappa_j^{E}&\geq \kappa_j^{BW} \geq \kappa_j^{TW} \\
+\kappa_j^{E}&\geq \kappa_j^T \\
+\kappa_j^{TC} &\geq \kappa_j^{TW}
+\end{align*}
 
 ### Cas particuliers
 

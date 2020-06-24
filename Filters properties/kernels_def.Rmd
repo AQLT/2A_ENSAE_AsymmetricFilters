@@ -6,22 +6,32 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
 <style>
-  .col2 {
-    columns: 2 200px;         /* number of columns and width in pixels*/
-    -webkit-columns: 2 200px; /* chrome, safari */
-    -moz-columns: 2 200px;    /* firefox */
-  }
+.parent {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: 2fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
 </style>
+<style>
+ .col2 {
+  columns: 2;     
+  -webkit-columns: 2; 
+  -moz-columns: 2;
+  -webkit-column-count: 2;
+      -moz-column-count: 2;
+           column-count: 2;
 
-<!-- <div class="col2"> -->
-<!-- équation 1 : -->
-<!-- $$x+1=3$$ -->
+   -webkit-column-gap: 20px;
+      -moz-column-gap: 20px;
+           column-gap: 20px;
+ }
+</style>
+   
 
-<!-- équation 3 : -->
-<!-- $$x^2=-1$$ -->
-
-<!-- </div> -->
 
 Most of the kernels are derived from Beta Kernels. 
 Up to a proportionality factor (so that $\sum_{j=-h}^h\kappa_j=1$) the coefficients of this kernel are:
@@ -35,8 +45,8 @@ $$
 $$
 The kernels used in `rjdfilters` are:
 
-<div class="col2">
-
+::: {.parent}
+::: {}
 - $r=1,s=0$ uniform kernel: 
 $$\kappa_j^U=1$$
 
@@ -71,7 +81,8 @@ $$\kappa_j^{TW}=\left(
   \frac j {h+1}
   \right\lvert^2
 \right)^3$$
-
+:::
+::: {}
 - $r = s = 3$ tricube kernel:
 $$\kappa_j^{TC}=\left(
   1-
@@ -104,13 +115,13 @@ $$
   \frac{1}{2h-1}& \text{ otherwise}
 \end{cases}
 $$
-</div>
+::: 
+::::
+
 We have:
-$$
-\kappa_j^{TC}
-\leq\kappa_j^{TW}
-\leq\kappa_j^{BW}
-\leq\kappa_j^E
-\leq\kappa_j^T
-\leq\kappa_j^U
-$$
+\begin{align*}
+\kappa_j^{E}&\geq \kappa_j^{BW} \geq \kappa_j^{TW} \\
+\kappa_j^{E}&\geq \kappa_j^T \\
+\kappa_j^{TC} &\geq \kappa_j^{TW}
+\end{align*}
+
