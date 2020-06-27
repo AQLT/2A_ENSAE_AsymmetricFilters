@@ -1,0 +1,39 @@
+%début contraintes ensae
+\usepackage{pdfpages, setspace, mathptmx} %times roman
+\onehalfspacing 
+\makeatletter
+\def\@maketitle{%
+  \includepdf[fitpaper=true, pages=-]{img/pdg.pdf}
+}
+\makeatother% cinsérer page de garde
+
+\usepackage{stmaryrd}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{animate, dsfont, here}
+
+%\includepdf[fitpaper=true, pages=-]{img/pdg.pdf}
+
+
+\DeclareMathOperator{\e}{e}
+\renewcommand{\P}{\mathds{P}} %Apparement \P existe déjà ?
+\newcommand\N{\mathds{N}}
+\newcommand\R{\mathds{R}}
+%\newcommand\C{\mathds{C}}
+%\newcommand\Z{\mathds{Z}}
+
+
+\newcommand\1{\mathds{1}}
+\newcommand{\E}[2][]{{\mathds{E}}_{#1}
+  \def\temp{#2}\ifx\temp\empty
+  \else
+  \left[#2\right]
+  \fi
+}
+\newcommand{\V}[2][]{{\mathds{V}}_{#1}
+  \def\temp{#2}\ifx\temp\empty
+  \else
+  \left[#2\right]
+  \fi
+}
+\newcommand\ud{\,\mathrm{d}}
