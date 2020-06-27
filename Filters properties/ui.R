@@ -34,6 +34,11 @@ shinyUI(fluidPage(
                                       min = 0, max = 20))
             ),
             uiOutput("q0"),
+            # sliderInput(inputId = "xlim",
+            #             label = "x limits * pi for Phase/Gain functions",
+            #             min = 0,
+            #             max = 1,
+            #             value = c(0,1/24)),
             width = 3.
             
         ),

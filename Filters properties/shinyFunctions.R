@@ -121,7 +121,7 @@ gain_phase_plot_comp <- function(filters_properties, endpoints, kernel, q,
     component = "filters.gain"
     ylab = "Gain"
   }else{
-    component = "asymmetricfilter.phase"
+    component = "filters.phase"
     ylab = "Phase"
   }
   if(fixed == "endpoints"){
@@ -148,7 +148,10 @@ gain_phase_plot_comp <- function(filters_properties, endpoints, kernel, q,
     return(NULL)
   d <- d[,col_to_plot]
   dataGraph <- reshape2::melt(d, id = c("x","by"))
-  
+  if (which != "gain"){
+    y_changed <- dataGraph$g != 0
+    dataGraph$value[y_changed] <- (dataGraph$value / dataGraph$x)[y_changed]
+  }
   nxlab = 7
   x_lab_at <- seq(0, 1, length.out = nxlab)
   ggplot(data = dataGraph, aes(x = x, y = value, group = variable, 
