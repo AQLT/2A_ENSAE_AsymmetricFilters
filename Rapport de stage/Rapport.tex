@@ -1,11 +1,12 @@
 % Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
 %
 \documentclass[
   12pt,
   ,
-  french]{article}
+  a4paper]{article}
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
@@ -40,8 +41,12 @@
 \hypersetup{
   pdftitle={Rapport},
   pdfauthor={Alain Quartier-la-Tente},
-  pdflang={french},
-  hidelinks,
+  pdflang={english},
+  colorlinks=true,
+  linkcolor=Maroon,
+  filecolor=Maroon,
+  citecolor=Blue,
+  urlcolor=blue,
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
 \usepackage[margin=1in]{geometry}
@@ -71,10 +76,45 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{5}
-\usepackage{setspace}
-\onehalfspacing
-\usepackage{mathptmx}
+%début contraintes ensae
+\usepackage{pdfpages, setspace, mathptmx} %times roman
+\onehalfspacing 
+\makeatletter
+\def\@maketitle{%
+  \includepdf[fitpaper=true, pages=-]{img/pdg.pdf}
+}
+\makeatother% cinsérer page de garde
+
+\usepackage{stmaryrd}
 \usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{animate, dsfont, here}
+
+%\includepdf[fitpaper=true, pages=-]{img/pdg.pdf}
+
+
+\DeclareMathOperator{\e}{e}
+\renewcommand{\P}{\mathds{P}} %Apparement \P existe déjà ?
+\newcommand\N{\mathds{N}}
+\newcommand\R{\mathds{R}}
+%\newcommand\C{\mathds{C}}
+%\newcommand\Z{\mathds{Z}}
+
+
+\newcommand\1{\mathds{1}}
+\newcommand{\E}[2][]{{\mathds{E}}_{#1}
+  \def\temp{#2}\ifx\temp\empty
+  \else
+  \left[#2\right]
+  \fi
+}
+\newcommand{\V}[2][]{{\mathds{V}}_{#1}
+  \def\temp{#2}\ifx\temp\empty
+  \else
+  \left[#2\right]
+  \fi
+}
+\newcommand\ud{\,\mathrm{d}}
 \ifxetex
   % Load polyglossia as late as possible: uses bidi with RTL langages (e.g. Hebrew, Arabic)
   \usepackage{polyglossia}
@@ -91,28 +131,215 @@
 \maketitle
 
 {
+\hypersetup{linkcolor=}
 \setcounter{tocdepth}{2}
 \tableofcontents
 }
-\hypertarget{les-diffuxe9rents-noyaux}{%
-\subsection{Les différents noyaux}\label{les-diffuxe9rents-noyaux}}
+\newpage
 
-Dans l'extraction du signal, on cherche généralement à pondérer les observations selon leur distance à la date \(t\).
-Pour cela on introduit une fonction de noyau \(\kappa_j\), \(j=0,\pm1,\dots,\pm h\) avec \(\kappa_j \geq0\) et \(\kappa_j=\kappa_{-j}\).
-Une classe importante des noyaux qui comprend la majorité de ceux utilisé est la classe des Beta kernels :
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+\hypertarget{moving-average-and-filters}{%
+\section{Moving average and filters}\label{moving-average-and-filters}}
+
+A lot of papers describes the definition and the properties of moving average and linear filters (see for example (Ladiray 2018)).
+He we summarize some of the main results.
+
+Let \(p\) et \(f\) two integers, a moving average \(M_\theta\) or \(M\) is defined by a set of coefficients \(\theta=(\theta_{-p},\dots,\theta_{f})'\) such as:
 \[
-\kappa(u)=k_rs\left(1-\lvert u\rvert^r
-\right)^s
-1_{\lvert u\rvert\leq 1}
-,\quad k_{rs}=\frac{r}{
-2B\left(s+1,\frac 1 r\right)
-}
+M(X_t)=\sum_{k=-p}^{+f}\theta_kX_{t+k}
 \]
-Avec \(r>0\), \(s\geq 0\) et
+
+\begin{itemize}
+\item
+  \(p+f+1\) is called the \emph{moving average order}.
+\item
+  When \(p=f\) the moving average is said to be \emph{centered}.
+  If we also have \(\forall k:\:\theta_{-k} = \theta_k\), the moving average \(M_\theta\) is said to be \emph{symmetric}.
+  In this case, the quantity \(2h+1\) is called the \emph{bandwith}.
+\end{itemize}
+
+\hypertarget{gain-and-phase-shift-functions}{%
+\subsection{Gain and phase shift functions}\label{gain-and-phase-shift-functions}}
+
+Let \(X_t=\e^{i\omega t}\), the result of the moving average \(M_\theta\) in \(X_t\) is:
 \[
-B(a,b)=\int_0^1u^{a-1}(1-u)^{b-1}du
+Y_t = M_{\theta}X_t = \sum_{k=-p}^{+f} \theta_k \e^{i \omega (t+k)}
+= \left(\sum_{k=-p}^{+f} \theta_k \e^{i \omega k}\right)\cdot X_t.
 \]
-Dans le cas discret, à un facteur proportionnel près (constante de normalisation pour que \(\sum\kappa_j=1\)) :
+The function \(\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{i \omega k}\) is called the \emph{transfer function}.
+It can be rewritten as:
+\[
+\Gamma_\theta(\omega) = G_\theta(\omega)\e^{-i\Phi_\theta(\omega)}
+\]
+where \(G_\theta(\omega)=\lvert\Gamma_\theta(\omega)\rvert\) is the \emph{gain} or \emph{amplitude} function and \(\Phi_\theta(\omega)\) is the \emph{phase shift} or \emph{time shift} function\footnote{This function is sometimes represented as \(\phi_\theta(\omega)=\frac{\Phi_\theta(\omega)}{\omega}\) to mesure the phase shift in number of periods.}.
+For all symmetric moving average we have \(\Phi_\theta(\omega)=0\).
+
+To sum up, applying a moving average to an harmonic times series affects in in two different ways :
+
+\begin{itemize}
+\item
+  by multiplying it by an amplitude coefficient \(G_{\theta}\left(\omega\right)\);
+\item
+  by ``shifting'' it in time by \(\Phi_\theta(\omega)/\omega\), which directly affects the detection of turning points\footnote{When \(\Phi_\theta(\omega)/\omega>0\) the time shift is positive: a turning point is detected with delay.}.
+\end{itemize}
+
+\hypertarget{desirable-properties-of-a-moving-average}{%
+\subsection{Desirable properties of a moving average}\label{desirable-properties-of-a-moving-average}}
+
+The moving average are often constructed under some specific constraints.
+In the report we will focus on two constraints:
+
+\begin{itemize}
+\item
+  the preservation of certain kind of trends;
+\item
+  the variance reduction.
+\end{itemize}
+
+\hypertarget{trend-preservation}{%
+\subsubsection{Trend preservation}\label{trend-preservation}}
+
+Is is often desirable for a moving average to conserve certain kind of trends.
+A moving average \(M_\theta\) conserve a function of the time \(f(t)\) if \(\forall t:\:M_\theta f(t)=f(t)\).
+
+We have the following properties for the moving average \(M_\theta\):
+
+\begin{itemize}
+\item
+  To conserve a constant series \(X_t=a\) we need
+  \[
+  \forall t:M_\theta(X_t)=\sum_{k=-p}^{+f}\theta_kX_{t+k}=\sum_{k=-p}^{+f}\theta_ka=a\sum_{k=-p}^{+f}\theta_k=a
+  \]
+  the sum of the coefficients of the moving average \(\sum_{k=-p}^{+f}\theta_k\) must then be equal to \(1\).
+\item
+  To conserve a linear trend \(X_t=at+b\) we need:
+  \[
+  \forall t:\:M_\theta(X_t)=\sum_{k=-p}^{+f}\theta_kX_{t+k}=\sum_{k=-p}^{+f}\theta_k[a(t+k)+b]=at\sum_{k=-p}^{+f}k\theta_k+b\sum_{k=-p}^{+f}\theta_k=at+b
+  \]
+  which is equivalent to:
+  \[
+  \begin{cases}
+  \sum_{k=-p}^{+f}\theta_k&=1\\
+  \sum_{k=-p}^{+f}k\theta_k&=0
+  \end{cases}
+  \]
+\item
+  In general, it can be shown that \(M_\theta\) conserve a polynomial of degree \(d\) if and only if:
+  \[
+  \sum_{k=-p}^{+f}\theta_k=1 
+   \text{ and } 
+  \forall j \in \left\llbracket 1,d\right\rrbracket:\:
+  \sum_{k=-p}^{+f}k^j\theta_k=0
+  \]
+\end{itemize}
+
+\hypertarget{variance-reduction}{%
+\subsubsection{Variance reduction}\label{variance-reduction}}
+
+All time series are affected by noise that can blur the signal extraction.
+Hence, we seek to reduce the variance of the noise.
+The sum of the sum of the squares of the coefficients \(\sum_{k=-p}^{+f}\theta_k^2\) is the \emph{variance reduction} ratio.
+
+Indeed, let \(\{\varepsilon_t\}\) a sequence of independent random variables with\(\E{\varepsilon_t}=0 \E{}\), \(\V{\varepsilon_t}=\sigma^2\).
+\[
+\V{M_\theta\varepsilon_t}=\V{\sum_{k=-p}^{+f} \theta_k \varepsilon_{t+k}}
+= \sum_{k=-p}^{+f} \theta_k^2 \V{\varepsilon_{t+k}}=
+\sigma^2\sum_{k=-p}^{+f} \theta_k^2
+\]
+
+\hypertarget{quality-indicators}{%
+\subsubsection{Quality indicators (?)}\label{quality-indicators}}
+
+To compare the different moving average / filters the following indicators are used:
+\[
+\begin{cases}
+  \text{constant bias}=\text{bias0}&= \sum_{k=-p}^{+f} \theta_k\\
+  \text{linear bias}=\text{bias1}&=\sum_{k=-p}^{+f} k\theta_k\\
+  \text{quadratic bias}=\text{bias2}&=\sum_{k=-p}^{+f} k^2\theta_k\\
+  \text{variance reduction}&=\sum_{k=-p}^{+f} \theta_k^2
+\end{cases}
+\]
+
+\hypertarget{local-polynomial-filters}{%
+\section{Local polynomial filters}\label{local-polynomial-filters}}
+
+In this section we detail the filters that arised from fitting a local polynomial to our time series as described by (Proietti and Luati 2008).
+
+We assume that our time series \(y_t\) can be decomposed as
+\[
+y_t=\mu_t+\varepsilon_t
+\]
+where \(\mu_t\) is the signal (trend) and \(\varepsilon_{t}\overset{i.i.d}{\sim}\mathcal{N}(0,\sigma^{2})\) is the noise.
+We assume that \(\mu_t\) can be locally approximated by a polynomial of degree \(d\) of the time \(t\) between \(y_t\) and the neighboring observations \(\left(y_{t+j}\right)_{j\in\left\llbracket -h,h\right\rrbracket}\). Then \(\mu_t\simeq m_{t}\) with:
+\[
+\forall j\in\left\llbracket -h,h\right\rrbracket :\:
+y_{t+j}=m_{t+j}+\varepsilon_{t+j},\quad m_{t+j}=\sum_{i=0}^{d}\beta_{i}j^{i}
+\]
+This signal extraction problem is then equivalent to the estimation of \(m_t=\beta_0\). In matrix notation we can write:
+\[
+\underbrace{\begin{pmatrix}y_{t-h}\\
+y_{t-(h-1)}\\
+\vdots\\
+y_{t}\\
+\vdots\\
+y_{t+(h-1)}\\
+y_{t+h}
+\end{pmatrix}}_{y}=\underbrace{\begin{pmatrix}1 & -h & h^{2} & \cdots & (-h)^{d}\\
+1 & -(h-1) & (h-1)^{2} & \cdots & (-(h-1))^{d}\\
+\vdots & \vdots & \vdots & \cdots & \vdots\\
+1 & 0 & 0 & \cdots & 0\\
+\vdots & \vdots & \vdots & \cdots & \vdots\\
+1 & h-1 & (h-1)^{2} & \cdots & (h-1)^{d}\\
+1 & h & h^{2} & \cdots & h^{d}
+\end{pmatrix}}_{X}\underbrace{\begin{pmatrix}\beta_{0}\\
+\beta_{1}\\
+\vdots\\
+\vdots\\
+\vdots\\
+\vdots\\
+\beta_{d}
+\end{pmatrix}}_{\beta}+\underbrace{\begin{pmatrix}\varepsilon_{t-h}\\
+\varepsilon_{t-(h-1)}\\
+\vdots\\
+\varepsilon_{t}\\
+\vdots\\
+\varepsilon_{t+(h-1)}\\
+\varepsilon_{t+h}
+\end{pmatrix}}_{\varepsilon}
+\]
+Two parameters are crucial in determining the accuracy of the approximation:
+
+\begin{itemize}
+\item
+  the degree \(d\) of the polynomial;
+\item
+  the number of neighbored, \emph{bandwith} \(H=2h+1\).
+\end{itemize}
+
+In order to estimate \(\beta\) we need \(H\geq d+1\) and the estimation is done by the weighted least squares (WLS), which consists of minimizing the following objective function:
+\[
+S(\hat{\beta}_{0},\dots,\hat{\beta}_{d})=\sum_{j=-h}^{h}\kappa_{j}(y_{t+j}-\hat{\beta}_{0}-\hat{\beta}_{1}j-\dots-\hat{\beta}_{d}j^{d})^{2}
+\]
+where \(\kappa_j\) is a set of weights called \emph{kernel}. We have \(\kappa_j\geq 0\), \(\kappa_{-j}=\kappa_j\) and with \(K=diag(\kappa_{-h},\dots,\kappa_{h})\), the estimate of \(\beta\) can be written as \(\hat{\beta}=(X'KX)^{1}X'Ky\).
+With \(e_{1}=\begin{pmatrix}1&0&\cdots&0\end{pmatrix}'\), the estimate of the trend is:
+\[
+\hat{m}_{t}=e_{1}\hat{\beta}=w'y=\sum_{j=-h}^{h}w_{j}y_{t-j}\text{ with }w=KX(X'KX)^{-1}e_{1}
+\]
+To conclude, the estimate of the trend \(\hat{m}_{t}\) can be obtained applying the symmetric filter \(w\) to \(y_t\)\footnote{Due to the symmetry of the kernel weights \(\kappa_j\).}.
+Moreover, \(X'w=e_{1}\) so:
+\[
+\sum_{j=-h}^{h}w_{j}=1,\quad\forall r\in\left\llbracket 1,d\right\rrbracket :\sum_{j=-h}^{h}j^{r}w_{j}=0
+\]
+Hence, the filter \(w\) preserve deterministic polynomial of order \(d\).
+
+\hypertarget{different-kernels}{%
+\subsection{Different kernels}\label{different-kernels}}
+
+In signal extraction, we generally look for weighting observations according to their distance from time \(t\): this is the role of the kernel function.
+For that, we introduce a kernel function \(\kappa_j\), \(j=0,\pm1,\dots,\pm h\) with \(\kappa_j \geq0\) and \(\kappa_j=\kappa_{-j}\).
+An important class of kernels is the Beta kernels. In the discrete, up to a proportional factor (so that \(\sum_{j=-h}^h\kappa_j=1\)):
 \[
 \kappa_j = \left(
   1-
@@ -121,44 +348,29 @@ Dans le cas discret, à un facteur proportionnel près (constante de normalisati
   \right\lvert^r
 \right)^s
 \]
+with \(r>0\), \(s\geq 0\). The following kernels are considered in this report:
 
 \begin{multicols}{2}
 \begin{itemize}
-\item $r=1,s=0$ uniform kernel : 
+\item $r=1,s=0$ uniform kernel: 
 $$\kappa_j^U=1$$
-%$$\kappa_j^U=\frac{1}{2h+1}$$
-
-\item $r=s=1$ triangle kernel :
+\item $r=s=1$ triangle kernel:
 $$\kappa_j^T=\left(
   1-
   \left\lvert
   \frac j {h+1}
   \right\lvert
 \right)$$
-%$$\kappa_j^T=\frac{\left(
-%  1-
-%  \left\lvert
-%  \frac j {h+1}
-%  \right\lvert
-%\right)}{
-%h+1
-%}
-%$$
 
-\item $r=2,s=1$  Epanechnikov (ou Parabolic) kernel :
+\item $r=2,s=1$  Epanechnikov (or Parabolic) kernel:
 $$\kappa_j^E=\left(
   1-
   \left\lvert
   \frac j {h+1}
   \right\lvert^2
 \right)$$
-\end{itemize}
-\end{multicols}
 
-\begin{multicols}{2}
-\begin{itemize}
-
-\item $r=s=2$ biweight kernel :
+\item $r=s=2$ biweight kernel:
 $$\kappa_j^{BW}=\left(
   1-
   \left\lvert
@@ -166,7 +378,7 @@ $$\kappa_j^{BW}=\left(
   \right\lvert^2
 \right)^2$$
 
-\item $r = 2, s = 3$ triweight kernel :
+\item $r = 2, s = 3$ triweight kernel:
 $$\kappa_j^{TW}=\left(
   1-
   \left\lvert
@@ -174,7 +386,7 @@ $$\kappa_j^{TW}=\left(
   \right\lvert^2
 \right)^3$$
 
-\item $r = s = 3$ tricube kernel :
+\item $r = s = 3$ tricube kernel:
 $$\kappa_j^{TC}=\left(
   1-
   \left\lvert
@@ -182,53 +394,75 @@ $$\kappa_j^{TC}=\left(
   \right\lvert^3
 \right)^3$$
 
-\item Gaussian kernel  :
+\item Gaussian kernel\footnote{
+The gaussian kernel is generally defined as $\e^{-\frac{ x^2}{ 2\sigma^2}}$.
+Here we take $\sigma^2=2/h$ with the following idea: the biggest $h$ is, the narrowest the filter is.
+}:
 $$
 \kappa_j^G=\exp\left(
 -\frac{
   j^2
 }{
-  4h^2
+  4h
 }\right)
 $$
-\item Henderson kernel :
+\item Henderson kernel (see section \ref{sec:sympolyfilter} for its construction):
 $$
-\kappa_{j}=\left[(h+1)^{2}-j^{2}\right]\left[(h+2)^{2}-j^{2}\right]\left[(h+3)^{2}-j^{2}\right]
+\kappa_{j}=\left[1-\frac{j^2}{(h+1)^2}\right]
+\left[1-\frac{j^2}{(h+2)^2}\right]
+\left[1-\frac{j^2}{(h+3)^2}\right]
 $$
-
-\item Trapezoidal kernel :
+\item Trapezoidal kernel:
 $$
 \kappa_j^{TP}=
 \begin{cases}
-  \frac{1}{3(2h-1)} & \text{ si }j=\pm h 
+  \frac{1}{3(2h-1)} & \text{ if }j=\pm h 
   \\
-  \frac{2}{3(2h-1)} & \text{ si }j=\pm (h-1)\\
-  \frac{1}{2h-1}& \text{ sinon}
+  \frac{2}{3(2h-1)} & \text{ if }j=\pm (h-1)\\
+  \frac{1}{2h-1}& \text{ otherwise}
 \end{cases}
 $$
-
 \end{itemize}
 \end{multicols}
 
-Soit \(x\in ]0,1[\) et \(f_x(a,b)=\left(1-x^{a}\right)^{b}\)
-on a :
-\begin{align*}
-\frac{\partial}{\partial a}f(a,b) &=-a\ln (x)x^a(1-x^{a})^{b}>0 \\
-\frac{\partial}{\partial b}f(a,b)&=\ln(1-x^{a})(1-x^{a})^{b} <0
-\end{align*}
-Donc :
-\begin{align*}
-\kappa_j^{E}&\geq \kappa_j^{BW} \geq \kappa_j^{TW} \\
-\kappa_j^{E}&\geq \kappa_j^T \\
-\kappa_j^{TC} &\geq \kappa_j^{TW}
-\end{align*}
+The figure \ref{fig:kernels} summarises the coefficients of the different kernels.
+Analysing the coefficients we can already anticipate some properties of the associated filters:
 
-\hypertarget{cas-particuliers}{%
-\subsubsection{Cas particuliers}\label{cas-particuliers}}
+\begin{itemize}
+\item
+\item
+  For \(h\) high:
 
-Lorsque \(p=0\) (ajustement local par une constante) on retrouve l'estimateur de Nadaraya-Watson
+  \begin{itemize}
+  \tightlist
+  \item
+    the Henderson kernel is equivalent to the triweight kernel (since \(h+1\sim h+2 \sim h+3\), \(\kappa_j^H\sim\kappa_j^{TW}\))
+  \end{itemize}
 
-Avec le noyau uniforme, le filtre trouvé est le filtre de Macaulay. Dans le cas où \(p=0,1\), ce filtre est la moyenne mobile arithmétique : \(w_j=w=\frac{1}{2h+1}\).
+  A un horizon plus court, trapezoidal pas très loin triweight.
+  Si on augmente h, Henderson devrait être équivalent que le triweight.
+\end{itemize}
+
+\begin{figure}[H]
+\animategraphics[autoplay,loop,width=\textwidth,controls]{3}{img/kernels/}{2}{80} 
+\caption{Coefficients of the different kernels for $h$ from 2 to 80.}\label{fig:kernels}\footnotesize
+\emph{Note: to see the animation the PDF must be open with Acrobat Reader, KDE Okular, PDF-XChange or Foxit Reader. 
+Otherwise you will only be able to see the results for $h=2$.}
+\end{figure}
+
+\begin{figure}[htb]
+\animategraphics[autoplay,loop,width=\textwidth,controls]{3}{img/symmetricFilters/}{2}{80} 
+\caption{Coefficients of symmetric filters associated to the differents kernels for $h$ from 2 to 80.}\footnotesize
+\emph{Note: to see the animation the PDF must be open with Acrobat Reader, KDE Okular, PDF-XChange or Foxit Reader. 
+Otherwise you will only be able to see the results for $h=2$.}
+\end{figure}
+
+\hypertarget{sec:sympolyfilter}{%
+\subsubsection{Specific symmetric filters}\label{sec:sympolyfilter}}
+
+When \(p=0\) (local adjustment by a constant) we obtain the Nadaraya-Watson's estimator.
+
+With the uniform kernel we obtain the Macaulay's filter. When \(p=0,1\), this is the arithmetic moving average: \(w_j=w=\frac{1}{2h+1}\).
 
 Epanechnikov utilise le filtre suivant :
 \[\kappa_j^E=\left(
@@ -237,13 +471,24 @@ Epanechnikov utilise le filtre suivant :
   \frac j {h+1}
   \right\lvert^2
 \right)\]
-Ce noyau est souvent recommandé comme le noyau optimal minimisant la moyenne quadratique d'une estimation par polynôme local.
+TCe noyau est souvent recommandé comme le noyau optimal minimisant la moyenne quadratique d'une estimation par polynôme local.
 
-Loess est une régression polynomiale locale pondérée utilisant le noyau tricube. Sa particularité est qu'il utilise la bande passante du plus proche voisin.
+LOESS is a local polynomial regression using a tricube kernel. Sa particularité est qu'il utilise la bande passante du plus proche voisin.
 
 Le filtre de Henderson est un cas particulier de l'ajustement cubique \(p=3\).
 Henderson a cherché la fonction de poids qui donnait l'estimation la plus lisse de la tendance pour \(h\) fixé et \(p=3\).
 Le critère de lissage utilisé par Henderson est basé sur la variance des différences d'ordre 3 des estimations de la tendances
 Le critère de lissage adopté par Henderson est basé sur la variance des troisièmes différences des estimations de la tendance. Plus la variance est petite, plus le degré de lissage est élevé, car l'accélération de la tendance est sujette à moins de variations.
+
+\hypertarget{references}{%
+\section*{References}\label{references}}
+\addcontentsline{toc}{section}{References}
+
+\hypertarget{refs}{}
+\leavevmode\hypertarget{ref-ch12HBSA}{}%
+Ladiray, Dominique. 2018. ``Moving Average Based Seasonal Adjustment.'' \emph{Handbook on Seasonal Adjustment}. \url{ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-001}.
+
+\leavevmode\hypertarget{ref-proietti2008}{}%
+Proietti, Tommaso, and Alessandra Luati. 2008. ``Real Time Estimation in Local Polynomial Regression, with Application to Trend-Cycle Analysis.'' \emph{Ann. Appl. Stat.} 2 (4): 1523--53. \url{https://doi.org/10.1214/08-AOAS195}.
 
 \end{document}
