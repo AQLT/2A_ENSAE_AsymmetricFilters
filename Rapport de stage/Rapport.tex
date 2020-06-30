@@ -263,8 +263,11 @@ Indeed, let \(\{\varepsilon_t\}\) a sequence of independent random variables wit
 \sigma^2\sum_{k=-p}^{+f} \theta_k^2
 \]
 
+\hypertarget{asymmetric-moving-average}{%
+\subsection{Asymmetric moving average}\label{asymmetric-moving-average}}
+
 \hypertarget{quality-indicators-trouver-un-autre-nom}{%
-\subsubsection{Quality indicators (? trouver un autre nom)}\label{quality-indicators-trouver-un-autre-nom}}
+\subsection{Quality indicators (? trouver un autre nom)}\label{quality-indicators-trouver-un-autre-nom}}
 
 To compare the different moving average / filters the following indicators are used:
 \[
@@ -507,11 +510,6 @@ We find the similar results than in section~\ref{fig:kernels}:
   For \(h\) high the Henderson filter is equivalent to the one computed by the triweight kernel.
 \end{itemize}
 
-Moreover, we find that for all the filters, the coefficients decrease, when the distance to the central observation increases, until a negative value and then increase towards 0 (except for the uniform kernel).
-Negative coefficients might be disturbing but they arise from the cubic polynomial constraints.
-Indeed to preserve polynomial of degree 2 (and so 3) we need \(\sum_{j=-h}^hj^2\theta_i=0\), which constraint some coefficients to be negative.
-However, those negative coefficients are negligible compare to the central higher coefficients (they are more 80\% smaller than the central coefficient for all kernels, except for uniform and trapezoidal with high bandwith).
-
 \begin{figure}[H]
 \animategraphics[autoplay,loop,width=\textwidth,controls]{2}{img/symmetricFilters/}{2}{30}
 \caption{Coefficients of symmetric filters computed by local polynomial of degree $3$, according to the differents kernels and for $h$ from 2 to 30.}\label{fig:filterscoefs}\footnotesize
@@ -519,7 +517,12 @@ However, those negative coefficients are negligible compare to the central highe
 Otherwise you will only be able to see the results for $h=2$.}
 \end{figure}
 
-\begin{table}
+Moreover, we find that for all the filters, the coefficients decrease, when the distance to the central observation increases, until a negative value and then increase towards 0 (except for the uniform kernel).
+Negative coefficients might be disturbing but they arise from the cubic polynomial constraints.
+Indeed to preserve polynomial of degree 2 (and so 3) we need \(\sum_{j=-h}^hj^2\theta_i=0\), which constraint some coefficients to be negative.
+However, those negative coefficients are negligible compare to the central higher coefficients (they are more 80\% smaller than the central coefficient for all kernels, except for uniform and trapezoidal with high bandwith).
+
+\begin{table}[!h]
 
 \caption{\label{tab:varianceReductionSymmetricFilters}Variance reduction ratio ($\sum\theta_i^2$) of symmetric filters computed by local polynomial of degree $3$.}
 \centering
@@ -546,6 +549,25 @@ $h$ & Biweight & Epanechnikov & Gaussian & Henderson & Trapezoidal & Triangular 
 \bottomrule
 \end{tabular}}
 \end{table}
+
+\hypertarget{gain-functions}{%
+\subsubsection{Gain functions}\label{gain-functions}}
+
+Figure \ref{fig:filtersSymgains} plots the gain functions of the different filters.
+Gain functions are usually plotted between 0 and \(\pi\).
+However, locally weighted polynomial regression are low-pass filters: they leave almost unchanged low frequency components (such as the trend) and attenuate high frequency fluctuations (noise).
+That's why we are only interested in low frequencies.
+For a monthly data, a cycle of 3 years correspond to the frequency \(2\pi/36\) and a cycle of 7 years to the frequency \(2\pi/84\).
+
+When the bandwith \(h\) increases, the gain function decreases for low frequencies: short business cycles will then be attenuated.
+For a fixed value of \(h\), gaussian, Henderson and triweight filters will preserve more short business cycles than the others filters (especially uniform, trapezoidal and Epanechnikov).
+
+\begin{figure}[H]
+\animategraphics[autoplay,loop,width=\textwidth,controls]{2}{img/symmetricFilters/gain}{2}{30}
+\caption{Gain functions from 0 to $2\pi/12$ of symmetric filters computed by local polynomial of degree $3$, according to the differents kernels and for $h$ from 2 to 30.}\label{fig:filtersSymgains}\footnotesize
+\emph{Note: to see the animation the PDF must be open with Acrobat Reader, KDE Okular, PDF-XChange or Foxit Reader.
+Otherwise you will only be able to see the results for $h=2$.}
+\end{figure}
 
 \newpage
 
