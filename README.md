@@ -19,3 +19,5 @@ L’objectif du stage est de faire une comparaison théorique de ces filtres et 
 - 16/06 : lecture de Proietti, Luati, Real Time Estimation in Local Polynomial Regression, with Application to Trend-Cycle Analysis (2008), https://aqlt.github.io/AsymmetricFilters/06:15%20-%20Proietti%20%26%20Luati/Proietti-Luati.pdf
 
 - 23/06 : application pour analyser les filtres https://aqlt.shinyapps.io/FiltersProperties/
+
+- 02/07 : début rapport https://aqlt.github.io/AsymmetricFilters/Rapport%20de%20stage/Rapport.pdf
