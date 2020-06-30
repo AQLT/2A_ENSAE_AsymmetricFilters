@@ -1,5 +1,6 @@
 library(rjdfilters)
 library(ggplot2)
+library(reshape2)
 get_all_kernels <- function(horizon){
   x <- sprintf("t%+i", seq(-horizon,horizon))
   x <- sub("+0", "", x, fixed = TRUE)
@@ -35,7 +36,7 @@ get_all_sfilters <- function(horizon){
                                     k_coef <- filterproperties(horizon = horizon, kernel = n_kernel)$filters.coef
                                     k_coef <- k_coef[,ncol(k_coef)]
                                     
-                                    data.frame(x = seq(-horizon,horizon), y = k_coef, kernel = kernel, h = horizon,
+                                    data.frame(x = seq(-horizon,horizon), y = (k_coef), kernel = kernel, h = horizon,
                                                stringsAsFactors = FALSE)
                                   }, error = function(e){
                                     data.frame(x = seq(-horizon,horizon), y = NA, kernel = kernel, h = horizon,
@@ -45,11 +46,8 @@ get_all_sfilters <- function(horizon){
                                 })
   )
 }
-get_all_gain_sfilters <- function(horizon, xlimp = 2*pi/36){
-  x <- sprintf("t%+i", seq(-horizon,horizon))
-  x <- sub("+0", "", x, fixed = TRUE)
-  x <- factor(x,levels = x, ordered = TRUE)
-  all_kernels <- do.call(rbind,
+get_all_gain_sfilters <- function(horizon, xlim = c(0, 2*pi/12), resolution = 80){
+  all_gain <- do.call(rbind,
                          lapply(c("Henderson","Uniform", "Triangular",
                                   "Epanechnikov","Biweight", "Triweight","Tricube",
                                   "Trapezoidal", "Gaussian"),
@@ -57,73 +55,98 @@ get_all_gain_sfilters <- function(horizon, xlimp = 2*pi/36){
                                   n_kernel <- kernel
                                   if(kernel == "Epanechnikov")
                                     n_kernel <- "Parabolic"
-                                  get_f
-                                  t <- f$internal$getAfilters()
-                                  t$length
-                                  t$
-                                  t
-                                  t <- .jevalArray(t)[[1]]
-                                  t$
-                                  t$weightsToArray()
-                                  t$weights()
-                                  t$coefficientsAsPolynomial()
-                                  t$length()
-                                  t$gainFunction()
-                                  f$internal$getAfilters()
-                                  t[5]
-                                  t[3][1]$getClass()
-                                  t2 = .jcast(t[0],"jdplus/math/linearfilters/IFilter")
-                                  t2[0]$getClass()
-                                  filter$getClass()
-                                  f <- filterproperties(horizon = horizon, kernel = n_kernel)
-                                  filter <- f$internal$getFilter()
-                                  polynom <- filter$coefficientsAsPolynomial()
-                                  polynom$getEpsilon()
-                                  polynom$toArray()
-                                  polynom$isZero()
-                                  polynom$evaluateAt(0)
-                                  polynom$evaluateAtFrequency(1)
-                                  polynom$getClass()
-                                  ?polym()
-                                  polynom$derivate()
-                                  polynom$integrate()$integrate()$derivate()
-                                  frf <- .jcall(t2,
-                                         "Ljava/util/function/DoubleFunction;",
-                                         "frequencyResponseFunction")
-                                  filter$frequencyResponseFunction()
-                                  tmp <- frf$apply(1)
-                                  tmp$getRe()+tmp$getIm()*i
-                                  filter$coefficientsAsPolynomial()
-                                  filter$realFrequencyResponse()
-                                  t2 = filter$factorize()
-                                  t2$
-                                  t2$scaling
-                                  t = f$internal$getFilter()$phaseFunction()$applyAsDouble
-                                  t(0)
-                                  t$compose()
-                                  i = 0
-                                  gain <- function(x){
-                                    t$applyAsDouble(x)
-                                  }
-                                  gain(2*pi/36)
-                                  g <- t$applyAsDouble
-                                  plot(Vectorize(t$applyAsDouble),xlim=c(0,2*pi/36))
-                                  
-                                  k_gain<- filterproperties(horizon = horizon, kernel = n_kernel)$filters.gain
-                                  k_gain <- k_gain[,ncol(k_gain)]
-                                  x_values <- seq(0, pi, length.out = length(k_gain))
-                                  x_values_keep <- x_values[x_values<xlimp]
-                                  data.frame(x = seq(-horizon,horizon), y = k_coef, kernel = kernel, h = horizon,
+                                  x_values <- seq(from = xlim[1], to = xlim[2],
+                                                  length.out = resolution)
+                                  k_f <- filterproperties(horizon = horizon, kernel = n_kernel)
+                                  k_gain <- get_properties_function(k_f, "Symmetric Gain")
+
+                                  data.frame(x = x_values, y = k_gain(x_values), kernel = kernel, h = horizon,
                                              stringsAsFactors = FALSE)
-                                  
-                                })
-  )
+                                }))
+  xlabel <- function(x, symbol = "pi"){
+    x <- x/pi
+    fracs <- strsplit(attr(MASS::fractions(x), "fracs"), "/")  # convert to fractions
+    labels <- sapply(fracs, function(i)
+      if (length(i) > 1) { paste(i[1], "*", symbol, "/", i[2]) }
+      else { paste(i, "*", symbol) })
+    labels <- sub("0 * pi", "0", labels, fixed = TRUE)
+    labels <- sub("1 * pi", " pi", labels, fixed = TRUE)
+    labels
+  }
+  x_lab_at <- c(0,2*pi/(12*7),2*pi/36, 2 * pi / 24, 2*pi / 16, pi/6)
+  x_lab <- c("0", "2 * pi / 84", "2 * pi / 36", "2 * pi / 24", "2*pi / 16", "2* pi /12")
+  title = sprintf("bandwidth h = %s (filter of order %s)",horizon, 2*horizon+1)
+  ggplot(data = all_gain, aes(x = x, y = y)) +
+    xlim(xlim[1], xlim[2]) +
+    ylim(0, 1) +
+    geom_vline(xintercept=2*pi/36, linetype="dashed")+
+    geom_vline(xintercept=2*pi/(12*7), linetype="dashed") +
+    geom_line(size = 0.7) + 
+    scale_x_continuous(NULL, 
+                       breaks = x_lab_at,
+                       labels = parse(text=x_lab)) +
+    facet_wrap(~kernel, scales = "free_x") +
+    theme(panel.background = element_rect(fill = "white", colour = NA),
+          panel.border = element_rect(fill = NA, colour = "grey20"),
+          panel.grid.major = element_line(colour = "grey92"),
+          panel.grid.minor = element_line(colour = "grey92",
+                                          size = 0.25),
+          strip.background = element_rect(fill = "grey85", colour = "grey20"),
+          complete = TRUE, plot.title = element_text(hjust = 0.5),
+          legend.title=element_blank()) +
+    labs(x = NULL, y = "Gain", title = title)
+}
+variance_reduction <- function(){
+  all_var_red <- do.call(rbind,lapply(2:30, function(horizon){
+    all_kernels <- do.call(rbind,
+                           lapply(c("Henderson","Uniform", "Triangular",
+                                    "Epanechnikov","Biweight", "Triweight","Tricube",
+                                    "Trapezoidal", "Gaussian"),
+                                  function(kernel){
+                                    n_kernel <- kernel
+                                    if(kernel == "Epanechnikov")
+                                      n_kernel <- "Parabolic"
+                                    diag <- filterproperties(horizon = horizon, kernel = n_kernel)$filters.diagnostics
+                                    
+                                    data.frame(variance_reduction = diag[1,3], kernel = kernel, h = horizon,
+                                               stringsAsFactors = FALSE)
+                                    
+                                  }))
+  }
+    ))
+    d <- dcast(all_var_red,h ~kernel, value.var = "variance_reduction")
+    saveRDS(d,file = "Rapport de stage/data/var_red_sym_filters.RDS")
+}
+rapport_coeff <- function(){
+  all_var_red <- do.call(rbind,lapply(2:30, function(horizon){
+    all_kernels <- do.call(rbind,
+                           lapply(c("Henderson","Uniform", "Triangular",
+                                    "Epanechnikov","Biweight", "Triweight","Tricube",
+                                    "Trapezoidal", "Gaussian"),
+                                  function(kernel){
+                                    n_kernel <- kernel
+                                    if(kernel == "Epanechnikov")
+                                      n_kernel <- "Parabolic"
+                                    k_coef <- filterproperties(horizon = horizon, kernel = n_kernel)$filters.coef
+                                    k_coef <- k_coef[1:(horizon+1),ncol(k_coef)]
+                                    k_coef_max <- max(k_coef)
+                                    k_coef_neg <- k_coef[k_coef<= 0]
+                                    data.frame(mean_ratio_coef = max(abs(k_coef_neg / k_coef_max)), kernel = kernel, h = horizon,
+                                               stringsAsFactors = FALSE)
+                                    
+                                  }))
+  }
+  ))
+  d <- dcast(all_var_red,h ~kernel, value.var = "mean_ratio_coef")
+  d[,-1] <- (1-d[,-1])*100
+  round(d,0)
+  # saveRDS(d,file = "Rapport de stage/data/var_red_sym_filters.RDS")
 }
 plot_filter <- function(data, horizon){
-  title = sprintf("horizon h = %s, bandwith 2h + 1 = %s",horizon, 2*horizon+1)
+  title = sprintf("bandwidth h = %s (filter of order %s)",horizon, 2*horizon+1)
   ggplot(data = data, aes(x = x, y = y)) +
     geom_line(size = 0.7) +
-    facet_wrap(~kernel, scales = "free_x") +
+    facet_wrap(~kernel, scales = "free_x") 
     theme(panel.background = element_rect(fill = "white", colour = NA),
           panel.border = element_rect(fill = NA, colour = "grey20"),
           panel.grid.major = element_line(colour = "grey92"),
@@ -134,26 +157,38 @@ plot_filter <- function(data, horizon){
           legend.title=element_blank()) +
     labs(x = NULL, y = "Coefficients", title = title)
 }
-for(h in 2:80){
+for(h in 2:30){
+  print(h)
   p <- plot_filter(get_all_kernels(h), h)
   ggsave(filename = sprintf("Rapport de stage/img/kernels/%s.pdf",h), p,
          width = 8, height = 8)
 }
 
-for(h in 2:80){
+for(h in 2:30){
+  print(h)
   p <- plot_filter(get_all_sfilters(h), h)
   ggsave(filename = sprintf("Rapport de stage/img/symmetricFilters/%s.pdf",h), p,
          width = 8, height = 8)
 }
 
 #TODO
-for(h in 2:80){
-  p <- plot_filter(get_all_sfilters(h), h)
+for(h in 2:30){
+  print(h)
+  p <- get_all_gain_sfilters(h, resolution = 30)
   ggsave(filename = sprintf("Rapport de stage/img/symmetricFilters/gain%s.pdf",h), p,
          width = 8, height = 8)
 }
+get_all_gain_sfilters(3, resolution = 500)
+get_all_gain_sfilters(3, resolution = 80)
+get_all_gain_sfilters(3, resolution = 30)
+
 plot_filter(get_all_filters(2),2)
 plot_all_kernels(5)
+
+for(h in 3:10){
+  p <- plot_filter(get_all_sfilters(h), h)
+  print(p)
+}
 
 
 
@@ -175,3 +210,104 @@ ggplot(data = all_h_kernels, aes(x = x, y = y)) +
         legend.title=element_blank()) +
   transition_manual(horizon) +
   ease_aes('linear')
+
+horizon = 5
+c("Triangular", "Triweight","Tricube")
+
+specific_kernel(100,kernels = c("Epanechnikov","Biweight", "Triweight"))
+specific_filter(14,kernels = c("Epanechnikov","Trapezoidal"))
+p1 <- specific_filter(14,kernels = c("Uniform","Triweight"),degree = 3)
+p2 <- specific_filter(14,kernels = c("Uniform","Triweight"),degree = 1)
+p1+p2
+kernel <- "Uniform"
+filter0 <- filterproperties(horizon = 3, degree =0,kernel = kernel)
+filter1 <- filterproperties(horizon = 3, degree = 1,kernel = kernel)
+filter2 <- filterproperties(horizon = 3, degree = 2,kernel = kernel)
+filter3 <- filterproperties(horizon = 3, degree = 3,kernel = kernel)
+filter4 <- filterproperties(horizon = 3, degree = 4,kernel = kernel)
+filter5 <- filterproperties(horizon = 3, degree = 5,kernel = kernel)
+
+filter1$internal$getFilter()$coefficientsAsPolynomial()
+filter3$internal$getFilter()$coefficientsAsPolynomial()
+filter4$internal$getFilter()$coefficientsAsPolynomial()
+filter5$internal$getFilter()$coefficientsAsPolynomial()
+
+filter1$internal$getFilter()$coefficientsAsPolynomial()$degree()
+filter3$internal$getFilter()$coefficientsAsPolynomial()
+filter4$internal$getFilter()$coefficientsAsPolynomial()
+filter5$internal$getFilter()$coefficientsAsPolynomial()
+
+filter0$filters.coef - filter2$filters.coef
+filter2$filters.coef - filter3$filters.coef
+
+filter$filters.coef - filter2$filters.coef
+filter$internal$getFilter()$coefficientsAsPolynomial()
+filter2$internal$getFilter()$coefficientsAsPolynomial()
+
+filter2$filters.coef
+library(patchwork)
+p1+p2
+specific_kernel <- function(horizon= 20, kernels = c("Henderson","Uniform", "Triangular",
+                                                     "Epanechnikov","Biweight", "Triweight","Tricube",
+                                                     "Trapezoidal", "Gaussian")){
+  x <- sprintf("t%+i", seq(-horizon,horizon))
+  x <- sub("+0", "", x, fixed = TRUE)
+  x <- factor(x,levels = x, ordered = TRUE)
+  all_kernels <- do.call(rbind,
+                         lapply(kernels,
+                                function(kernel){
+                                  k_coef <- get_kernel(kernel, horizon)$coef
+                                  k_coef <- c(rev(k_coef[-1]), k_coef)
+                                  if(kernel == "Gaussian")
+                                    k_coef <- k_coef/sum(k_coef)
+                                  data.frame(x = seq(-horizon,horizon), y = k_coef, kernel = kernel, h = horizon,
+                                             stringsAsFactors = FALSE)
+                                }))
+  title = sprintf("horizon h = %s, bandwith 2h + 1 = %s",horizon, 2*horizon+1)
+  ggplot(data = all_kernels, aes(x = x, y = y, color = kernel)) +
+    geom_line(size = 0.7) +
+    theme(panel.background = element_rect(fill = "white", colour = NA),
+          panel.border = element_rect(fill = NA, colour = "grey20"),
+          panel.grid.major = element_line(colour = "grey92"),
+          panel.grid.minor = element_line(colour = "grey92",
+                                          size = 0.25),
+          strip.background = element_rect(fill = "grey85", colour = "grey20"),
+          complete = TRUE, plot.title = element_text(hjust = 0.5),
+          legend.title=element_blank()) +
+    labs(x = NULL, y = "Coefficients", title = title)
+}
+specific_filter <- function(horizon= 20, kernels = c("Henderson","Uniform", "Triangular",
+                                                     "Epanechnikov","Biweight", "Triweight","Tricube",
+                                                     "Trapezoidal", "Gaussian"),
+                            degree = 3){
+  all_kernels <- do.call(rbind,
+                         lapply(kernels,
+                                function(kernel){
+                                  n_kernel <- kernel
+                                  if(kernel == "Epanechnikov")
+                                    n_kernel <- "Parabolic"
+                                  tryCatch({
+                                    k_coef <- filterproperties(horizon = horizon, kernel = n_kernel,degree = degree)$filters.coef
+                                    k_coef <- k_coef[,ncol(k_coef)]
+                                    
+                                    data.frame(x = seq(-horizon,horizon), y = k_coef, kernel = kernel, h = horizon,
+                                               stringsAsFactors = FALSE)
+                                  }, error = function(e){
+                                    data.frame(x = seq(-horizon,horizon), y = NA, kernel = kernel, h = horizon,
+                                               stringsAsFactors = FALSE)
+                                  })
+                                  
+                                }))
+  title = sprintf("horizon h = %s, bandwith 2h + 1 = %s",horizon, 2*horizon+1)
+  ggplot(data = all_kernels, aes(x = x, y = y, color = kernel)) +
+    geom_line(size = 0.7) +
+    theme(panel.background = element_rect(fill = "white", colour = NA),
+          panel.border = element_rect(fill = NA, colour = "grey20"),
+          panel.grid.major = element_line(colour = "grey92"),
+          panel.grid.minor = element_line(colour = "grey92",
+                                          size = 0.25),
+          strip.background = element_rect(fill = "grey85", colour = "grey20"),
+          complete = TRUE, plot.title = element_text(hjust = 0.5),
+          legend.title=element_blank()) +
+    labs(x = NULL, y = "Coefficients", title = title)
+}
