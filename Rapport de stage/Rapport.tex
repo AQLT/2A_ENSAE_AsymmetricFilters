@@ -88,7 +88,7 @@
 \usepackage{stmaryrd}
 \usepackage{multicol}
 \usepackage{graphicx}
-\usepackage{animate, dsfont, here}
+\usepackage{animate, dsfont, here, xspace}
 
 %\includepdf[fitpaper=true, pages=-]{img/pdg.pdf}
 
@@ -115,6 +115,20 @@
   \fi
 }
 \newcommand\ud{\,\mathrm{d}}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \ifxetex
   % Load polyglossia as late as possible: uses bidi with RTL langages (e.g. Hebrew, Arabic)
   \usepackage{polyglossia}
@@ -132,7 +146,7 @@
 
 {
 \hypersetup{linkcolor=}
-\setcounter{tocdepth}{2}
+\setcounter{tocdepth}{3}
 \tableofcontents
 }
 \newpage
@@ -157,7 +171,7 @@ M(X_t)=\sum_{k=-p}^{+f}\theta_kX_{t+k}
 \item
   When \(p=f\) the moving average is said to be \emph{centered}.
   If we also have \(\forall k:\:\theta_{-k} = \theta_k\), the moving average \(M_\theta\) is said to be \emph{symmetric}.
-  In this case, the quantity \(2h+1\) is called the \emph{bandwith}.
+  In this case, the quantity \(h=p=f\) is called the \emph{bandwith}.
 \end{itemize}
 
 \hypertarget{gain-and-phase-shift-functions}{%
@@ -176,7 +190,7 @@ It can be rewritten as:
 where \(G_\theta(\omega)=\lvert\Gamma_\theta(\omega)\rvert\) is the \emph{gain} or \emph{amplitude} function and \(\Phi_\theta(\omega)\) is the \emph{phase shift} or \emph{time shift} function\footnote{This function is sometimes represented as \(\phi_\theta(\omega)=\frac{\Phi_\theta(\omega)}{\omega}\) to mesure the phase shift in number of periods.}.
 For all symmetric moving average we have \(\Phi_\theta(\omega)=0\).
 
-To sum up, applying a moving average to an harmonic times series affects in in two different ways :
+To sum up, applying a moving average to an harmonic times series affects in in two different ways:
 
 \begin{itemize}
 \item
@@ -249,8 +263,8 @@ Indeed, let \(\{\varepsilon_t\}\) a sequence of independent random variables wit
 \sigma^2\sum_{k=-p}^{+f} \theta_k^2
 \]
 
-\hypertarget{quality-indicators}{%
-\subsubsection{Quality indicators (?)}\label{quality-indicators}}
+\hypertarget{quality-indicators-trouver-un-autre-nom}{%
+\subsubsection{Quality indicators (? trouver un autre nom)}\label{quality-indicators-trouver-un-autre-nom}}
 
 To compare the different moving average / filters the following indicators are used:
 \[
@@ -261,6 +275,7 @@ To compare the different moving average / filters the following indicators are u
   \text{variance reduction}&=\sum_{k=-p}^{+f} \theta_k^2
 \end{cases}
 \]
+à compléter
 
 \hypertarget{local-polynomial-filters}{%
 \section{Local polynomial filters}\label{local-polynomial-filters}}
@@ -315,7 +330,7 @@ Two parameters are crucial in determining the accuracy of the approximation:
 \item
   the degree \(d\) of the polynomial;
 \item
-  the number of neighbored, \emph{bandwith} \(H=2h+1\).
+  the number of neighbored \(H=2h+1\) (or the \emph{bandwith} \(h\)).
 \end{itemize}
 
 In order to estimate \(\beta\) we need \(H\geq d+1\) and the estimation is done by the weighted least squares (WLS), which consists of minimizing the following objective function:
@@ -334,8 +349,8 @@ Moreover, \(X'w=e_{1}\) so:
 \]
 Hence, the filter \(w\) preserve deterministic polynomial of order \(d\).
 
-\hypertarget{different-kernels}{%
-\subsection{Different kernels}\label{different-kernels}}
+\hypertarget{sec:kernels}{%
+\subsection{Different kernels}\label{sec:kernels}}
 
 In signal extraction, we generally look for weighting observations according to their distance from time \(t\): this is the role of the kernel function.
 For that, we introduce a kernel function \(\kappa_j\), \(j=0,\pm1,\dots,\pm h\) with \(\kappa_j \geq0\) and \(\kappa_j=\kappa_{-j}\).
@@ -430,29 +445,15 @@ Analysing the coefficients we can already anticipate some properties of the asso
 
 \begin{itemize}
 \item
+  For \(h\) small the triweight kernel has the narrowest distribution, for \(h\) high (\(h\geq15\)) the gaussian kernel become narrowest.
+  The narrowest a distribution is, the smallest the weights of furthest neighbors are: the associated filter should have a high weight in the current observation (\(t\)).
 \item
-  For \(h\) high:
-
-  \begin{itemize}
-  \tightlist
-  \item
-    the Henderson kernel is equivalent to the triweight kernel (since \(h+1\sim h+2 \sim h+3\), \(\kappa_j^H\sim\kappa_j^{TW}\))
-  \end{itemize}
-
-  A un horizon plus court, trapezoidal pas très loin triweight.
-  Si on augmente h, Henderson devrait être équivalent que le triweight.
+  For \(h\) high the Henderson kernel is equivalent to the triweight kernel (since \(h+1\sim h+2 \sim h+3\), \(\kappa_j^H\sim\kappa_j^{TW}\)), the associated filter should also be equivalent.
 \end{itemize}
 
 \begin{figure}[H]
-\animategraphics[autoplay,loop,width=\textwidth,controls]{3}{img/kernels/}{2}{80} 
-\caption{Coefficients of the different kernels for $h$ from 2 to 80.}\label{fig:kernels}\footnotesize
-\emph{Note: to see the animation the PDF must be open with Acrobat Reader, KDE Okular, PDF-XChange or Foxit Reader. 
-Otherwise you will only be able to see the results for $h=2$.}
-\end{figure}
-
-\begin{figure}[htb]
-\animategraphics[autoplay,loop,width=\textwidth,controls]{3}{img/symmetricFilters/}{2}{80} 
-\caption{Coefficients of symmetric filters associated to the differents kernels for $h$ from 2 to 80.}\footnotesize
+\animategraphics[autoplay,loop,width=\textwidth,controls]{2}{img/kernels/}{2}{30} 
+\caption{Coefficients of the different kernels for $h$ from 2 to 30.}\label{fig:kernels}\footnotesize
 \emph{Note: to see the animation the PDF must be open with Acrobat Reader, KDE Okular, PDF-XChange or Foxit Reader. 
 Otherwise you will only be able to see the results for $h=2$.}
 \end{figure}
@@ -460,25 +461,93 @@ Otherwise you will only be able to see the results for $h=2$.}
 \hypertarget{sec:sympolyfilter}{%
 \subsubsection{Specific symmetric filters}\label{sec:sympolyfilter}}
 
-When \(p=0\) (local adjustment by a constant) we obtain the Nadaraya-Watson's estimator.
+When \(p=0\) (local adjustment by a constant) we obtain the \textbf{Nadaraya-Watson}'s estimator.
 
-With the uniform kernel we obtain the Macaulay's filter. When \(p=0,1\), this is the arithmetic moving average: \(w_j=w=\frac{1}{2h+1}\).
+With the uniform kernel we obtain the \textbf{Macaulay filter}. When \(p=0,1\), this is the arithmetic moving average: \(w_j=w=\frac{1}{2h+1}\).
 
-Epanechnikov utilise le filtre suivant :
-\[\kappa_j^E=\left(
-  1-
-  \left\lvert
-  \frac j {h+1}
-  \right\lvert^2
-\right)\]
-TCe noyau est souvent recommandé comme le noyau optimal minimisant la moyenne quadratique d'une estimation par polynôme local.
+The \textbf{Epanechnikov} kernel is often recommended as the optimal kernel that minimize the mean square error of the estimation by local polynomial.
 
-LOESS is a local polynomial regression using a tricube kernel. Sa particularité est qu'il utilise la bande passante du plus proche voisin.
+\textbf{Loess} is a locally weighted polynomial regression that use tricube kernel.
 
-Le filtre de Henderson est un cas particulier de l'ajustement cubique \(p=3\).
-Henderson a cherché la fonction de poids qui donnait l'estimation la plus lisse de la tendance pour \(h\) fixé et \(p=3\).
-Le critère de lissage utilisé par Henderson est basé sur la variance des différences d'ordre 3 des estimations de la tendances
-Le critère de lissage adopté par Henderson est basé sur la variance des troisièmes différences des estimations de la tendance. Plus la variance est petite, plus le degré de lissage est élevé, car l'accélération de la tendance est sujette à moins de variations.
+The \textbf{Henderson filter} is a specific case of a local cubif fit (\(p=3\)).
+It is often used Henderson for trend estimation (for example it's the filter used in the seasonal adjustment). For a fixed bandwith, Henderson found the kernel that gave the smoothest estimates of the trend.
+He showed that the three following problems were equivalent:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  minimize the variance of third difference of the series by the application of the moving average;\\
+\item
+  minimize the sum of squares of third difference of the coefficients of the filter, it's the \emph{smothness criteria}: \(S=\sum_j(\nabla^{3}\theta_{j})^{2}\);\\
+\item
+  fit a local cubic polynomial by weighted least squares, where the weights are chose to minimize the sum of squares of the resulting filter.
+\end{enumerate}
+
+Resolving the last problem leads to the kernel presented in section \ref{sec:kernels}.
+
+\hypertarget{analysis-of-symmetric-filters}{%
+\subsubsection{Analysis of symmetric filters}\label{analysis-of-symmetric-filters}}
+
+In this section, all the filters are computed by local polynomial of degree \(d=3\).
+The figure~\ref{fig:filterscoefs} plots the coefficients of the filters for the differents kernels presented in different kernels presented in section \ref{sec:kernels} and for different bandwith \(h\).
+The table \ref{tab:varianceReductionSymmetricFilters} shows the variance reduction of the different filters.
+We find the similar results than in section~\ref{fig:kernels}:
+
+\begin{itemize}
+\item
+  For \(h\) small the triweight kernel gives the filter with the narrowest distribution, for \(h\) high (\(h\geq15\)) the gaussian kernel become narrowest.
+  The narrowest a distribution is, the higher the variance reduction should be.
+  Indeed, the distribution of the coefficients of the filter can be interprated as the output signal of an additive outlier.
+  As a result, with a wide distribution, an additive outlier will be more persistent than with a narrow distribution.
+  Therefore, it's the triweight that has the higher variance reduction for all \(h\leq30\).
+\item
+  For \(h\) small, the trapezoidal filter seems to produce similar results than the Epanechnikov one.
+\item
+  For \(h\) high the Henderson filter is equivalent to the one computed by the triweight kernel.
+\end{itemize}
+
+Moreover, we find that for all the filters, the coefficients decrease, when the distance to the central observation increases, until a negative value and then increase towards 0 (except for the uniform kernel).
+Negative coefficients might be disturbing but they arise from the cubic polynomial constraints.
+Indeed to preserve polynomial of degree 2 (and so 3) we need \(\sum_{j=-h}^hj^2\theta_i=0\), which constraint some coefficients to be negative.
+However, those negative coefficients are negligible compare to the central higher coefficients (they are more 80\% smaller than the central coefficient for all kernels, except for uniform and trapezoidal with high bandwith).
+
+\begin{figure}[H]
+\animategraphics[autoplay,loop,width=\textwidth,controls]{2}{img/symmetricFilters/}{2}{30}
+\caption{Coefficients of symmetric filters computed by local polynomial of degree $3$, according to the differents kernels and for $h$ from 2 to 30.}\label{fig:filterscoefs}\footnotesize
+\emph{Note: to see the animation the PDF must be open with Acrobat Reader, KDE Okular, PDF-XChange or Foxit Reader.
+Otherwise you will only be able to see the results for $h=2$.}
+\end{figure}
+
+\begin{table}
+
+\caption{\label{tab:varianceReductionSymmetricFilters}Variance reduction ratio ($\sum\theta_i^2$) of symmetric filters computed by local polynomial of degree $3$.}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{cccccccccc}
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{9}{c}{Kernel} \\
+\cmidrule(l{3pt}r{3pt}){2-10}
+$h$ & Biweight & Epanechnikov & Gaussian & Henderson & Trapezoidal & Triangular & Tricube & Triweight & Uniform\\
+\midrule
+\rowcolor{gray!6}  2 & 0.50 & 0.49 & 0.49 & 0.50 & 0.51 & 0.51 & 0.49 & 0.52 & 0.49\\
+3 & 0.33 & 0.30 & 0.30 & 0.32 & 0.31 & 0.33 & 0.32 & 0.37 & 0.28\\
+\rowcolor{gray!6}  4 & 0.25 & 0.23 & 0.24 & 0.25 & 0.23 & 0.25 & 0.25 & 0.28 & 0.22\\
+5 & 0.22 & 0.21 & 0.21 & 0.22 & 0.20 & 0.22 & 0.22 & 0.24 & 0.20\\
+\rowcolor{gray!6}  6 & 0.20 & 0.19 & 0.19 & 0.20 & 0.19 & 0.20 & 0.20 & 0.21 & 0.19\\
+\addlinespace
+7 & 0.19 & 0.18 & 0.18 & 0.19 & 0.18 & 0.19 & 0.19 & 0.20 & 0.18\\
+\rowcolor{gray!6}  8 & 0.18 & 0.17 & 0.18 & 0.18 & 0.17 & 0.18 & 0.18 & 0.19 & 0.17\\
+9 & 0.17 & 0.17 & 0.17 & 0.17 & 0.17 & 0.17 & 0.17 & 0.18 & 0.17\\
+\rowcolor{gray!6}  10 & 0.17 & 0.16 & 0.17 & 0.17 & 0.16 & 0.17 & 0.17 & 0.17 & 0.16\\
+20 & 0.12 & 0.12 & 0.13 & 0.13 & 0.12 & 0.12 & 0.13 & 0.13 & 0.12\\
+\addlinespace
+\rowcolor{gray!6}  30 & 0.10 & 0.10 & 0.10 & 0.10 & 0.10 & 0.10 & 0.10 & 0.10 & 0.10\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\newpage
 
 \hypertarget{references}{%
 \section*{References}\label{references}}
