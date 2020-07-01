@@ -14,11 +14,14 @@ output:
         keep_tex: yes
         includes:
           in_header: preamble.tex
+          after_header: \thispagestyle{empty}
+        citation_package: biblatex
 themeoptions: "coding=utf8"
 classoption: 'a4paper'
 lang: "english"
 fontsize: 12pt
 bibliography: [biblio.bib]
+biblio-style: authoryear
 urlcolor: blue
 ---
 
@@ -34,12 +37,12 @@ library(kableExtra)
 
 # Moving average and filters
 
-A lot of papers describes the definition and the properties of moving average and linear filters (see for example [@ch12HBSA]). 
-He we summarize some of the main results.
+A lot of papers describes the defi fnition and the properties of moving average and linear filters (see for example @ch12HBSA). 
+Here we summarize some of the main results.
 
 Let $p$ et $f$ two integers, a moving average $M_\theta$ or $M$ is defined by a set of coefficients $\theta=(\theta_{-p},\dots,\theta_{f})'$ such as:
 $$
-M(X_t)=\sum_{k=-p}^{+f}\theta_kX_{t+k}
+M_\theta(X_t)=\sum_{k=-p}^{+f}\theta_kX_{t+k}
 $$
 
 - $p+f+1$ is called the *moving average order*.
@@ -47,6 +50,11 @@ $$
 - When $p=f$ the moving average is said to be *centered*. 
 If we also have $\forall k:\:\theta_{-k} = \theta_k$, the moving average $M_\theta$ is said to be *symmetric*. 
 In this case, the quantity $h=p=f$ is called the *bandwith*.
+
+<!-- In a equivalent way, the moving average can be defined with the backward operator $B$ such as $BX_t=X_{t-1}$ and $B^{-1}X_t=X_{t+1}$: -->
+<!-- $$ -->
+<!-- M_\theta=\sum_{k=-p}^{+f}\theta_kB^{-k} -->
+<!-- $$ -->
 
 ## Gain and phase shift functions
 
@@ -72,6 +80,40 @@ To sum up, applying a moving average to an harmonic times series affects in in t
 - by "shifting" it in time by $\Phi_\theta(\omega)/\omega$, which directly affects the detection of turning points^[
 When $\Phi_\theta(\omega)/\omega>0$ the time shift is positive: a turning point is detected with delay.
 ].
+
+Example: with $M_{\theta_0}X_t=\frac{1}{2}X_{t-1}+\frac{1}{2}X_{t}$ we have:
+$$
+\Gamma_{\theta_0}(\omega)=\frac{1}{2}+\frac{1}{2}\e^{-i\omega}
+=\lvert\cos(\omega/2)\rvert\e^{-i\frac{\omega}{2}}
+$$
+The figure \@ref(fig:exgainPhase) illustrates the gain and the phase shift for $\omega=\pi/2$ and $X_t=\sin(\omega t)$.
+
+\begin{figure}[!ht]
+\pgfplotsset{width=\textwidth,height=6cm,every axis legend/.append style={font=\footnotesize,
+  at={(0.5,-0.1)},
+  anchor=north}
+    }
+\begin{tikzpicture}
+\begin{axis}[
+legend columns=2,
+legend style = {fill=none , fill opacity=0, draw opacity=1,text opacity=1},
+xtick={0,3.14159,...,15.70795},
+xticklabels={0,$\pi$,$2\pi$,$3\pi$,$4\pi$,$5\pi$} 
+]
+\addplot[domain=0:5*pi,smooth,samples=300]    plot (\x,{sin(\x * (pi/2) r)});
+\addlegendentry{$X_t(\pi/2)$}
+\addplot[domain=0:5*pi,smooth,samples=300, dashed]    
+  plot (\x,{1/2*sin(\x* pi/2 r )+1/2*sin((\x -1) * pi/2 r)});
+\addlegendentry{$M_{\theta_0}X_t(\pi/2)$}
+\draw[<->](axis cs: 1.5,1)--(axis cs: 1.5,0.7071068)
+  node[pos=0.5, right]{\scriptsize $G_{\theta_0}(\pi/2)$};
+\draw[<->] (axis cs: 3, -0.70710680-0.05)--(axis cs: 3.5,-0.7071068-0.05) 
+  node[pos=0.5, below right]{\scriptsize $\Phi_{\theta_0}(\pi/2)$};
+\end{axis}
+\end{tikzpicture}
+\caption{Smoothing of the time series $X_t=\sin(\omega t)$ by the moving average $M_{\theta_0}X_t=\frac{1}{2}X_{t-1}+\frac{1}{2}X_{t}$ for $\omega=\pi/2$.}\label{fig:exgainPhase}
+\end{figure}
+
 
 ## Desirable properties of a moving average
 
@@ -101,10 +143,9 @@ $$
 $$
 which is equivalent to:
 $$
-\begin{cases}
-\sum_{k=-p}^{+f}\theta_k&=1\\
-\sum_{k=-p}^{+f}k\theta_k&=0
-\end{cases}
+\sum_{k=-p}^{+f}\theta_k=1
+\quad\text{and}\quad
+\sum_{k=-p}^{+f}k\theta_k=0
 $$
 - In general, it can be shown that $M_\theta$ conserve a polynomial of degree $d$ if and only if:
 $$
@@ -127,7 +168,24 @@ $$
 \sigma^2\sum_{k=-p}^{+f} \theta_k^2
 $$
 
-## Asymmetric moving average
+
+
+## Real-time estimation and asymmetric moving average {#defAsymProb}
+
+For symmetric filters, the phase shift function is equal to zero.
+Therefore, there is no delay in any frequency: that's why they are prefered to the asymmetric one. 
+However, they cannot be used in the beginning and in the end of the time series because no past/future value can be used. 
+Thus, for real-time estimation, it is needed to build asymmetric moving average that approximate the symmetric moving average.
+
+@ch15HBSA @ch16HBSA
+
+ \colorbox{BurntOrange}{à compléter}
+
+### Timeliness (guguemos)
+timeliness
+$$
+\int_{\omega_{1}}^{\omega_{2}}f(\rho_{\theta}(\omega),\varphi_{\theta}(\omega))\ud\omega
+$$
 
 ## Quality indicators (? trouver un autre nom)
 
@@ -140,11 +198,11 @@ $$
   \text{variance reduction}&=\sum_{k=-p}^{+f} \theta_k^2
 \end{cases}
 $$
-à compléter
+ \colorbox{BurntOrange}{à compléter}
 
 # Local polynomial filters
 
-In this section we detail the filters that arised from fitting a local polynomial to our time series as described by [@proietti2008].
+In this section we detail the filters that arised from fitting a local polynomial to our time series, as described by @proietti2008.
 
 We assume that our time series $y_t$ can be decomposed as 
 $$
@@ -204,7 +262,7 @@ $$
 \hat{m}_{t}=e_{1}\hat{\beta}=w'y=\sum_{j=-h}^{h}w_{j}y_{t-j}\text{ with }w=KX(X'KX)^{-1}e_{1}
 $$
 To conclude, the estimate of the trend $\hat{m}_{t}$ can be obtained applying the symmetric filter $w$ to $y_t$^[
-Due to the symmetry of the kernel weights $\kappa_j$.
+$w$ is symmetric due to the symmetry of the kernel weights $\kappa_j$.
 ].
 Moreover, $X'w=e_{1}$ so:
 $$
@@ -317,7 +375,7 @@ The narrowest a distribution is, the smallest the weights of furthest neighbors 
 
 - For $h$ high the Henderson kernel is equivalent to the triweight kernel (since $h+1\sim h+2 \sim h+3$, $\kappa_j^H\sim\kappa_j^{TW}$), the associated filter should also be equivalent.
 
-\begin{figure}[H]
+\begin{figure}[!ht]
 \animategraphics[autoplay,loop,width=\textwidth,controls]{2}{img/kernels/}{2}{30} 
 \caption{Coefficients of the different kernels for $h$ from 2 to 30.}\label{fig:kernels}\footnotesize
 \emph{Note: to see the animation the PDF must be open with Acrobat Reader, KDE Okular, PDF-XChange or Foxit Reader. 
@@ -363,7 +421,7 @@ Therefore, it's the triweight that has the higher variance reduction for all $h\
 
 - For $h$ high the Henderson filter is equivalent to the one computed by the triweight kernel.
 
-\begin{figure}[H]
+\begin{figure}[!ht]
 \animategraphics[autoplay,loop,width=\textwidth,controls]{2}{img/symmetricFilters/}{2}{30}
 \caption{Coefficients of symmetric filters computed by local polynomial of degree $3$, according to the differents kernels and for $h$ from 2 to 30.}\label{fig:filterscoefs}\footnotesize
 \emph{Note: to see the animation the PDF must be open with Acrobat Reader, KDE Okular, PDF-XChange or Foxit Reader.
@@ -399,14 +457,55 @@ For a monthly data, a cycle of 3 years correspond to the frequency $2\pi/36$ and
 When the bandwith $h$ increases, the gain function decreases for low frequencies: short business cycles will then be attenuated.
 For a fixed value of $h$, gaussian, Henderson and triweight filters will preserve more short business cycles than the others filters (especially uniform, trapezoidal and Epanechnikov).
 
-\begin{figure}[H]
+ \colorbox{BurntOrange}{tracer et interpréter gain après $2\pi/12$ pour voir à partir de quelles fréquences sont atténuées ?}
+ \colorbox{BurntOrange}{ou bien c'est résumé avec le pouvoir de réduction de la variance ?}
+ 
+\begin{figure}[!ht]
 \animategraphics[autoplay,loop,width=\textwidth,controls]{2}{img/symmetricFilters/gain}{2}{30}
 \caption{Gain functions from 0 to $2\pi/12$ of symmetric filters computed by local polynomial of degree $3$, according to the differents kernels and for $h$ from 2 to 30.}\label{fig:filtersSymgains}\footnotesize
 \emph{Note: to see the animation the PDF must be open with Acrobat Reader, KDE Okular, PDF-XChange or Foxit Reader.
 Otherwise you will only be able to see the results for $h=2$.}
 \end{figure}
 
+## Asymmetric filters
 
+As mentionned in section \@ref(defAsymProb), symmetric filters cannot be used in boundary points. For real-time estimation, three different approaches can be used:
+
+1. Build a asymmetric filter fitting local polynomial to the available observations $y_{t}$ for $t\in\left\llbracket n-h,n\right\rrbracket$.
+
+2. Apply the symmetric filter to the series extended by forecast (or backcast) $\hat{y}_{n+l\mid n},l\in\left\llbracket 1,h\right\rrbracket$.
+
+3. Build a asymmetric filter which minimize the mean square revision error subject to polynomial reproducing constraints.
+
+@proietti2008 show that the first two approaches are equivalent when the forecast is done by a polynomial extrapolation of order $d$ (forecasts generated with the same polynomial model than the symmetric filter). This is called the *direct asymmetric filter* (DAF).
+
+Rewritting the matrix $X$, $K$ $y$ in the following way:
+$$
+X=\begin{pmatrix}X_{p}\\
+X_{f}
+\end{pmatrix},\quad y=\begin{pmatrix}y_{p}\\
+y_{f}
+\end{pmatrix},\quad K=\begin{pmatrix}K_{p} & 0\\
+0 & K_{f}
+\end{pmatrix}
+$$
+where $y_{p}$ correspond to the available data and $y_{f}$ the missing data, the DAF $w_a$ and the forecast $\hat{y}_{f}$ can be written as:
+$$
+w_{a}=K_{p}X_{p}(X'_{p}K_{p}X_{p})^{-1}e_{1},
+\quad
+\hat{y}_{f}=X_{f}(X'_{p}K_{p}X_{p})^{-1}X_{p}'K_{p}y_{p}
+$$
+Moreover, we have the folliwing results with the DAF $w_a$:
+
+- it satisfy the same polynomial reproduction constraints as the symmetric filter (conserve polynomial of degree $d$). 
+Thus, the bias in estimating an unknown function of time has the same order of magnitude as in the interior of time support.
+
+- $w_a$ minimize the weighted distance (by the kernel function) between the asymmetric filter coefficients and the symmetric ones.
+
+However, the weights of the DAF are highly concentrated in the current observation $t$.
+
+ \colorbox{BurntOrange}{refaire stats de proietti sur tous les noyaux
+Tracer gain pour $d=0,1$ en fonction de h}
 
 \newpage
 # References
