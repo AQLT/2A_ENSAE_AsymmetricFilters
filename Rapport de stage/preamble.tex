@@ -3,6 +3,7 @@
 \onehalfspacing 
 \makeatletter
 \def\@maketitle{%
+  \newpage\setcounter{page}{0} % pour que la page d'après soit la page 1
   \includepdf[fitpaper=true, pages=-]{img/pdg.pdf}
 }
 \makeatother% cinsérer page de garde
@@ -11,7 +12,9 @@
 \usepackage{multicol}
 \usepackage{graphicx}
 \usepackage{animate, dsfont, here, xspace}
-
+%\usepackage{tikz}       
+\usepackage{tikz,pgfplots}
+ \pgfplotsset{compat=1.17}
 %\includepdf[fitpaper=true, pages=-]{img/pdg.pdf}
 
 
