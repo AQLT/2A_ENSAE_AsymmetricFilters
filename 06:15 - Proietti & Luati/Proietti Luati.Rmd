@@ -122,7 +122,7 @@ $$
   w_{f}'D_{f}w_{f}}_\text{variance err révision}+
   \underbrace{[\delta'(Z_{p}'v-Z'w)]^{2}}_{biais^2}
 }_\text{MSE révisions}+
-2l'(U_{p}'v-U'v)
+2l'(U_{p}'v-U'w)
 $$
 L'erreur de révision est :
 $$
