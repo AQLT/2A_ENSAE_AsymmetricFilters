@@ -14,7 +14,13 @@ get_all_kernels <- function(horizon){
                                   k_coef <- c(rev(k_coef[-1]), k_coef)
                                   if(kernel == "Gaussian")
                                     k_coef <- k_coef/sum(k_coef)
-                                  data.frame(x = seq(-horizon,horizon), y = k_coef, kernel = kernel, h = horizon,
+                                  data.frame(x = seq(-horizon,horizon), y = k_coef, 
+                                             kernel = factor(kernel,
+                                                             levels = c("Henderson", "Gaussian", "Trapezoidal",
+                                                                        "Triweight", "Tricube", "Biweight",
+                                                                        "Epanechnikov", "Triangular", "Uniform"),
+                                                             ordered = TRUE),
+                                             h = horizon,
                                              stringsAsFactors = FALSE)
                                 })
   )
@@ -36,10 +42,22 @@ get_all_sfilters <- function(horizon){
                                     k_coef <- filterproperties(horizon = horizon, kernel = n_kernel)$filters.coef
                                     k_coef <- k_coef[,ncol(k_coef)]
                                     
-                                    data.frame(x = seq(-horizon,horizon), y = (k_coef), kernel = kernel, h = horizon,
+                                    data.frame(x = seq(-horizon,horizon), y = (k_coef),
+                                               kernel = factor(kernel,
+                                                               levels = c("Henderson", "Gaussian", "Trapezoidal",
+                                                                          "Triweight", "Tricube", "Biweight",
+                                                                          "Epanechnikov", "Triangular", "Uniform"),
+                                                               ordered = TRUE),
+                                               h = horizon,
                                                stringsAsFactors = FALSE)
                                   }, error = function(e){
-                                    data.frame(x = seq(-horizon,horizon), y = NA, kernel = kernel, h = horizon,
+                                    data.frame(x = seq(-horizon,horizon), y = NA,
+                                               kernel = factor(kernel,
+                                                               levels = c("Henderson", "Gaussian", "Trapezoidal",
+                                                                          "Triweight", "Tricube", "Biweight",
+                                                                          "Epanechnikov", "Triangular", "Uniform"),
+                                                               ordered = TRUE), 
+                                               h = horizon,
                                                stringsAsFactors = FALSE)
                                   })
                                   
@@ -60,7 +78,13 @@ get_all_gain_sfilters <- function(horizon, xlim = c(0, 2*pi/12), resolution = 80
                                   k_f <- filterproperties(horizon = horizon, kernel = n_kernel)
                                   k_gain <- get_properties_function(k_f, "Symmetric Gain")
 
-                                  data.frame(x = x_values, y = k_gain(x_values), kernel = kernel, h = horizon,
+                                  data.frame(x = x_values, y = k_gain(x_values),
+                                             kernel = factor(kernel,
+                                                             levels = c("Henderson", "Gaussian", "Trapezoidal",
+                                                                        "Triweight", "Tricube", "Biweight",
+                                                                        "Epanechnikov", "Triangular", "Uniform"),
+                                                             ordered = TRUE),
+                                             h = horizon,
                                              stringsAsFactors = FALSE)
                                 }))
   xlabel <- function(x, symbol = "pi"){
@@ -77,14 +101,14 @@ get_all_gain_sfilters <- function(horizon, xlim = c(0, 2*pi/12), resolution = 80
   x_lab <- c("0", "2 * pi / 84", "2 * pi / 36", "2 * pi / 24", "2*pi / 16", "2* pi /12")
   title = sprintf("bandwidth h = %s (filter of order %s)",horizon, 2*horizon+1)
   ggplot(data = all_gain, aes(x = x, y = y)) +
-    xlim(xlim[1], xlim[2]) +
-    ylim(0, 1) +
+    ylim(0,1.05) +
     geom_vline(xintercept=2*pi/36, linetype="dashed")+
     geom_vline(xintercept=2*pi/(12*7), linetype="dashed") +
     geom_line(size = 0.7) + 
     scale_x_continuous(NULL, 
                        breaks = x_lab_at,
-                       labels = parse(text=x_lab)) +
+                       labels = parse(text=x_lab),
+                       limits = c(xlim)) +
     facet_wrap(~kernel, scales = "free_x") +
     theme(panel.background = element_rect(fill = "white", colour = NA),
           panel.border = element_rect(fill = NA, colour = "grey20"),
@@ -108,7 +132,13 @@ variance_reduction <- function(){
                                       n_kernel <- "Parabolic"
                                     diag <- filterproperties(horizon = horizon, kernel = n_kernel)$filters.diagnostics
                                     
-                                    data.frame(variance_reduction = diag[1,3], kernel = kernel, h = horizon,
+                                    data.frame(variance_reduction = diag[1,3],
+                                               kernel = factor(kernel,
+                                                               levels = c("Henderson", "Gaussian", "Trapezoidal",
+                                                                          "Triweight", "Tricube", "Biweight",
+                                                                          "Epanechnikov", "Triangular", "Uniform"),
+                                                               ordered = TRUE),
+                                               h = horizon,
                                                stringsAsFactors = FALSE)
                                     
                                   }))
@@ -131,7 +161,13 @@ rapport_coeff <- function(){
                                     k_coef <- k_coef[1:(horizon+1),ncol(k_coef)]
                                     k_coef_max <- max(k_coef)
                                     k_coef_neg <- k_coef[k_coef<= 0]
-                                    data.frame(mean_ratio_coef = max(abs(k_coef_neg / k_coef_max)), kernel = kernel, h = horizon,
+                                    data.frame(mean_ratio_coef = max(abs(k_coef_neg / k_coef_max)),
+                                               kernel = factor(kernel,
+                                                               levels = c("Henderson", "Gaussian", "Trapezoidal",
+                                                                          "Triweight", "Tricube", "Biweight",
+                                                                          "Epanechnikov", "Triangular", "Uniform"),
+                                                               ordered = TRUE),
+                                               h = horizon,
                                                stringsAsFactors = FALSE)
                                     
                                   }))
@@ -146,7 +182,7 @@ plot_filter <- function(data, horizon){
   title = sprintf("bandwidth h = %s (filter of order %s)",horizon, 2*horizon+1)
   ggplot(data = data, aes(x = x, y = y)) +
     geom_line(size = 0.7) +
-    facet_wrap(~kernel, scales = "free_x") 
+    facet_wrap(~kernel, scales = "free_x") +
     theme(panel.background = element_rect(fill = "white", colour = NA),
           panel.border = element_rect(fill = NA, colour = "grey20"),
           panel.grid.major = element_line(colour = "grey92"),
@@ -159,7 +195,7 @@ plot_filter <- function(data, horizon){
 }
 for(h in 2:30){
   print(h)
-  p <- plot_filter(get_all_kernels(h), h)
+  p <- plot_filter(data = get_all_kernels(h), h)
   ggsave(filename = sprintf("Rapport de stage/img/kernels/%s.pdf",h), p,
          width = 8, height = 8)
 }
@@ -171,7 +207,6 @@ for(h in 2:30){
          width = 8, height = 8)
 }
 
-#TODO
 for(h in 2:30){
   print(h)
   p <- get_all_gain_sfilters(h, resolution = 30)
@@ -217,25 +252,10 @@ c("Triangular", "Triweight","Tricube")
 specific_kernel(100,kernels = c("Epanechnikov","Biweight", "Triweight"))
 specific_filter(14,kernels = c("Epanechnikov","Trapezoidal"))
 p1 <- specific_filter(14,kernels = c("Uniform","Triweight"),degree = 3)
-p2 <- specific_filter(14,kernels = c("Uniform","Triweight"),degree = 1)
+p2 <- specific_filter(14,kernels = c("Uniform","Triweight"),degree = 2)
 p1+p2
 kernel <- "Uniform"
-filter0 <- filterproperties(horizon = 3, degree =0,kernel = kernel)
-filter1 <- filterproperties(horizon = 3, degree = 1,kernel = kernel)
-filter2 <- filterproperties(horizon = 3, degree = 2,kernel = kernel)
-filter3 <- filterproperties(horizon = 3, degree = 3,kernel = kernel)
-filter4 <- filterproperties(horizon = 3, degree = 4,kernel = kernel)
-filter5 <- filterproperties(horizon = 3, degree = 5,kernel = kernel)
 
-filter1$internal$getFilter()$coefficientsAsPolynomial()
-filter3$internal$getFilter()$coefficientsAsPolynomial()
-filter4$internal$getFilter()$coefficientsAsPolynomial()
-filter5$internal$getFilter()$coefficientsAsPolynomial()
-
-filter1$internal$getFilter()$coefficientsAsPolynomial()$degree()
-filter3$internal$getFilter()$coefficientsAsPolynomial()
-filter4$internal$getFilter()$coefficientsAsPolynomial()
-filter5$internal$getFilter()$coefficientsAsPolynomial()
 
 filter0$filters.coef - filter2$filters.coef
 filter2$filters.coef - filter3$filters.coef
@@ -260,7 +280,13 @@ specific_kernel <- function(horizon= 20, kernels = c("Henderson","Uniform", "Tri
                                   k_coef <- c(rev(k_coef[-1]), k_coef)
                                   if(kernel == "Gaussian")
                                     k_coef <- k_coef/sum(k_coef)
-                                  data.frame(x = seq(-horizon,horizon), y = k_coef, kernel = kernel, h = horizon,
+                                  data.frame(x = seq(-horizon,horizon), y = k_coef,
+                                             kernel = factor(kernel,
+                                                             levels = c("Henderson", "Gaussian", "Trapezoidal",
+                                                                        "Triweight", "Tricube", "Biweight",
+                                                                        "Epanechnikov", "Triangular", "Uniform"),
+                                                             ordered = TRUE), 
+                                             h = horizon,
                                              stringsAsFactors = FALSE)
                                 }))
   title = sprintf("horizon h = %s, bandwith 2h + 1 = %s",horizon, 2*horizon+1)
@@ -290,10 +316,22 @@ specific_filter <- function(horizon= 20, kernels = c("Henderson","Uniform", "Tri
                                     k_coef <- filterproperties(horizon = horizon, kernel = n_kernel,degree = degree)$filters.coef
                                     k_coef <- k_coef[,ncol(k_coef)]
                                     
-                                    data.frame(x = seq(-horizon,horizon), y = k_coef, kernel = kernel, h = horizon,
+                                    data.frame(x = seq(-horizon,horizon), y = k_coef,
+                                               kernel = factor(kernel,
+                                                               levels = c("Henderson", "Gaussian", "Trapezoidal",
+                                                                          "Triweight", "Tricube", "Biweight",
+                                                                          "Epanechnikov", "Triangular", "Uniform"),
+                                                               ordered = TRUE), 
+                                               h = horizon,
                                                stringsAsFactors = FALSE)
                                   }, error = function(e){
-                                    data.frame(x = seq(-horizon,horizon), y = NA, kernel = kernel, h = horizon,
+                                    data.frame(x = seq(-horizon,horizon), y = NA, 
+                                               kernel = factor(kernel,
+                                                               levels = c("Henderson", "Gaussian", "Trapezoidal",
+                                                                          "Triweight", "Tricube", "Biweight",
+                                                                          "Epanechnikov", "Triangular", "Uniform"),
+                                                               ordered = TRUE), 
+                                               h = horizon,
                                                stringsAsFactors = FALSE)
                                   })
                                   
@@ -311,3 +349,4 @@ specific_filter <- function(horizon= 20, kernels = c("Henderson","Uniform", "Tri
           legend.title=element_blank()) +
     labs(x = NULL, y = "Coefficients", title = title)
 }
+
