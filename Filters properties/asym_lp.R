@@ -47,20 +47,18 @@ all_asym_filters <- lapply(names(all_asym_filters), function(kernel){
                    ic = icr)
   add_trend <- ts.intersect(sym_trend, all_asym_filters[[kernel]])
   colnames(add_trend) <- c("Symmetric trend", colnames(all_asym_filters[[kernel]]))
+  for(i in seq_len(ncol(add_trend))[-1]){
+    add_trend[,i] <- (add_trend[,1] - add_trend[,i])
+  }
   add_trend
 })
 names(all_asym_filters) <- c("Henderson", "Gaussian", "Trapezoidal",
                              "Triweight", "Tricube", "Biweight",
                              "Epanechnikov", "Triangular", "Uniform")
-plot_as_filter <- function(data, kernel){
+plot_as_filter <- function(data, kernel, y_lim){
   data <- data[[kernel]]
   time <- time(data)
   freq <- frequency(data)
-  data[,2] <- (data[,1] - data[,2])
-  data[,3] <- (data[,1] - data[,3])
-  data[,4] <- (data[,1] - data[,4])
-  data[,5] <- (data[,1] - data[,5])
-  y_lim <- range(data[,-1],na.rm = TRUE)
   dataGraph <- data.frame(cbind(time, data))
   colnames(dataGraph) <- c("date", colnames(data))
   dataGraph <- reshape2::melt(dataGraph, id = "date")
@@ -76,8 +74,10 @@ plot_as_filter <- function(data, kernel){
       labs(title = sprintf("%s - %s", kernel, method), x = NULL, 
            y = "Error")+
       scale_x_continuous(breaks = scales::pretty_breaks(n = 12))+
-      scale_y_continuous(sec.axis = sec_axis(~.*sd_td+mean_td, name = "Symmetric trend",
-                                             breaks = scales::pretty_breaks(n = 5))) +
+      scale_y_continuous(limits = y_lim,
+                         breaks = scales::pretty_breaks(n = 6),
+                         sec.axis = sec_axis(~.*sd_td+mean_td, name = "Symmetric trend",
+                                             breaks = scales::pretty_breaks(n = 6))) +
       AQLTools:::theme_aqltools() +
       guides(fill = FALSE, color = FALSE, linetype = FALSE, shape = FALSE) +
       geom_line(aes(y = (y_line-mean_td)/sd_td, colour = "Symmetric trend")) 
@@ -87,9 +87,12 @@ plot_as_filter <- function(data, kernel){
 kernels <- c("Henderson", "Gaussian", "Trapezoidal",
              "Triweight", "Tricube", "Biweight",
              "Epanechnikov", "Triangular", "Uniform")
+y_lim <- range(sapply(all_asym_filters,function(x)range(x[,-1],na.rm=TRUE)))
+y_lim <- max(abs(y_lim))
+y_lim <- c(-y_lim, y_lim)
 for(i in seq_along(kernels)){
   print(kernels[i])
-  p1 <- plot_as_filter(all_asym_filters, kernels[i])
+  p1 <- plot_as_filter(all_asym_filters, kernels[i],y_lim)
   ggsave(filename = sprintf("Rapport de stage/img/daf/comp_assym_%s.pdf",i), p1,
          width = 8, height = 8)
 }
