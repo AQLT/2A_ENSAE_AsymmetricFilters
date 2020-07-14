@@ -33,6 +33,8 @@ mysa <- jx13(x, spec = spec)
 get_dictionary(mysa)
 indicators <- get_indicators(mysa,"sa","t","i", "diagnostics.ic-ratio-henderson",
                "diagnostics.ic-ratio")
+get_indicators(mysa,"decomposition.d12filter",
+               "decomposition.tlen")
 icr <- indicators$`diagnostics.ic-ratio`
 indicators$`diagnostics.ic-ratio-henderson`
 sa <- indicators$sa

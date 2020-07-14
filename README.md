@@ -21,3 +21,5 @@ L’objectif du stage est de faire une comparaison théorique de ces filtres et 
 - 23/06 : application pour analyser les filtres https://aqlt.shinyapps.io/FiltersProperties/
 
 - 02/07 : début rapport https://aqlt.github.io/AsymmetricFilters/Rapport%20de%20stage/Rapport.pdf
+
+- filtres fst : https://aqlt.shinyapps.io/FSTfilters/

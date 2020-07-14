@@ -308,7 +308,13 @@ Therefore, there is no delay in any frequency: that's why they are prefered to t
 However, they cannot be used in the beginning and in the end of the time series because no past/future value can be used.
 Thus, for real-time estimation, it is needed to build asymmetric moving average that approximate the symmetric moving average.
 
-\textcite{ch15HBSA} \textcite{ch16HBSA}
+\textcite{ch15HBSA} \textcite{ch16HBSA,ch15HBSA}
+
+\citeauthor*{ch15HBSA}
+
+\citeyear{ch15HBSA}
+
+\parencite{ch15HBSA}
 
 \colorbox{BurntOrange}{à compléter}
 
@@ -324,15 +330,30 @@ timeliness
 \subsection{Quality indicators (? trouver un autre nom)}\label{quality-indicators-trouver-un-autre-nom}}
 
 To compare the different moving average / filters the following indicators are used:
-\[
-\begin{cases}
-  \text{constant bias}=\text{bias0}&= \sum_{k=-p}^{+f} \theta_k\\
-  \text{linear bias}=\text{bias1}&=\sum_{k=-p}^{+f} k\theta_k\\
-  \text{quadratic bias}=\text{bias2}&=\sum_{k=-p}^{+f} k^2\theta_k\\
-  \text{variance reduction}&=\sum_{k=-p}^{+f} \theta_k^2
-\end{cases}
-\]
-\colorbox{BurntOrange}{à compléter, mettre valeurs de référence}
+
+\begin{table}[!ht]
+$$
+\begin{array}{ccc}
+\hline \text{Sigle} & \text{Description} & \text{Formula}\\
+\hline b_{c} & \text{constant bias} & \sum_{k=-p}^{+f}\theta_{k}-1\\
+\hline b_{l} & \text{linear bias} & \sum_{k=-p}^{+f}k\theta_{k}\\
+\hline b_{q} & \text{quadratic bias} & \sum_{k=-p}^{+f}k^{2}\theta_{k}\\
+\hline F_{g} & \text{variance reduction / fidelity} & \sum_{k=-p}^{+f}\theta_{k}^{2}\\
+\hline S_{g} & \text{Smoothness} & \sum_{j}(\nabla^{3}\theta_{j})^{2}\\
+\hline T_{g} & \text{Timeliness (Guguemos)} & \int_{0}^{\omega_{1}}\rho_{\theta}(\omega)\left|\varphi_{\theta}(\omega)\right|^{2}\ud\omega\\
+\hline A_{w} & \text{Accuracy (Wildi)} & \int_0^{\omega_1}\left(A(\omega)^{2}-\hat{A}(\omega)\right)^{2}h(\omega)\ud\omega\\
+\hline T_{w} & \text{Timeliness (Wildi)} & \int_0^{\omega_1} A(\lambda)\hat{A}(\lambda)\sin^{2}\left(\frac{\Phi(\omega)-\hat{\Phi}(\omega)}{2}\right)h(\omega)\ud\omega\\
+\hline S_{w} & \text{Smoothness (Wildi)} & \int_{\omega_1}^{\pi}\left(A(\omega)^{2}-\hat{A}(\omega)\right)^{2}h(\omega)\ud\omega\\
+\hline R_{w} & \text{Residual (Wildi)} & \int_{\omega_1}^{\pi} A(\lambda)\hat{A}(\lambda)\sin^{2}\left(\frac{\Phi(\omega)-\hat{\Phi}(\omega)}{2}\right)h(\omega)\ud\omega\\
+\hline \\
+\end{array}
+$$
+\caption{temp}
+\footnotesize
+\emph{Note: $X_g$ from \textcite{ch15HBSA} and $X_g$ from \textcite{trilemmaWMR2019}}
+\end{table}
+
+\colorbox{BurntOrange}{à compléter}
 
 \hypertarget{local-polynomial-filters}{%
 \section{Local polynomial filters}\label{local-polynomial-filters}}
