@@ -29,7 +29,7 @@ shinyUI(fluidPage(
                 column(6, textInput("timeliness.passband", label = "timeliness.passband", value = "pi/6"))
             ),
             switchInput(inputId = "timeliness.antiphase", value = TRUE,
-                        label="timeliness.antiphase",size="normal",onStatus = "dreamrs"),
+                        label="timeliness.antiphase", size="normal",onStatus = "dreamrs"),
             numericInput("resolution", label = "Resolution", value = 100, min=50),
             actionButton("refresh", label = "Refresh"),
             selectInput(inputId = "color",
@@ -48,9 +48,9 @@ shinyUI(fluidPage(
         mainPanel(
             tabsetPanel(type = "tabs",
                         tabPanel(HTML("Grun-Rehomme <em>et al.</em>"),
-                                 plotlyOutput("plot_guguemos", height = 700)),
+                                 plotlyOutput("plot_guguemos", height = "80vh")),
                         tabPanel("Wildi and McLeroy",
-                                 plotlyOutput("plot_wildi", height = 700)))
+                                 plotlyOutput("plot_wildi", height = "80vh")))
             
         #     tabsetPanel(type = "tabs",
         #                 tabPanel("General results",

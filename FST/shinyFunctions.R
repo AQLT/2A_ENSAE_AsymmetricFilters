@@ -10,11 +10,14 @@ all_fst_res <- function(lags=6, leads=0, pdegree=2, smoothness.weight=1, smoothn
   data <- data[data$smoothness.weight + data$timeliness.weight<=1,]
   sym_filter <- filterproperties(lags, kernel = "Henderson")$filters.coef[,sprintf("q=%i",lags)]
   resultat <- t(mapply(function(x,y){
-    filter <- fstfilter(lags = lags, leads = leads, pdegree=pdegree, 
-              smoothness.weight=x, smoothness.degree=smoothness.degree,
-              timeliness.weight=y, timeliness.passband=timeliness.passband, timeliness.antiphase=timeliness.antiphase)
-    c(filter$criterions,
-      mse(sweights = sym_filter, filter$filter,passband = timeliness.passband))
+    tryCatch({
+      filter <- fstfilter(lags = lags, leads = leads, pdegree=pdegree, 
+                          smoothness.weight=x, smoothness.degree=smoothness.degree,
+                          timeliness.weight=y, timeliness.passband=timeliness.passband, timeliness.antiphase=timeliness.antiphase)
+      c(filter$criterions,
+        mse(sweights = sym_filter, filter$filter,passband = timeliness.passband))
+    }, error = function(e) rep(NA,7))
+    
   }, data$smoothness.weight, data$timeliness.weight))
   cbind(data, resultat)
   # list(weights = data, results = resultat)
