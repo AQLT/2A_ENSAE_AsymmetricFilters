@@ -348,7 +348,7 @@ $$
 \hline \\
 \end{array}
 $$
-\caption{temp}
+\caption{Quality criteria}
 \footnotesize
 \emph{Note: $X_g$ from \textcite{ch15HBSA} and $X_g$ from \textcite{trilemmaWMR2019}}
 \end{table}
@@ -767,12 +767,26 @@ This will reduce the variance at the expense of a bias: it is the idea followed 
   \emph{Cubic-Quadratic} (CQ): \(y_t\) cubic (\(d=3\)) and \(v\) preserve linear signals (\(d^*=1\)), \(v\) depend on the ratio \(\delta_2^2/\sigma^2\).
 \end{enumerate}
 
+\ref{fig:filtersasymErr}:
+
+\begin{itemize}
+\item
+  almost same symmetric trend for all the filters: small differences during ``turning points''.
+  Differences less than one point for between all the kernels, uniform and trapezoidal more ``atypical'', Differences less than 0,5 point for the other kernels.
+  Différences p/r Henderson toujours dans le même sens sauf pour triweight (?) : sous Henderson pendant les ``cycles bas'', au-dessus pendant ``cycles hauts''
+\item
+  revisions error are higher with uniform and trapezoidal kernels, lower with triweight, regardless of the asymmetric filter.
+\item
+  in mean, the variance revision error is always lower with the LC filter and higher with the DAF. However, during turning-points (for example around the 2008 crisis), the LC filter have a higher bias than the other filters. For the French IPI, the CQ method seems to give the better results around the 2008 crisis (analyzing mean squared error revision between 2007 and 2011). However, reproducing the same procedure to the IPI of other countries of the European Union (and the United-Kingdom), we find that for most of the series (23 of 28) its the QL filter that gives the better results during the 2008 crisis.
+\end{itemize}
+
 \begin{figure}[!ht]
 \animategraphics[autoplay,loop,width=\textwidth,controls]{2}{img/daf/comp_assym_}{1}{9}
-\caption{Revision error of the different asymmetric filters for $h=6$, for the IPI-FR.}\label{fig:filtersasymErr}\footnotesize
+\caption{Revision error of the different real-time ($q=0$) asymmetric filters for $h=6$, for the IPI-FR.}\label{fig:filtersasymErr}\footnotesize
 \emph{Note: to see the animation the PDF must be open with Acrobat Reader, KDE Okular, PDF-XChange or Foxit Reader.
 Otherwise you will only be able to see the results for the Henderson kernel.}
 \end{figure}
+
 \newpage
 
 \printbibliography[title=References]
