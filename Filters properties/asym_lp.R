@@ -150,7 +150,12 @@ plot(irr)
 plot(sa)
 lines(trend, col = "blue")
 
-error_ipi_crisis <- sapply(colnames(ipi_c_eu),function(serie){
+
+
+error_ipi_crisis <- sapply(c("BE", "BG", "CZ", "DK", "DE",
+                             "EE", "EL", "ES", "FR", "HR", "IT", "CY", "LV", "LT", "LU",
+                             "HU", "MT", "NL", "AT", "PL", "PT", "RO", "SI", "SK", "FI", "SE",
+                             "UK", "NO"),function(serie){
   print(serie)
   x <- ipi_c_eu[, serie]
   mysa <- jx13(x, spec = "RSA3")
