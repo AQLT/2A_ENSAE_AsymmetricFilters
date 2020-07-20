@@ -49,7 +49,7 @@ shinyUI(fluidPage(
             tabsetPanel(type = "tabs",
                         tabPanel(HTML("Grun-Rehomme <em>et al.</em>"),
                                  plotlyOutput("plot_guguemos", height = "80vh")),
-                        tabPanel("Wildi and McLeroy",
+                        tabPanel("Wildi and McElroy",
                                  plotlyOutput("plot_wildi", height = "80vh")))
             
         #     tabsetPanel(type = "tabs",

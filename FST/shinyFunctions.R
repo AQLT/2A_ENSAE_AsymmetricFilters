@@ -7,7 +7,6 @@ all_fst_res <- function(lags=6, leads=0, pdegree=2, smoothness.weight=1, smoothn
   data <- expand.grid(smoothness.weight = seq(0,1,length.out = resolution),
                       timeliness.weight = seq(0,1,length.out = resolution))
   data$fidelity.weight <- 1 - (data$smoothness.weight + data$timeliness.weight)
-  data <- data[data$smoothness.weight + data$timeliness.weight<=1,]
   sym_filter <- filterproperties(lags, kernel = "Henderson")$filters.coef[,sprintf("q=%i",lags)]
   resultat <- t(mapply(function(x,y){
     tryCatch({
