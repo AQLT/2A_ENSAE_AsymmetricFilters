@@ -35,6 +35,8 @@ library(kableExtra)
 
 # Introduction
 
+@ch14HBSA
+
 # Moving average and filters
 
 A lot of papers describes the defi fnition and the properties of moving average and linear filters (see for example @ch12HBSA). 
@@ -177,6 +179,7 @@ Therefore, there is no delay in any frequency: that's why they are prefered to t
 However, they cannot be used in the beginning and in the end of the time series because no past/future value can be used. 
 Thus, for real-time estimation, it is needed to build asymmetric moving average that approximate the symmetric moving average.
 
+
 @ch15HBSA @ch16HBSA
 [@ch15HBSA]
 
@@ -208,9 +211,9 @@ $$
 \hline F_{g} & \text{variance reduction / fidelity} & \sum_{k=-p}^{+f}\theta_{k}^{2}\\
 \hline S_{g} & \text{Smoothness} & \sum_{j}(\nabla^{3}\theta_{j})^{2}\\
 \hline T_{g} & \text{Timeliness (Guguemos)} & \int_{0}^{\omega_{1}}\rho_{\theta}(\omega)\left|\varphi_{\theta}(\omega)\right|^{2}\ud\omega\\
-\hline A_{w} & \text{Accuracy (Wildi)} & \int_0^{\omega_1}\left(A(\omega)^{2}-\hat{A}(\omega)\right)^{2}h(\omega)\ud\omega\\
+\hline A_{w} & \text{Accuracy (Wildi)} & \int_0^{\omega_1}\left(A(\omega)-\hat{A}(\omega)\right)^{2}h(\omega)\ud\omega\\
 \hline T_{w} & \text{Timeliness (Wildi)} & \int_0^{\omega_1} A(\lambda)\hat{A}(\lambda)\sin^{2}\left(\frac{\Phi(\omega)-\hat{\Phi}(\omega)}{2}\right)h(\omega)\ud\omega\\
-\hline S_{w} & \text{Smoothness (Wildi)} & \int_{\omega_1}^{\pi}\left(A(\omega)^{2}-\hat{A}(\omega)\right)^{2}h(\omega)\ud\omega\\
+\hline S_{w} & \text{Smoothness (Wildi)} & \int_{\omega_1}^{\pi}\left(A(\omega)-\hat{A}(\omega)\right)^{2}h(\omega)\ud\omega\\
 \hline R_{w} & \text{Residual (Wildi)} & \int_{\omega_1}^{\pi} A(\lambda)\hat{A}(\lambda)\sin^{2}\left(\frac{\Phi(\omega)-\hat{\Phi}(\omega)}{2}\right)h(\omega)\ud\omega\\
 \hline \\
 \end{array}
@@ -589,12 +592,27 @@ In order to compute the I-C ratio, a first decomposition of the seasonally adjus
 When $U$ corresponds to the first $d^*+1$ first the columns of $X$, $d^*<d$, the constraint is that the asymmetric filter should reproduce polynomial of degree $d^*$, the potential bias depends on the value of $\delta$.
 This will reduce the variance at the expense of a bias: it is the idea followed by @proietti2008 to propose three class of asymmetric filters:
 
-1. *Linear-Constant* (LC): $y_t$ linear ($d=1$) and $v$ preserve constant signals ($d^*=0$), $v$ depend on the ratio$\delta_1^2/\sigma^2$.
+1. *Linear-Constant* (LC): $y_t$ linear ($d=1$) and $v$ preserve constant signals ($d^*=0$), $v$ depend on the ratio $\delta_1^2/\sigma^2$.
 
 2. *Quadratic-Linear* (QL): $y_t$ quadratic ($d=2$) and $v$ preserve linear signals ($d^*=1$), $v$ depend on the ratio $\delta_2^2/\sigma^2$.  
 
 3. *Cubic-Quadratic* (CQ): $y_t$ cubic ($d=3$) and $v$ preserve linear signals ($d^*=1$), $v$ depend on the ratio $\delta_2^2/\sigma^2$.
 
+
+
+
+```{r criteriaLp, echo = FALSE}
+lp_diagnostics <- readRDS("data/lp_diagnostics.RDS")
+title <- "Quality criteria of real-time filters ($q=0$) computed by local polynomial."
+groupement <- table(factor(lp_diagnostics[,1],levels = unique(lp_diagnostics[,1]), ordered = TRUE))
+lp_diagnostics[,-1] %>% 
+  kable(format.args = list(digits = 3), align = "c", booktabs = T, row.names = FALSE,
+        escape = FALSE,caption = title) %>% 
+  kable_styling(latex_options=c(#"striped", 
+                                "scale_down", "hold_position")) %>%
+  add_header_above(c(" " = 1, "Kernel" = ncol(lp_diagnostics)-2)) %>%
+  pack_rows(index = groupement)
+```
 
 \@ref(fig:filtersasymErr):
 

@@ -159,6 +159,8 @@
 \hypertarget{introduction}{%
 \section{Introduction}\label{introduction}}
 
+\textcite{ch14HBSA}
+
 \hypertarget{moving-average-and-filters}{%
 \section{Moving average and filters}\label{moving-average-and-filters}}
 
@@ -341,9 +343,9 @@ $$
 \hline F_{g} & \text{variance reduction / fidelity} & \sum_{k=-p}^{+f}\theta_{k}^{2}\\
 \hline S_{g} & \text{Smoothness} & \sum_{j}(\nabla^{3}\theta_{j})^{2}\\
 \hline T_{g} & \text{Timeliness (Guguemos)} & \int_{0}^{\omega_{1}}\rho_{\theta}(\omega)\left|\varphi_{\theta}(\omega)\right|^{2}\ud\omega\\
-\hline A_{w} & \text{Accuracy (Wildi)} & \int_0^{\omega_1}\left(A(\omega)^{2}-\hat{A}(\omega)\right)^{2}h(\omega)\ud\omega\\
+\hline A_{w} & \text{Accuracy (Wildi)} & \int_0^{\omega_1}\left(A(\omega)-\hat{A}(\omega)\right)^{2}h(\omega)\ud\omega\\
 \hline T_{w} & \text{Timeliness (Wildi)} & \int_0^{\omega_1} A(\lambda)\hat{A}(\lambda)\sin^{2}\left(\frac{\Phi(\omega)-\hat{\Phi}(\omega)}{2}\right)h(\omega)\ud\omega\\
-\hline S_{w} & \text{Smoothness (Wildi)} & \int_{\omega_1}^{\pi}\left(A(\omega)^{2}-\hat{A}(\omega)\right)^{2}h(\omega)\ud\omega\\
+\hline S_{w} & \text{Smoothness (Wildi)} & \int_{\omega_1}^{\pi}\left(A(\omega)-\hat{A}(\omega)\right)^{2}h(\omega)\ud\omega\\
 \hline R_{w} & \text{Residual (Wildi)} & \int_{\omega_1}^{\pi} A(\lambda)\hat{A}(\lambda)\sin^{2}\left(\frac{\Phi(\omega)-\hat{\Phi}(\omega)}{2}\right)h(\omega)\ud\omega\\
 \hline \\
 \end{array}
@@ -760,12 +762,50 @@ This will reduce the variance at the expense of a bias: it is the idea followed 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  \emph{Linear-Constant} (LC): \(y_t\) linear (\(d=1\)) and \(v\) preserve constant signals (\(d^*=0\)), \(v\) depend on the ratio\(\delta_1^2/\sigma^2\).
+  \emph{Linear-Constant} (LC): \(y_t\) linear (\(d=1\)) and \(v\) preserve constant signals (\(d^*=0\)), \(v\) depend on the ratio \(\delta_1^2/\sigma^2\).
 \item
   \emph{Quadratic-Linear} (QL): \(y_t\) quadratic (\(d=2\)) and \(v\) preserve linear signals (\(d^*=1\)), \(v\) depend on the ratio \(\delta_2^2/\sigma^2\).
 \item
   \emph{Cubic-Quadratic} (CQ): \(y_t\) cubic (\(d=3\)) and \(v\) preserve linear signals (\(d^*=1\)), \(v\) depend on the ratio \(\delta_2^2/\sigma^2\).
 \end{enumerate}
+
+\begin{table}[!h]
+
+\caption{\label{tab:criteriaLp}Quality criteria of real-time filters ($q=0$) computed by local polynomial.}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{cccccccccc}
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{9}{c}{Kernel} \\
+\cmidrule(l{3pt}r{3pt}){2-10}
+Criteria & Henderson & Gaussian & Trapezoidal & Triweight & Tricube & Biweight & Epanechnikov & Triangular & Uniform\\
+\midrule
+\addlinespace[0.3em]
+\multicolumn{10}{l}{\textbf{LC}}\\
+\hspace{1em}$ b_l $ & -0.407 & -0.415 & -0.450 & -0.387 & -0.414 & -0.411 & -0.438 & -0.409 & -0.467\\
+\hspace{1em}$ b_q $ & -2.161 & -2.258 & -2.597 & -1.971 & -2.211 & -2.196 & -2.472 & -2.237 & -2.787\\
+\hspace{1em}$ F_g $ & 0.388 & 0.384 & 0.377 & 0.396 & 0.387 & 0.387 & 0.379 & 0.385 & 0.376\\
+\hspace{1em}$ S_g $ & 1.272 & 1.281 & 1.172 & 1.346 & 1.191 & 1.249 & 1.209 & 1.424 & 1.307\\
+\hspace{1em}$ T_g \times 10^{-3} $ & 30.341 & 32.469 & 40.848 & 26.230 & 31.654 & 31.174 & 37.673 & 31.686 & 45.669\\
+\addlinespace[0.3em]
+\multicolumn{10}{l}{\textbf{QL}}\\
+\hspace{1em}$ b_q $ & -0.473 & -0.488 & -0.545 & -0.441 & -0.483 & -0.479 & -0.524 & -0.482 & -0.574\\
+\hspace{1em}$ F_g $ & 0.711 & 0.708 & 0.702 & 0.716 & 0.712 & 0.711 & 0.704 & 0.708 & 0.697\\
+\hspace{1em}$ S_g $ & 5.149 & 5.207 & 5.499 & 5.011 & 5.172 & 5.181 & 5.369 & 5.436 & 5.546\\
+\hspace{1em}$ T_g \times 10^{-3} $ & 0.047 & 0.054 & 0.089 & 0.036 & 0.052 & 0.050 & 0.074 & 0.055 & 0.111\\
+\addlinespace[0.3em]
+\multicolumn{10}{l}{\textbf{CQ}}\\
+\hspace{1em}$ F_g $ & 0.913 & 0.913 & 0.914 & 0.913 & 0.912 & 0.913 & 0.913 & 0.914 & 0.915\\
+\hspace{1em}$ S_g $ & 11.942 & 11.918 & 12.201 & 11.803 & 12.122 & 11.995 & 12.097 & 12.039 & 12.062\\
+\hspace{1em}$ T_g \times 10^{-3} $ & 0.015 & 0.015 & 0.012 & 0.016 & 0.014 & 0.014 & 0.013 & 0.014 & 0.013\\
+\addlinespace[0.3em]
+\multicolumn{10}{l}{\textbf{DAF}}\\
+\hspace{1em}$ F_g $ & 0.943 & 0.939 & 0.930 & 0.952 & 0.942 & 0.942 & 0.933 & 0.940 & 0.929\\
+\hspace{1em}$ S_g $ & 14.203 & 13.968 & 12.699 & 15.002 & 13.881 & 14.040 & 13.140 & 14.298 & 12.422\\
+\hspace{1em}$ T_g \times 10^{-3} $ & 0.003 & 0.004 & 0.008 & 0.001 & 0.003 & 0.003 & 0.006 & 0.004 & 0.012\\
+\bottomrule
+\end{tabular}}
+\end{table}
 
 \ref{fig:filtersasymErr}:
 
