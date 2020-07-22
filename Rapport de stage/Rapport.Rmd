@@ -35,11 +35,22 @@ library(kableExtra)
 
 # Introduction
 
-@ch14HBSA
 
-# Moving average and filters
+# From seasonal adjustment to trend-cycle estimation
 
-A lot of papers describes the defi fnition and the properties of moving average and linear filters (see for example @ch12HBSA). 
+Indiquer pourquoi on se place dans le cadre de la désaisonnalisation.
+
+Dire que l'on se place dans le cadre de X-12-ARIMA qui est une méthode non-paramétrique : on va s'intéresser à deux approches : @proietti2008 (section \@ref(sec:lppfilters)) et @ch15HBSA (section \@ref(sec:GuguemosEtAl)).
+
+Mentionner également @ch14HBSA (section \@ref(sec:Dagum})) et @ch16HBSA / @trilemmaWMR2019 (section \@ref(sec:WildiMcLeroy)).
+
+Description du trilemma.
+
+
+
+# Moving average and filters {#sec:propMM}
+
+A lot of papers describes the definition and the properties of moving average and linear filters (see for example @ch12HBSA). 
 Here we summarize some of the main results.
 
 Let $p$ et $f$ two integers, a moving average $M_\theta$ or $M$ is defined by a set of coefficients $\theta=(\theta_{-p},\dots,\theta_{f})'$ such as:
@@ -53,10 +64,6 @@ $$
 If we also have $\forall k:\:\theta_{-k} = \theta_k$, the moving average $M_\theta$ is said to be *symmetric*. 
 In this case, the quantity $h=p=f$ is called the *bandwith*.
 
-<!-- In a equivalent way, the moving average can be defined with the backward operator $B$ such as $BX_t=X_{t-1}$ and $B^{-1}X_t=X_{t+1}$: -->
-<!-- $$ -->
-<!-- M_\theta=\sum_{k=-p}^{+f}\theta_kB^{-k} -->
-<!-- $$ -->
 
 ## Gain and phase shift functions
 
@@ -180,6 +187,8 @@ However, they cannot be used in the beginning and in the end of the time series 
 Thus, for real-time estimation, it is needed to build asymmetric moving average that approximate the symmetric moving average.
 
 
+Mentionner ici tous les critères et dire qu'ils sont expliqués plus tard.
+
 @ch15HBSA @ch16HBSA
 [@ch15HBSA]
 
@@ -209,7 +218,7 @@ $$
 \hline b_{l} & \text{linear bias} & \sum_{k=-p}^{+f}k\theta_{k}\\
 \hline b_{q} & \text{quadratic bias} & \sum_{k=-p}^{+f}k^{2}\theta_{k}\\
 \hline F_{g} & \text{variance reduction / fidelity} & \sum_{k=-p}^{+f}\theta_{k}^{2}\\
-\hline S_{g} & \text{Smoothness} & \sum_{j}(\nabla^{3}\theta_{j})^{2}\\
+\hline S_{g} & \text{Smoothness (Guguemos)} & \sum_{j}(\nabla^{3}\theta_{j})^{2}\\
 \hline T_{g} & \text{Timeliness (Guguemos)} & \int_{0}^{\omega_{1}}\rho_{\theta}(\omega)\left|\varphi_{\theta}(\omega)\right|^{2}\ud\omega\\
 \hline A_{w} & \text{Accuracy (Wildi)} & \int_0^{\omega_1}\left(A(\omega)-\hat{A}(\omega)\right)^{2}h(\omega)\ud\omega\\
 \hline T_{w} & \text{Timeliness (Wildi)} & \int_0^{\omega_1} A(\lambda)\hat{A}(\lambda)\sin^{2}\left(\frac{\Phi(\omega)-\hat{\Phi}(\omega)}{2}\right)h(\omega)\ud\omega\\
@@ -220,12 +229,12 @@ $$
 $$
 \caption{Quality criteria}
 \footnotesize
-\emph{Note: $X_g$ from \textcite{ch15HBSA} and $X_g$ from \textcite{trilemmaWMR2019}}
+\emph{Note: $X_g$ from \textcite{ch15HBSA} and $X_g$ from \textcite{trilemmaWMR2019}.}
 \end{table}
 
  \colorbox{BurntOrange}{à compléter}
 
-# Local polynomial filters
+# Local polynomial filters {#sec:lppfilters}
 
 In this section we detail the filters that arised from fitting a local polynomial to our time series, as described by @proietti2008.
 
@@ -613,6 +622,17 @@ lp_diagnostics[,-1] %>%
   add_header_above(c(" " = 1, "Kernel" = ncol(lp_diagnostics)-2)) %>%
   pack_rows(index = groupement)
 ```
+
+# General optimisation problem: @ch15HBSA {#sec:GuguemosEtAl}
+
+# Data-dependent filter: @trilemmaWMR2019 {#sec:WildiMcLeroy}
+
+Description du trilemma
+
+# @ch14HBSA  {#sec:Dagum}
+
+
+# Results
 
 \@ref(fig:filtersasymErr):
 

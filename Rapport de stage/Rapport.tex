@@ -159,12 +159,26 @@
 \hypertarget{introduction}{%
 \section{Introduction}\label{introduction}}
 
-\textcite{ch14HBSA}
+\hypertarget{from-seasonal-adjustment-to-trend-cycle-estimation}{%
+\section{From seasonal adjustment to trend-cycle estimation}\label{from-seasonal-adjustment-to-trend-cycle-estimation}}
 
-\hypertarget{moving-average-and-filters}{%
-\section{Moving average and filters}\label{moving-average-and-filters}}
+Indiquer pourquoi on se place dans le cadre de la désaisonnalisation.
 
-A lot of papers describes the defi fnition and the properties of moving average and linear filters (see for example \textcite{ch12HBSA}).
+Dire que l'on se place dans le cadre de X-12-ARIMA qui est une méthode non-paramétrique : on va s'intéresser à deux approches : \textcite{proietti2008} (section \ref{sec:lppfilters}) et \textcite{ch15HBSA} (section \ref{sec:GuguemosEtAl}).
+
+Mentionner également \textcite{ch14HBSA} (section @ref(sec:Dagum\})) et \textcite{ch16HBSA} / \textcite{trilemmaWMR2019} (section \ref{sec:WildiMcLeroy}).
+
+Description du trilemma.
+
+\hypertarget{ch14hbsa}{%
+\section{\texorpdfstring{\textcite{ch14HBSA}}{@ch14HBSA}}\label{ch14hbsa}}
+
+\ref{sec:propMM}
+
+\hypertarget{sec:propMM}{%
+\section{Moving average and filters}\label{sec:propMM}}
+
+A lot of papers describes the definition and the properties of moving average and linear filters (see for example \textcite{ch12HBSA}).
 Here we summarize some of the main results.
 
 Let \(p\) et \(f\) two integers, a moving average \(M_\theta\) or \(M\) is defined by a set of coefficients \(\theta=(\theta_{-p},\dots,\theta_{f})'\) such as:
@@ -310,6 +324,8 @@ Therefore, there is no delay in any frequency: that's why they are prefered to t
 However, they cannot be used in the beginning and in the end of the time series because no past/future value can be used.
 Thus, for real-time estimation, it is needed to build asymmetric moving average that approximate the symmetric moving average.
 
+Mentionner ici tous les critères et dire qu'ils sont expliqués plus tard.
+
 \textcite{ch15HBSA} \textcite{ch16HBSA,ch15HBSA}
 
 \citeauthor*{ch15HBSA}
@@ -357,8 +373,8 @@ $$
 
 \colorbox{BurntOrange}{à compléter}
 
-\hypertarget{local-polynomial-filters}{%
-\section{Local polynomial filters}\label{local-polynomial-filters}}
+\hypertarget{sec:lppfilters}{%
+\section{Local polynomial filters}\label{sec:lppfilters}}
 
 In this section we detail the filters that arised from fitting a local polynomial to our time series, as described by \textcite{proietti2008}.
 
@@ -806,6 +822,20 @@ Criteria & Henderson & Gaussian & Trapezoidal & Triweight & Tricube & Biweight &
 \bottomrule
 \end{tabular}}
 \end{table}
+
+\hypertarget{sec:GuguemosEtAl}{%
+\section{\texorpdfstring{General optimisation problem: \textcite{ch15HBSA}}{General optimisation problem: @ch15HBSA}}\label{sec:GuguemosEtAl}}
+
+\hypertarget{sec:WildiMcLeroy}{%
+\section{\texorpdfstring{Data-dependent filter: \textcite{trilemmaWMR2019}}{Data-dependent filter: @trilemmaWMR2019}}\label{sec:WildiMcLeroy}}
+
+Description du trilemma
+
+\hypertarget{sec:Dagum}{%
+\section{\texorpdfstring{\textcite{ch14HBSA}}{@ch14HBSA}}\label{sec:Dagum}}
+
+\hypertarget{results}{%
+\section{Results}\label{results}}
 
 \ref{fig:filtersasymErr}:
 
