@@ -32,3 +32,8 @@ L’objectif du stage est de faire une comparaison théorique de ces filtres et 
 
   + [H6x6 vs FST10x6](https://aqlt.github.io/AsymmetricFilters/FST/H6x6vsFST10x6.pdf)
   
+- Examples :
+
+  + [IPI manuf FR](https://aqlt.github.io/AsymmetricFilters/Examples/ipi_manuf_fr.pdf)
+
+  + [IPI manuf FR jusqu'en 2009](https://aqlt.github.io/AsymmetricFilters/Examples/ipi_manuf_fr_2008.pdf) 
