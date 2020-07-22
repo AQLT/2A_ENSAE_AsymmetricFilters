@@ -23,3 +23,12 @@ L’objectif du stage est de faire une comparaison théorique de ces filtres et 
 - 02/07 : début rapport https://aqlt.github.io/AsymmetricFilters/Rapport%20de%20stage/Rapport.pdf
 
 - filtres fst : https://aqlt.shinyapps.io/FSTfilters/
+
+- Filtres asymétriques vs filtres symétriques :
+
+  + [H3x3 vs FST6x3](https://aqlt.github.io/AsymmetricFilters/FST/H3x3vsFST6x3.pdf)
+
+  + [H6x6 vs FST9x6](https://aqlt.github.io/AsymmetricFilters/FST/H6x6vsFST9x6.pdf)
+
+  + [H6x6 vs FST10x6](https://aqlt.github.io/AsymmetricFilters/FST/H6x6vsFST10x6.pdf)
+  
