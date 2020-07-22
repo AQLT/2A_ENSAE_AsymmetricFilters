@@ -10,9 +10,11 @@
 library(shiny)
 library(shinyWidgets)
 library(plotly)
-
+library(shinybusy)
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
+    add_busy_spinner(spin = "fading-circle"),
+    
     # Application title
     titlePanel("Properties of fst filters"),
 
