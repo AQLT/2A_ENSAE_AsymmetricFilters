@@ -532,12 +532,13 @@ w_{a}=K_{p}X_{p}(X'_{p}K_{p}X_{p})^{-1}e_{1},
 \quad
 \hat{y}_{f}=X_{f}(X'_{p}K_{p}X_{p})^{-1}X_{p}'K_{p}y_{p}
 $$
-Moreover, we have the folliwing results with the DAF $w_a$:
+Moreover, we have the following results with the DAF $w_a$:
 
 - it satisfy the same polynomial reproduction constraints as the symmetric filter (conserve polynomial of degree $d$). 
 Thus, the bias in estimating an unknown function of time has the same order of magnitude as in the interior of time support.
 
-- $w_a$ minimize the weighted distance (by the kernel function) between the asymmetric filter coefficients and the symmetric ones.
+- $w_a$ minimize the weighted distance (by the kernel function) between the asymmetric filter coefficients and the symmetric ones. 
+Therefore, for the DAF it is equivalent to fit a local polynomial and to minimize the revisions
 
 However, the weights $w_{a,0}$ of the DAF are highly concentrated in the current observation $t$ with an important change between $q=0$ (real-time filter) and $q=h$ (see figure \@ref(filtersdafcoefs)). 
 Moroever the real-time filter doesn't have a satisfying gain functions: it is close to one for all the frequencies.

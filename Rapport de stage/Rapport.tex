@@ -170,11 +170,6 @@ Mentionner également \textcite{ch14HBSA} (section @ref(sec:Dagum\})) et \textci
 
 Description du trilemma.
 
-\hypertarget{ch14hbsa}{%
-\section{\texorpdfstring{\textcite{ch14HBSA}}{@ch14HBSA}}\label{ch14hbsa}}
-
-\ref{sec:propMM}
-
 \hypertarget{sec:propMM}{%
 \section{Moving average and filters}\label{sec:propMM}}
 
@@ -357,7 +352,7 @@ $$
 \hline b_{l} & \text{linear bias} & \sum_{k=-p}^{+f}k\theta_{k}\\
 \hline b_{q} & \text{quadratic bias} & \sum_{k=-p}^{+f}k^{2}\theta_{k}\\
 \hline F_{g} & \text{variance reduction / fidelity} & \sum_{k=-p}^{+f}\theta_{k}^{2}\\
-\hline S_{g} & \text{Smoothness} & \sum_{j}(\nabla^{3}\theta_{j})^{2}\\
+\hline S_{g} & \text{Smoothness (Guguemos)} & \sum_{j}(\nabla^{3}\theta_{j})^{2}\\
 \hline T_{g} & \text{Timeliness (Guguemos)} & \int_{0}^{\omega_{1}}\rho_{\theta}(\omega)\left|\varphi_{\theta}(\omega)\right|^{2}\ud\omega\\
 \hline A_{w} & \text{Accuracy (Wildi)} & \int_0^{\omega_1}\left(A(\omega)-\hat{A}(\omega)\right)^{2}h(\omega)\ud\omega\\
 \hline T_{w} & \text{Timeliness (Wildi)} & \int_0^{\omega_1} A(\lambda)\hat{A}(\lambda)\sin^{2}\left(\frac{\Phi(\omega)-\hat{\Phi}(\omega)}{2}\right)h(\omega)\ud\omega\\
@@ -368,7 +363,7 @@ $$
 $$
 \caption{Quality criteria}
 \footnotesize
-\emph{Note: $X_g$ from \textcite{ch15HBSA} and $X_g$ from \textcite{trilemmaWMR2019}}
+\emph{Note: $X_g$ from \textcite{ch15HBSA} and $X_g$ from \textcite{trilemmaWMR2019}.}
 \end{table}
 
 \colorbox{BurntOrange}{à compléter}
@@ -702,7 +697,7 @@ w_{a}=K_{p}X_{p}(X'_{p}K_{p}X_{p})^{-1}e_{1},
 \quad
 \hat{y}_{f}=X_{f}(X'_{p}K_{p}X_{p})^{-1}X_{p}'K_{p}y_{p}
 \]
-Moreover, we have the folliwing results with the DAF \(w_a\):
+Moreover, we have the following results with the DAF \(w_a\):
 
 \begin{itemize}
 \item
@@ -710,6 +705,7 @@ Moreover, we have the folliwing results with the DAF \(w_a\):
   Thus, the bias in estimating an unknown function of time has the same order of magnitude as in the interior of time support.
 \item
   \(w_a\) minimize the weighted distance (by the kernel function) between the asymmetric filter coefficients and the symmetric ones.
+  Therefore, for the DAF it is equivalent to fit a local polynomial and to minimize the revisions
 \end{itemize}
 
 However, the weights \(w_{a,0}\) of the DAF are highly concentrated in the current observation \(t\) with an important change between \(q=0\) (real-time filter) and \(q=h\) (see figure \ref{filtersdafcoefs}).
