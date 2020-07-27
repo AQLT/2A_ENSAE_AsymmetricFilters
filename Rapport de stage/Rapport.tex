@@ -319,30 +319,16 @@ Therefore, there is no delay in any frequency: that's why they are prefered to t
 However, they cannot be used in the beginning and in the end of the time series because no past/future value can be used.
 Thus, for real-time estimation, it is needed to build asymmetric moving average that approximate the symmetric moving average.
 
-Mentionner ici tous les critères et dire qu'ils sont expliqués plus tard.
+The approximation is summarised by quality indicators.
+In this paper we focus on the one defined by \textcite{ch15HBSA} and \textcite{trilemmaWMR2019} to build the asymmetric filters.
 
-\textcite{ch15HBSA} \textcite{ch16HBSA,ch15HBSA}
+\textcite{ch15HBSA} propose a general approach to derive linear filters, based on an optimization problem of three criteria: \emph{Fidelity} (\(F_g\), noise reduction), \emph{Smoothness} (\(S_g\)) and \emph{Timeliness} (\(T_g\), phase shift between input and ouput signals).
+See section \ref{sec:GuguemosEtAl} for more details.
 
-\citeauthor*{ch15HBSA}
+\textcite{trilemmaWMR2019} propose an approach based on the decomposition of the mean squared error between the symmetric and the asymmetric filter in four quantities: \emph{Accuracy} (\(A_w\)), \emph{Timeliness} (\(T_w\)), \emph{Smoothness} (\(S_w\)) and \emph{Residual} (\(R_w\)).
+See section \ref{sec:WildiMcLeroy} for more details.
 
-\citeyear{ch15HBSA}
-
-\parencite{ch15HBSA}
-
-\colorbox{BurntOrange}{à compléter}
-
-\hypertarget{timeliness-guguemos}{%
-\subsubsection{Timeliness (guguemos)}\label{timeliness-guguemos}}
-
-timeliness
-\[
-\int_{\omega_{1}}^{\omega_{2}}f(\rho_{\theta}(\omega),\varphi_{\theta}(\omega))\ud\omega
-\]
-
-\hypertarget{quality-indicators-trouver-un-autre-nom}{%
-\subsection{Quality indicators (? trouver un autre nom)}\label{quality-indicators-trouver-un-autre-nom}}
-
-To compare the different moving average / filters the following indicators are used:
+All the indicators are summarized in table \ref{tab:QC}.
 
 \begin{table}[!ht]
 $$
@@ -353,20 +339,19 @@ $$
 \hline b_{q} & \text{quadratic bias} & \sum_{k=-p}^{+f}k^{2}\theta_{k}\\
 \hline F_{g} & \text{variance reduction / fidelity} & \sum_{k=-p}^{+f}\theta_{k}^{2}\\
 \hline S_{g} & \text{Smoothness (Guguemos)} & \sum_{j}(\nabla^{3}\theta_{j})^{2}\\
-\hline T_{g} & \text{Timeliness (Guguemos)} & \int_{0}^{\omega_{1}}\rho_{\theta}(\omega)\left|\varphi_{\theta}(\omega)\right|^{2}\ud\omega\\
-\hline A_{w} & \text{Accuracy (Wildi)} & \int_0^{\omega_1}\left(A(\omega)-\hat{A}(\omega)\right)^{2}h(\omega)\ud\omega\\
-\hline T_{w} & \text{Timeliness (Wildi)} & \int_0^{\omega_1} A(\lambda)\hat{A}(\lambda)\sin^{2}\left(\frac{\Phi(\omega)-\hat{\Phi}(\omega)}{2}\right)h(\omega)\ud\omega\\
-\hline S_{w} & \text{Smoothness (Wildi)} & \int_{\omega_1}^{\pi}\left(A(\omega)-\hat{A}(\omega)\right)^{2}h(\omega)\ud\omega\\
-\hline R_{w} & \text{Residual (Wildi)} & \int_{\omega_1}^{\pi} A(\lambda)\hat{A}(\lambda)\sin^{2}\left(\frac{\Phi(\omega)-\hat{\Phi}(\omega)}{2}\right)h(\omega)\ud\omega\\
+\hline T_{g} & \text{Timeliness (Guguemos)} & \int_{0}^{2\pi/12}\rho_{\theta}(\omega)\left|\varphi_{\theta}(\omega)\right|^{2}\ud\omega\\
+\hline A_{w} & \text{Accuracy (Wildi)} & \int_0^{2\pi/12}\left(\rho_{s}(\omega)-\rho_{\theta}(\omega)\right)^{2}h(\omega)\ud\omega\\
+\hline T_{w} & \text{Timeliness (Wildi)} & \int_0^{2\pi/12} \rho_{s}(\lambda)\rho_{\theta}(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h(\omega)\ud\omega\\
+\hline S_{w} & \text{Smoothness (Wildi)} & \int_{2\pi/12}^{\pi}\left(\rho_{s}(\omega)-\rho_{\theta}(\omega)\right)^{2}h(\omega)\ud\omega\\
+\hline R_{w} & \text{Residual (Wildi)} & \int_{2\pi/12}^{\pi} \rho_{s}(\lambda)\rho_{\theta}(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h(\omega)\ud\omega\\
 \hline \\
 \end{array}
 $$
 \caption{Quality criteria}
+\label{tab:QC}
 \footnotesize
 \emph{Note: $X_g$ from \textcite{ch15HBSA} and $X_g$ from \textcite{trilemmaWMR2019}.}
 \end{table}
-
-\colorbox{BurntOrange}{à compléter}
 
 \hypertarget{sec:lppfilters}{%
 \section{Local polynomial filters}\label{sec:lppfilters}}
@@ -454,7 +439,10 @@ An important class of kernels is the Beta kernels. In the discrete, up to a prop
   \right\lvert^r
 \right)^s
 \]
-with \(r>0\), \(s\geq 0\). The following kernels are considered in this report:
+with \(r>0\), \(s\geq 0\).
+It encompass all kernels used in this report, except Henderson, trapezoidal and gaussian kernel.The following kernels are considered in this report:
+
+\newpage
 
 \begin{multicols}{2}
 \begin{itemize}
@@ -500,19 +488,7 @@ $$\kappa_j^{TC}=\left(
   \right\lvert^3
 \right)^3$$
 
-\item Gaussian kernel\footnote{
-The gaussian kernel is generally defined as $\e^{-\frac{ x^2}{ 2\sigma^2}}$.
-Here we take $\sigma^2=2/h$ with the following idea: the biggest $h$ is, the narrowest the filter is.
-}:
-$$
-\kappa_j^G=\exp\left(
--\frac{
-  j^2
-}{
-  4h
-}\right)
-$$
-\item Henderson kernel (see section \ref{sec:sympolyfilter} for its construction):
+\item Henderson kernel (see section \ref{sec:sympolyfilter} for more details):
 $$
 \kappa_{j}=\left[1-\frac{j^2}{(h+1)^2}\right]
 \left[1-\frac{j^2}{(h+2)^2}\right]
@@ -528,18 +504,41 @@ $$
   \frac{1}{2h-1}& \text{ otherwise}
 \end{cases}
 $$
+\item Gaussian kernel\footnote{
+In this report we arbirarily take $\sigma^2=0.25$.
+}
+$$
+\kappa_j^G=\exp\left(
+-\frac{
+  j^2
+}{
+  2\sigma^2h^2
+}\right)
+$$
 \end{itemize}
 \end{multicols}
+
+Henderson, trapezoidal and gaussian kernel are very specific:
+
+\begin{itemize}
+\item
+  The kernel Henderson and trapezoidal function change with the bandwidth (the other kernel only depend on the ratio \(j/h+1\)).
+\item
+  Other definitions of the trapezoidal and gaussian kernel can be used.
+  The trapezoidal kernel is here considered because it corresponds to the filter used to extract the seasonal component in the X-12-ARIMA algorithm.
+  Therefore it is never used to extract trend-cycle component.
+\end{itemize}
 
 The figure \ref{fig:kernels} summarises the coefficients of the different kernels.
 Analysing the coefficients we can already anticipate some properties of the associated filters:
 
 \begin{itemize}
 \item
-  For \(h\) small the triweight kernel has the narrowest distribution, for \(h\) high (\(h\geq15\)) the gaussian kernel become narrowest.
+  The triweight kernel has the narrowest distribution.
   The narrowest a distribution is, the smallest the weights of furthest neighbors are: the associated filter should have a high weight in the current observation (\(t\)).
 \item
   For \(h\) high the Henderson kernel is equivalent to the triweight kernel (since \(h+1\sim h+2 \sim h+3\), \(\kappa_j^H\sim\kappa_j^{TW}\)), the associated filter should also be equivalent.
+  However, for \(h\) small (\(h\leq10\)) the Henderson kernel is closer to the biweight kernel than to the triweight kernel.
 \end{itemize}
 
 \begin{figure}[!ht]
@@ -560,8 +559,7 @@ The \textbf{Epanechnikov} kernel is often recommended as the optimal kernel that
 
 \textbf{Loess} is a locally weighted polynomial regression that use tricube kernel.
 
-The \textbf{Henderson filter} is a specific case of a local cubif fit (\(p=3\)).
-It is often used Henderson for trend estimation (for example it's the filter used in the seasonal adjustment). For a fixed bandwith, Henderson found the kernel that gave the smoothest estimates of the trend.
+The \textbf{Henderson filter} is a specific case of a local cubif fit (\(p=3\)), widely used for trend estimation (for example it's the filter used in the seasonal adjustment software X-12-ARIMA). For a fixed bandwith, Henderson found the kernel that gave the smoothest estimates of the trend.
 He showed that the three following problems were equivalent:
 
 \begin{enumerate}
@@ -587,7 +585,7 @@ We find the similar results than in section~\ref{fig:kernels}:
 
 \begin{itemize}
 \item
-  For \(h\) small the triweight kernel gives the filter with the narrowest distribution, for \(h\) high (\(h\geq15\)) the gaussian kernel become narrowest.
+  The triweight kernel gives the filter with the narrowest distribution.
   The narrowest a distribution is, the higher the variance reduction should be.
   Indeed, the distribution of the coefficients of the filter can be interprated as the output signal of an additive outlier.
   As a result, with a wide distribution, an additive outlier will be more persistent than with a narrow distribution.
@@ -595,7 +593,7 @@ We find the similar results than in section~\ref{fig:kernels}:
 \item
   For \(h\) small, the trapezoidal filter seems to produce similar results than the Epanechnikov one.
 \item
-  For \(h\) high the Henderson filter is equivalent to the one computed by the triweight kernel.
+  For \(h\) small the Henderson filter is closed to the biweight kernel, for \(h\) high it is equivalent to the triweight kernel.
 \end{itemize}
 
 \begin{figure}[!ht]
@@ -608,7 +606,7 @@ Otherwise you will only be able to see the results for $h=2$.}
 Moreover, we find that for all the filters, the coefficients decrease, when the distance to the central observation increases, until a negative value and then increase towards 0 (except for the uniform kernel).
 Negative coefficients might be disturbing but they arise from the cubic polynomial constraints.
 Indeed to preserve polynomial of degree 2 (and so 3) we need \(\sum_{j=-h}^hj^2\theta_i=0\), which constraint some coefficients to be negative.
-However, those negative coefficients are negligible compare to the central higher coefficients (they are more 80\% smaller than the central coefficient for all kernels, except for uniform and trapezoidal with high bandwith).
+However, those negative coefficients are negligible compare to the central coefficients (they are more 80\% smaller than the central coefficient for all kernels, except for uniform and trapezoidal with high bandwith).
 
 \begin{table}[!h]
 
@@ -644,21 +642,25 @@ $h$ & Biweight & Epanechnikov & Gaussian & Henderson & Trapezoidal & Triangular 
 Figure \ref{fig:filtersSymgains} plots the gain functions of the different filters.
 Gain functions are usually plotted between 0 and \(\pi\).
 However, locally weighted polynomial regression are low-pass filters: they leave almost unchanged low frequency components (such as the trend) and attenuate high frequency fluctuations (noise).
-That's why we are only interested in low frequencies.
 For a monthly data, a cycle of 3 years correspond to the frequency \(2\pi/36\) and a cycle of 7 years to the frequency \(2\pi/84\).
+Therefore, an ideal pass-band filter will have a gain function equal to 1 for low frequency (\(\leq 2\pi/36\)) and equal to 0 for other frequencies.
 
 When the bandwith \(h\) increases, the gain function decreases for low frequencies: short business cycles will then be attenuated.
 For a fixed value of \(h\), gaussian, Henderson and triweight filters will preserve more short business cycles than the others filters (especially uniform, trapezoidal and Epanechnikov).
-
-\colorbox{BurntOrange}{tracer et interpréter gain après $2\pi/12$ pour voir à partir de quelles fréquences sont atténuées ?}
-\colorbox{BurntOrange}{ou bien c'est résumé avec le pouvoir de réduction de la variance ?}
+Moreover, the gain function of those filters decreases faster to zero with less fluctuations: it enhances the higher variance reduction ratio shown in table \ref{tab:varianceReductionSymmetricFilters}.
 
 \begin{figure}[!ht]
 \animategraphics[autoplay,loop,width=\textwidth,controls]{2}{img/symmetricFilters/gain}{2}{30}
 \caption{Gain functions from 0 to $2\pi/12$ of symmetric filters computed by local polynomial of degree $3$, according to the differents kernels and for $h$ from 2 to 30.}\label{fig:filtersSymgains}\footnotesize
-\emph{Note: to see the animation the PDF must be open with Acrobat Reader, KDE Okular, PDF-XChange or Foxit Reader.
+\emph{Note: the two horizontal lines corresponds to the frequencies $2\pi/84$ (cycle of 7 years) and $2\pi/36$ (cycle of 3 years).}
+
+\emph{To see the animation the PDF must be open with Acrobat Reader, KDE Okular, PDF-XChange or Foxit Reader.
 Otherwise you will only be able to see the results for $h=2$.}
 \end{figure}
+
+Just analysing the symmetric filters properties, there is no doubt that Henderson, triweight and biweight filters have similar properties and will perform better than the other kernel for trend-cycle extraction.
+The same results are found with asymmetric filters.
+Thus, in order to simplify the presentation analysis, in the next sections we will only show the results with the Henderson filter.
 
 \hypertarget{asymmetric-filters}{%
 \subsection{Asymmetric filters}\label{asymmetric-filters}}
@@ -709,7 +711,7 @@ Moreover, we have the following results with the DAF \(w_a\):
 \end{itemize}
 
 However, the weights \(w_{a,0}\) of the DAF are highly concentrated in the current observation \(t\) with an important change between \(q=0\) (real-time filter) and \(q=h\) (see figure \ref{filtersdafcoefs}).
-Moroever the real-time filter doesn't have a satisfying gain functions: it is close to one for all the frequencies.
+Moroever the real-time filter doesn't have a satisfying gain functions: it is close to one for all the frequencies (it thus have a low noise reduction power).
 Therefore, even if the real-time filter is unbiased (if the series is generated by a polynomial of degree \(d\)) it is at the expenses of a high variance.
 
 \begin{figure}[!ht]
@@ -822,8 +824,28 @@ Criteria & Henderson & Gaussian & Trapezoidal & Triweight & Tricube & Biweight &
 \hypertarget{sec:GuguemosEtAl}{%
 \section{\texorpdfstring{General optimisation problem: \textcite{ch15HBSA}}{General optimisation problem: @ch15HBSA}}\label{sec:GuguemosEtAl}}
 
-\hypertarget{sec:WildiMcLeroy}{%
-\section{\texorpdfstring{Data-dependent filter: \textcite{trilemmaWMR2019}}{Data-dependent filter: @trilemmaWMR2019}}\label{sec:WildiMcLeroy}}
+\textcite{ch15HBSA} defined a general approach to derive linear filters, based on an optimization problem of three criteria:
+
+\begin{itemize}
+\item
+  \emph{Fidelity}, \(F_g\): it's the variance reduction ratio. It is called ``Fidelity'' become we want the output signal to be as close as possible to the input signal where the noise component is removed
+  \[
+  F_g = \sum_{k=-p}^{+f}\theta_{k}^{2}
+  \]
+\item
+  \emph{Smoothness}, \(S_g\): it's the Henderson smoothness criteria (sum of the squared of the third difference of the coefficients of the filter). It measures the flexibility of the coefficient curve of a filter and the smoothness of the trend.
+  \[
+  S_g = \sum_{j}(\nabla^{3}\theta_{j})^{2}
+  \]
+\item
+  \emph{Timeliness}, \(T_g\): it mesures the phase-shift between input and output signal for specific frequencies and depends on the gain and phase shift functions (\(\rho_\theta\) and \(\varphi_{\theta}\)). In this paper we focus on the frequencies less than \(2\pi/12\) (cycle of one year).
+  \[
+  \int_{0}^{2\pi/12}\rho_{\theta}(\omega)\left|\varphi_{\theta}(\omega)\right|^{2}\ud\omega
+  \]
+\end{itemize}
+
+\hypertarget{data-dependent-filter-trilemmawmr2019-secwildimcleroy-secguguemosetal}{%
+\section{\texorpdfstring{Data-dependent filter: \textcite{trilemmaWMR2019} \{\#sec:WildiMcLeroy\} sec:GuguemosEtAl}{Data-dependent filter: @trilemmaWMR2019 \{\#sec:WildiMcLeroy\} sec:GuguemosEtAl}}\label{data-dependent-filter-trilemmawmr2019-secwildimcleroy-secguguemosetal}}
 
 Description du trilemma
 
