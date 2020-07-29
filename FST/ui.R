@@ -38,8 +38,8 @@ shinyUI(fluidPage(
                         label = "Color",
                         choices = c("fidelity.weight", "smoothness.weight", "timeliness.weight"),
                         selected = "timeliness.weight"),
-            switchInput(inputId = "musgrave", value = TRUE,
-                        label="Musgrave", size="normal",onStatus = "dreamrs")
+            switchInput(inputId = "lpp_filters", value = TRUE,
+                        label="Local polynomial filters", size="normal",onStatus = "dreamrs")
             
             # sliderInput(inputId = "xlim",
             #             label = "x limits * pi for Phase/Gain functions",

@@ -29,10 +29,10 @@ shinyServer(function(input, output) {
     })
   
     output$plot_guguemos <- renderPlotly({
-        plotly_guguemos(r$data, color = input$color, musgrave = input$musgrave)
+        plotly_guguemos(r$data, color = input$color, lpp_filters = input$lpp_filters)
     })
     output$plot_wildi <- renderPlotly({
-        plotly_wildi(r$data, color = input$color, musgrave = input$musgrave)
+        plotly_wildi(r$data, color = input$color, lpp_filters = input$lpp_filters)
     })
     
 })
