@@ -11,6 +11,9 @@ round(timeliness(filter,lowerbound = 0,
 musgrave <- apply(filter$filters.coef,2,function(x) fst(rev(na.omit(x)), lb = -6)$criterions)
 musgrave <- round(musgrave, 3)
 musgrave #timeliness musgrave pas ok
+a_coef <- filter$filters.coef[,sprintf("q=%i",0)]
+a_coef <- rjdfilters:::trailingZeroAsNa(a_coef)
+mse(sweights = filter$filters.coef[,"q=6"], na.omit(a_coef))
 round(apply(test2,2,function(x) fst(na.omit(x), lb = -6)$criterions),3) - musgrave
 round(apply(test,2,function(x) fst(na.omit(x), lb = -6)$criterions),3)- musgrave
 
@@ -119,9 +122,8 @@ pen <- function(x){
 const <- function(x){
   f = rbind(sum(x)-1,
             sum(x*seq(-12,0)),
-            sum(x*seq(-12,0)^2),
-            sum(x*seq(-12,0)^3))
-  return(list(ceq=f,c=NULL))
+            sum(x*seq(-12,0)^2))
+  return(list(ceq=round(f,6),c=NULL))
 }
 const(nps_dom[,1] )
 const(no_phase_shift_coef[,1])
@@ -131,9 +133,40 @@ res$par
 sum(fst(nps_dom[,1], lb = -12)$criterions*c(0,1,1000))
 sum(fst(no_phase_shift_coef[,1], lb = -12)$criterions*c(0,1,1000))
 fstfilter(lags = 12, leads = 12-i, pdegree=3, 
-          smoothness.weight=1/1001, timeliness.weight = 1000/1001)$
-  
+          smoothness.weight=1/1001, timeliness.weight = 1000/1001)
 
-res <- solnl(no_phase_shift_coef[,1],objfun=pen,confun=const)
+pen(x0)
+res <- solnl(x0,objfun=pen,confun=const)
+res$par
+pen(res$par)
+pen(no_phase_shift_coef[,1])
+pen(x0)
+const(x0)
+const(no_phase_shift_coef[,1])
 library(NlcOptim)
 ?nlm
+
+test
+nps_dom2 <- structure(list(H12_0 = c(0.05994, 0.01138, -0.09895, -0.11779, 
+                                     0.01418, 0.17992, 0.18563, -0.03593, -0.29941, -0.28032, 0.14829, 
+                                     0.64018, 0.59288),
+                           H11_1 = c(0.00719, -0.02221, -0.02268, 0.02971, 
+                                     0.07015, 0.02913, -0.07491, -0.13487, -0.0493, 0.17034, 0.37906, 
+                                     0.40415, 0.21423),
+                           H10_2 = c(-0.0214, -0.01382, 0.03979, 0.07211, 
+                                     0.01768, -0.09267, -0.14158, -0.03426, 0.19471, 0.38449, 0.38101, 
+                                     0.19553, 0.0184), 
+                           H9_3 = c(-0.01956, 0.00681, 0.04415, 0.02622, 
+                                    -0.04634, -0.094, -0.03219, 0.14103, 0.32302, 0.37827, 0.25677, 
+                                    0.05857, -0.04276), 
+                           H8_4 = c(-0.00181, 0.00604, 0.00163, -0.02185, 
+                                    -0.03291, 0.01177, 0.12169, 0.25011, 0.31773, 0.27041, 0.13023, 
+                                    -0.00689, -0.04616), 
+                           H7_5 = c(0.00402, -0.01058, -0.02889, -0.01692, 
+                                    0.04397, 0.13964, 0.22975, 0.27028, 0.23845, 0.14712, 0.04098, 
+                                    -0.02696, -0.03086), 
+                           H6_6 = c(-0.01935, -0.02786, 0, 0.06549, 
+                                    0.14736, 0.21434, 0.24006, 0.21434, 0.14736, 0.06549, 0, -0.02786, 
+                                    -0.01935)), class = "data.frame", row.names = c(NA, -13L))
+
+round(nps_dom,5) - nps_dom2
