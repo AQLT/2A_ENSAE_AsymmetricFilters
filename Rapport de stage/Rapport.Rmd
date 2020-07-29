@@ -214,10 +214,12 @@ $$
 \hline \\
 \end{array}
 $$
-\caption{Quality criteria}
+\caption{Criteria used to check the quality of a linear filter defined by its coefficients $\theta=(\theta_k)_{-p\leq k\leq f}$ and its gain and phase shift function, $\rho_{\theta}$ and $\varphi_\theta$. 
 \label{tab:QC}
 \footnotesize
-\emph{Note: $X_g$ from \textcite{ch15HBSA} and $X_g$ from \textcite{trilemmaWMR2019}.}
+\emph{Note: $X_g$ criteria are from \textcite{ch15HBSA} and $X_g$ criteria from \textcite{trilemmaWMR2019}.}
+
+\emph{$\rho_s$ represent the gain function of a symmetric filter to compare with the asymmetric ones.}
 \end{table}
 
 # Local polynomial filters {#sec:lppfilters}
