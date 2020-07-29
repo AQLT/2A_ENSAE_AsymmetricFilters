@@ -66,27 +66,27 @@ get_all_sfilters <- function(horizon){
 }
 get_all_gain_sfilters <- function(horizon, xlim = c(0, 2*pi/12), resolution = 80){
   all_gain <- do.call(rbind,
-                         lapply(c("Henderson","Uniform", "Triangular",
-                                  "Epanechnikov","Biweight", "Triweight","Tricube",
-                                  "Trapezoidal", "Gaussian"),
-                                function(kernel){
-                                  n_kernel <- kernel
-                                  if(kernel == "Epanechnikov")
-                                    n_kernel <- "Parabolic"
-                                  x_values <- seq(from = xlim[1], to = xlim[2],
-                                                  length.out = resolution)
-                                  k_f <- filterproperties(horizon = horizon, kernel = n_kernel)
-                                  k_gain <- get_properties_function(k_f, "Symmetric Gain")
-
-                                  data.frame(x = x_values, y = k_gain(x_values),
-                                             kernel = factor(kernel,
-                                                             levels = c("Henderson", "Gaussian", "Trapezoidal",
-                                                                        "Triweight", "Tricube", "Biweight",
-                                                                        "Epanechnikov", "Triangular", "Uniform"),
-                                                             ordered = TRUE),
-                                             h = horizon,
-                                             stringsAsFactors = FALSE)
-                                }))
+                      lapply(c("Henderson","Uniform", "Triangular",
+                               "Epanechnikov","Biweight", "Triweight","Tricube",
+                               "Trapezoidal", "Gaussian"),
+                             function(kernel){
+                               n_kernel <- kernel
+                               if(kernel == "Epanechnikov")
+                                 n_kernel <- "Parabolic"
+                               x_values <- seq(from = xlim[1], to = xlim[2],
+                                               length.out = resolution)
+                               k_f <- filterproperties(horizon = horizon, kernel = n_kernel)
+                               k_gain <- get_properties_function(k_f, "Symmetric Gain")
+                               
+                               data.frame(x = x_values, y = k_gain(x_values),
+                                          kernel = factor(kernel,
+                                                          levels = c("Henderson", "Gaussian", "Trapezoidal",
+                                                                     "Triweight", "Tricube", "Biweight",
+                                                                     "Epanechnikov", "Triangular", "Uniform"),
+                                                          ordered = TRUE),
+                                          h = horizon,
+                                          stringsAsFactors = FALSE)
+                             }))
   xlabel <- function(x, symbol = "pi"){
     x <- x/pi
     fracs <- strsplit(attr(MASS::fractions(x), "fracs"), "/")  # convert to fractions
@@ -109,6 +109,72 @@ get_all_gain_sfilters <- function(horizon, xlim = c(0, 2*pi/12), resolution = 80
                        breaks = x_lab_at,
                        labels = parse(text=x_lab),
                        limits = c(xlim)) +
+    facet_wrap(~kernel, scales = "free_x") +
+    theme(panel.background = element_rect(fill = "white", colour = NA),
+          panel.border = element_rect(fill = NA, colour = "grey20"),
+          panel.grid.major = element_line(colour = "grey92"),
+          panel.grid.minor = element_line(colour = "grey92",
+                                          size = 0.25),
+          strip.background = element_rect(fill = "grey85", colour = "grey20"),
+          complete = TRUE, plot.title = element_text(hjust = 0.5),
+          legend.title=element_blank()) +
+    labs(x = NULL, y = "Gain", title = title)
+}
+get_all_gain_sfilters2 <- function(horizon){
+  all_gain <- do.call(rbind,
+                         lapply(c("Henderson","Uniform", "Triangular",
+                                  "Epanechnikov","Biweight", "Triweight","Tricube",
+                                  "Trapezoidal", "Gaussian"),
+                                function(kernel){
+                                  n_kernel <- kernel
+                                  if(kernel == "Epanechnikov")
+                                    n_kernel <- "Parabolic"
+                                  
+                                  k_f <- filterproperties(horizon = horizon, kernel = n_kernel)
+                                  k_gain <- k_f$filters.gain
+                                  k_gain <- k_gain[,ncol(k_gain)]
+                                  x_values <- seq(from = 0, to = pi,
+                                                  length.out = length(k_gain))
+                                  
+
+                                  data.frame(x = x_values, y = k_gain,
+                                             kernel = factor(kernel,
+                                                             levels = c("Henderson", "Gaussian", "Trapezoidal",
+                                                                        "Triweight", "Tricube", "Biweight",
+                                                                        "Epanechnikov", "Triangular", "Uniform"),
+                                                             ordered = TRUE),
+                                             h = horizon,
+                                             stringsAsFactors = FALSE)
+                                }))
+  xlabel <- function(x, symbol = "pi"){
+    # x <- x/pi
+    fracs <- strsplit(attr(MASS::fractions(x), "fracs"), "/")  # convert to fractions
+    labels <- sapply(fracs, function(i)
+      if (length(i) > 1) { paste(i[1], "*", symbol, "/", i[2]) }
+      else { paste(i, "*", symbol) })
+    labels <- sub("0 * pi", "0", labels, fixed = TRUE)
+    labels <- sub("1 * pi", " pi", labels, fixed = TRUE)
+    labels
+  }
+  x_lab_at <- c(0,2*pi/(12*7),2*pi/36, 2 * pi / 24, 2*pi / 16, pi/6)
+  x_lab <- c("0", "2 * pi / 84", "2 * pi / 36", "2 * pi / 24", "2*pi / 16", "2* pi /12")
+  nxlab = 7
+  x_lab_at <- sort(c(2/36,2/(12*7),seq(0, 1, length.out = nxlab)))
+  x_lab <- xlabel(x_lab_at)
+  x_lab[2:3] <- c("2 * pi / 84", "2 * pi / 36")
+  
+  x_lab_at <- seq(0, 1, length.out = nxlab)
+  x_lab <- xlabel(x_lab_at)
+  
+  title = sprintf("bandwidth h = %s (filter of order %s)",horizon, 2*horizon+1)
+  ggplot(data = all_gain, aes(x = x, y = y)) +
+    ylim(0,1.05) +
+    geom_vline(xintercept=2*pi/36, linetype="dashed")+
+    geom_vline(xintercept=2*pi/(12*7), linetype="dashed") +
+    geom_line(size = 0.7)  + 
+    scale_x_continuous(NULL, 
+                       breaks = x_lab_at*pi,
+                       labels = parse(text=x_lab))+
     facet_wrap(~kernel, scales = "free_x") +
     theme(panel.background = element_rect(fill = "white", colour = NA),
           panel.border = element_rect(fill = NA, colour = "grey20"),
@@ -209,7 +275,7 @@ for(h in 2:30){
 
 for(h in 2:30){
   print(h)
-  p <- get_all_gain_sfilters(h, resolution = 30)
+  p <- get_all_gain_sfilters2(h)
   ggsave(filename = sprintf("Rapport de stage/img/symmetricFilters/gain%s.pdf",h), p,
          width = 8, height = 8)
 }
@@ -251,7 +317,20 @@ c("Triangular", "Triweight","Tricube")
 
 specific_kernel(100,kernels = c("Epanechnikov","Biweight", "Triweight"))
 specific_filter(14,kernels = c("Epanechnikov","Trapezoidal"))
-p1 <- specific_filter(14,kernels = c("Uniform","Triweight"),degree = 3)
+p1 <- specific_filter(6,kernels = c("Henderson","Triweight", "Biweight"),
+                      degree = 3)
+specific_filter(6, kernels = c("Henderson","Triweight", "Biweight"),
+                degree = 3)
+comp <- t(sapply(3:50, function(h){
+  c(sum((get_kernel("Henderson", h)$coef - get_kernel("Triweight", h)$coef)^2),
+    sum((get_kernel("Henderson", h)$coef - get_kernel("Biweight", h)$coef)^2))
+}))
+rownames(comp) <- 3:50
+colnames(comp) <- c("Triweight", "Biweight")
+comp[,1] <= comp[,2]
+p <- get_kernel("Henderson", 6)
+p$
+specific_kernel(6, kernels = c("Henderson","Triweight", "Biweight"))
 p2 <- specific_filter(14,kernels = c("Uniform","Triweight"),degree = 2)
 p1+p2
 kernel <- "Uniform"
@@ -349,4 +428,4 @@ specific_filter <- function(horizon= 20, kernels = c("Henderson","Uniform", "Tri
           legend.title=element_blank()) +
     labs(x = NULL, y = "Coefficients", title = title)
 }
-
+plot(get_kernel("Gaussian", 20,sd_gauss = 0.25))
