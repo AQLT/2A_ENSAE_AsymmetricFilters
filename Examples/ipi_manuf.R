@@ -72,7 +72,7 @@ graphiques <- function(file, start = NULL, end = NULL,
 }
 
 
-graphiques(file = "Examples/ipi_manuf_fr.pdf", start = 2018)
+graphiques(file = "FST/ipi_manuf_fr.pdf", start = 2018)
 graphiques(file = "Examples/ipi_manuf_fr_2008.pdf", start = 2007, end_ipi = c(2009,6))
 
 

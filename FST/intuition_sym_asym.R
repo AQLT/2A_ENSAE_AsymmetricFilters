@@ -59,32 +59,35 @@ compare_filter <- function(x,
   abline(v = pi/6, lty = "dotted")
 }
 
+x_values <- c(seq(0,1000, by = 100),5000, 10000)
 pdf(file = "FST/H3x3vsFST6x3.pdf", width=8,height = 5)
-for(x in c(50,seq(100,1000, by = 100),seq(1000,100000, by = 1000))){
+for(x in x_values){
   compare_filter(x, xlim = c(0,pi/6), pdegree = 2,
                  hend_horizon = 3,
                  fst_lag = 6, fst_leads = 3)
 }
 dev.off()
 
-pdf(file = "test.pdf", width=8,height = 5)
-for(x in c(50,seq(100,1000, by = 100),seq(1000,100000, by = 1000))){
-  compare_filter(1-1/x, xlim = c(0,pi/6), pdegree = 2)
+pdf(file = "FST/H6x6vsFST9x3.pdf", width=8,height = 5)
+for(x in x_values){
+  compare_filter(x, xlim = c(0,pi/6), pdegree = 2,
+                 hend_horizon = 6,
+                 fst_lag = 9, fst_leads = 3)
 }
 dev.off()
-?pdf
 
-compare_filter(1/10,xlim = c(0,pi/6),pdegree = 2)
-compare_filter(0,xlim = c(0,pi/6),pdegree = 2)
-compare_filter(1-1/1000,xlim = c(0,pi/6),pdegree = 2)
+pdf(file = "FST/H6x6vsFST9x6.pdf", width=8,height = 5)
+for(x in x_values){
+  compare_filter(x, xlim = c(0,pi/6), pdegree = 2,
+                 hend_horizon = 6,
+                 fst_lag = 9, fst_leads = 6)
+}
+dev.off()
 
-
-#########
-small_h <- filterproperties(horizon = 3, kernel = "Henderson", endpoints = "LC", ic = 3.5)
-
-
-pdf(file = "FST/H3x3vsFST6x3.pdf", width=8,height = 5)
-for(x in c(50,seq(100,1000, by = 100),seq(1000,100000, by = 1000))){
-  compare_filter(x, xlim = c(0,pi/6), pdegree = 2)
+pdf(file = "FST/H6x6vsFST10x6.pdf", width=8,height = 5)
+for(x in x_values){
+  compare_filter(x, xlim = c(0,pi/6), pdegree = 2,
+                 hend_horizon = 6,
+                 fst_lag = 10, fst_leads = 6)
 }
 dev.off()
