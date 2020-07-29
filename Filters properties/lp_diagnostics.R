@@ -72,3 +72,53 @@ x <- knitr::kable(data, "latex",
   pack_rows(index = groupement)
 x
 
+
+
+
+kernel = c("Henderson")
+list_endpoints <- c("LC", "QL", "CQ", "DAF")
+all_q <- c(0,1,2)
+lp_diagnostics <- do.call(rbind,lapply(list_endpoints, function(endpoints){
+  f <- filterproperties(horizon = 6, kernel = kernel, endpoints = endpoints, ic = 3.5)
+  a_coeff <- f$filters.coef[,sprintf("q=%i",all_q)]
+  data <- apply(a_coeff,2,diagnostics_matrix, lb = 6,sweight = f$filters.coef[,"q=6"])
+  data <- t(data)
+  data<- data.frame(q = rownames(data),
+                    Method = factor(endpoints, levels = list_endpoints, ordered = TRUE),
+                    data,
+                    stringsAsFactors = FALSE)
+  rownames(data) <- NULL
+  data
+}))
+lp_diagnostics <- lp_diagnostics[order(lp_diagnostics$q,lp_diagnostics$Method),]
+
+lp_diagnostics[,"T_g"] <- lp_diagnostics[,"T_g"] *10^3
+lp_diagnostics[,-c(1,2)] <- round(lp_diagnostics[,-c(1,2)],3)
+colnames(lp_diagnostics)[-(1:2)] <-  paste("$", colnames(lp_diagnostics)[-(1:2)] , "$")
+lp_diagnostics[,"q"] <-  paste("$", lp_diagnostics[,"q"]  , "$")
+
+colnames(lp_diagnostics) <- gsub("T_g", "T_g \\times 10^{-3}",
+                                 colnames(lp_diagnostics), fixed = TRUE)
+lp_diagnostics
+
+saveRDS(lp_diagnostics,file = "Rapport de stage/data/lp_diagnostics_henderson.RDS")
+
+lp_diagnostics <- readRDS("data/lp_diagnostics.RDS")
+title <- "Quality criteria of real-time filters ($q=0$) computed by local polynomial."
+groupement <- table(lp_diagnostics[,1])
+lp_diagnostics[,-1] %>% 
+  kable(format.args = list(digits = 3), align = "c", booktabs = T, row.names = FALSE,
+        escape = FALSE,caption = title) %>% 
+  kable_styling(latex_options=c(#"striped", 
+    "scale_down", "hold_position")) %>%
+  pack_rows(index = groupement)
+
+title <- "Quality criteria of asymmetric filters ($q=0,1,2$) computed by local polynomial with Henderson kernel for $h=6$ and $R=3.5$."
+groupement <- table(lp_diagnostics[,1])
+lp_diagnostics[,-1] %>% 
+  kable(format.args = list(digits = 3), align = "c", booktabs = T, row.names = FALSE,
+        escape = FALSE,caption = title) %>% 
+  kable_styling(latex_options=c(#"striped", 
+    "scale_down", "hold_position")) %>%
+  add_header_above(c(" " = 1, "Kernel" = ncol(lp_diagnostics)-2)) %>%
+  pack_rows(index = groupement, escape = FALSE)
