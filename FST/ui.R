@@ -37,7 +37,9 @@ shinyUI(fluidPage(
             selectInput(inputId = "color",
                         label = "Color",
                         choices = c("fidelity.weight", "smoothness.weight", "timeliness.weight"),
-                        selected = "timeliness.weight")
+                        selected = "timeliness.weight"),
+            switchInput(inputId = "musgrave", value = TRUE,
+                        label="Musgrave", size="normal",onStatus = "dreamrs")
             
             # sliderInput(inputId = "xlim",
             #             label = "x limits * pi for Phase/Gain functions",
