@@ -1,0 +1,61 @@
+---
+title: "Untitled"
+author: "Alain Quartier-la-Tente"
+date: "30/07/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(rjdfilters)
+library(kableExtra)
+
+tableau <- function(R){
+  kernel = c("Henderson")
+  list_endpoints <- c("LC", "QL", "CQ", "DAF")
+  all_q <- c(0,1,2,3)
+  lp_diagnostics <- do.call(rbind,lapply(list_endpoints, function(endpoints){
+    f <- filterproperties(horizon = 6, kernel = kernel, endpoints = endpoints, ic = R)
+    a_coeff <- f$filters.coef[,sprintf("q=%i",all_q)]
+    data <- apply(a_coeff,2,diagnostics_matrix, lb = 6,sweight = f$filters.coef[,"q=6"])
+    data <- t(data)
+    data<- data.frame(q = rownames(data),
+                      Method = factor(endpoints, levels = list_endpoints, ordered = TRUE),
+                      data,
+                      stringsAsFactors = FALSE)
+    rownames(data) <- NULL
+    data
+  }))
+  lp_diagnostics <- lp_diagnostics[order(lp_diagnostics$q,lp_diagnostics$Method),]
+  
+  lp_diagnostics[,"T_g"] <- lp_diagnostics[,"T_g"] *10^3
+  lp_diagnostics[,-c(1,2)] <- round(lp_diagnostics[,-c(1,2)],3)
+  
+  lp_diagnostics
+  colnames(lp_diagnostics)[-(1:2)] <-  paste("$", colnames(lp_diagnostics)[-(1:2)] , "$")
+  lp_diagnostics[,"q"] <-  paste("$", lp_diagnostics[,"q"]  , "$")
+  
+  colnames(lp_diagnostics) <- gsub("T_g", "T_g \\times 10^{-3}",
+                                   colnames(lp_diagnostics), fixed = TRUE)
+  
+  title <- sprintf("Quality criteria of asymmetric filters ($q=0,1,2,3$) computed by local polynomial with Henderson kernel for $h=6$ and $IC=%.1f$.",
+                   R)
+  groupement <- table(lp_diagnostics[,1])
+  lp_diagnostics[,-1] %>% 
+    kable(format.args = list(digits = 3), align = "c", booktabs = T, row.names = FALSE,
+          escape = FALSE,caption = title) %>% 
+    kable_styling(latex_options=c(#"striped", 
+      "scale_down", "hold_position")) %>%
+    pack_rows(index = groupement, escape = FALSE)
+}
+
+```
+
+
+```{r,echo=FALSE}
+tableau(3.5)
+tableau(4.5)
+tableau(0.0001)
+tableau(10000)
+```
+
