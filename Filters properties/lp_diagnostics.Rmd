@@ -13,7 +13,7 @@ library(kableExtra)
 tableau <- function(R){
   kernel = c("Henderson")
   list_endpoints <- c("LC", "QL", "CQ", "DAF")
-  all_q <- c(0,1,2,3)
+  all_q <- c(0,1,2,3,4,5)
   lp_diagnostics <- do.call(rbind,lapply(list_endpoints, function(endpoints){
     f <- filterproperties(horizon = 6, kernel = kernel, endpoints = endpoints, ic = R)
     a_coeff <- f$filters.coef[,sprintf("q=%i",all_q)]
