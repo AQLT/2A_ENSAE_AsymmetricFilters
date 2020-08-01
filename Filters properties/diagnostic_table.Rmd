@@ -1,0 +1,34 @@
+---
+output: html_document
+bibliography: [biblioshiny.bib]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+For linear filter defined by its coefficients $\theta=(\theta_k)_{-p\leq k\leq f}$ and its gain and phase shift function, $\rho_{\theta}$ and $\varphi_\theta$, the different diagnostics are defined as follow:
+
+$$
+\newcommand\ud{\,\mathrm{d}}\begin{array}{ccc}
+\hline \text{Sigle} & \text{Description} & \text{Formula}\\
+\hline b_{c} & \text{constant bias} & \sum_{k=-p}^{+f}\theta_{k}-1\\
+\hline b_{l} & \text{linear bias} & \sum_{k=-p}^{+f}k\theta_{k}\\
+\hline b_{q} & \text{quadratic bias} & \sum_{k=-p}^{+f}k^{2}\theta_{k}\\
+\hline F_{g} & \text{variance reduction / fidelity} & \sum_{k=-p}^{+f}\theta_{k}^{2}\\
+\hline S_{g} & \text{Smoothness (Guguemos)} & \sum_{j}(\nabla^{3}\theta_{j})^{2}\\
+\hline T_{g} & \text{Timeliness (Guguemos)} & \int_{0}^{2\pi/12}\rho_{\theta}(\omega)\sin(\varphi_{\theta}(\omega))^{2}\ud\omega\\
+\hline A_{w} & \text{Accuracy (Wildi)} & 2\int_0^{2\pi/12}\left(\rho_{s}(\omega)-\rho_{\theta}(\omega)\right)^{2}h_{RW}(\omega)\ud\omega\\
+\hline T_{w} & \text{Timeliness (Wildi)} & 8\int_0^{2\pi/12} \rho_{s}(\omega)\rho_{\theta}(\omega)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h_{RW}(\omega)\ud\omega\\
+\hline S_{w} & \text{Smoothness (Wildi)} & 2\int_{2\pi/12}^{\pi}\left(\rho_{s}(\omega)-\rho_{\theta}(\omega)\right)^{2}h_{RW}(\omega)\ud\omega\\
+\hline R_{w} & \text{Residual (Wildi)} & 8\int_{2\pi/12}^{\pi} \rho_{s}(\omega)\rho_{\theta}(\omega)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h_{RW}(\omega)\ud\omega\\
+\hline \\
+\end{array}
+$$
+$X_g$ criteria are derived from @ch15HBSA and $X_g$ criteria from @trilemmaWMR2019.
+
+$\rho_s$ represent the gain function of an Henderson symmetric filter to compare with the asymmetric ones.
+
+$h_{RW}$ is the spectral density of a random walk: 
+$$h_{RW}(\omega)=\frac{1}{2(1-\cos(\omega))}$$
+
