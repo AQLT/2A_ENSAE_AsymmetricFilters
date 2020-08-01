@@ -14,7 +14,8 @@ source("shinyFunctions.R")
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
     r <- reactiveValues(allfilters_properties = NULL,
-                        selectedFilter = filterproperties(3))
+                        selectedFilter = filterproperties(3),
+                        xlim = c(0,2*pi/12))
     # eventReactive({
     #     c(input$horizon, input$degree, input$ic)
     # }, {
@@ -25,7 +26,6 @@ shinyServer(function(input, output) {
     # })
     filters_properties <- reactive({
         if(is.null(r$allfilters_properties)){
-            print("null")
             r$selectedFilter
         }else{
             r$selectedFilter <- r$allfilters_properties[[input$endpoints]][[input$kernel]]
@@ -42,6 +42,13 @@ shinyServer(function(input, output) {
                                                ic = input$ic)
         r$selectedFilter <- r$allfilters_properties[[input$endpoints]][[input$kernel]]
     })
+    
+    observeEvent({
+        input$xlim
+    },{
+        r$xlim <- c(eval(parse(text=input$xllim)),
+                    eval(parse(text=input$xulim)))
+    })
 
     
     # Plot
@@ -53,11 +60,18 @@ shinyServer(function(input, output) {
                   legend = TRUE, main = "Coefficients")
         par(mai = c(0.3, 0.5, 0.2, 0))
         plot_gain(filters_properties(),
-                  q = as.numeric(input$q), main = "Gain")
+                  q = as.numeric(input$q), main = "Gain",
+                  xlim = r$xlim)
         par(mai = c(0.3, 0.5, 0.2, 0))
         plot_phase(filters_properties(),
-                   q = as.numeric(input$q), main = "Phase")
+                   q = as.numeric(input$q), main = "Phase",
+                   xlim = r$xlim)
     })
+    output$tableFilterProperties <- renderDataTable(
+        diagnostic_table(r$allfilters_properties,
+                         horizon = input$horizon),
+        escape = c(-1)
+    )
 
     output$coefplot_endpoints <- renderPlot({ 
         coef_plot_comp(filters_properties = r$allfilters_properties,
@@ -72,7 +86,8 @@ shinyServer(function(input, output) {
                              kernel = input$kernel,
                              q = as.numeric(input$q), 
                              which = "phase",
-                             fixed = "endpoints")
+                             fixed = "endpoints",
+                             xlim = r$xlim)
     })
     output$gainplot_endpoints <- renderPlot({ 
         gain_phase_plot_comp(filters_properties = r$allfilters_properties,
@@ -80,7 +95,8 @@ shinyServer(function(input, output) {
                              kernel = input$kernel,
                              q = as.numeric(input$q), 
                              which = "gain",
-                             fixed = "endpoints")
+                             fixed = "endpoints",
+                             xlim = r$xlim)
     })
     
     output$coefplot_kernel <- renderPlot({ 
@@ -96,7 +112,8 @@ shinyServer(function(input, output) {
                              kernel = input$kernel,
                              q = as.numeric(input$q), 
                              which = "phase",
-                             fixed = "kernel")
+                             fixed = "kernel",
+                             xlim = r$xlim)
     })
     output$gainplot_kernel <- renderPlot({ 
         gain_phase_plot_comp(filters_properties = r$allfilters_properties,
@@ -104,7 +121,8 @@ shinyServer(function(input, output) {
                              kernel = input$kernel,
                              q = as.numeric(input$q), 
                              which = "gain",
-                             fixed = "kernel")
+                             fixed = "kernel",
+                             xlim = r$xlim)
     })
     # UI
     output$q0 <- renderUI({

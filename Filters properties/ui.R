@@ -28,12 +28,19 @@ shinyUI(fluidPage(
             ),
             fluidRow(
                 column(4,numericInput("degree", "degree", value = 3, step=1,  min = 1, max = 7)),
-                column(4,numericInput("horizon", "horizon", value = 3, step=1,  min = 1, max = 20)),
-                column(4,numericInput("ic", "ic", value = 4.5, 
+                column(4,numericInput("horizon", "horizon", value = 6, step=1,  min = 1, max = 20)),
+                column(4,numericInput("ic", "ic", value = 3.5, 
                                       step=0.1, 
                                       min = 0, max = 20))
             ),
             uiOutput("q0"),
+            h4("x limits"),
+            fluidRow(
+                column(4, textInput("xllim", label = "min", value = "0")),
+                column(8, textInput("xulim", label = "max", value = "2 * pi /12"))
+            ),
+            actionButton("xlim", label = "Validate x limits"),
+            
             # sliderInput(inputId = "xlim",
             #             label = "x limits * pi for Phase/Gain functions",
             #             min = 0,
@@ -66,6 +73,8 @@ shinyUI(fluidPage(
                                              tabPanel("Phase",
                                                       plotOutput("phaseplot_kernel", height = "75vh"))
                                  )),
+                        tabPanel("General statistics",
+                                 dataTableOutput("tableFilterProperties")),
                         tabPanel("More",
                                  tabsetPanel(type = "tabs",
                                              tabPanel("Kernels",
