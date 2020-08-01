@@ -78,7 +78,9 @@ shinyUI(fluidPage(
                         tabPanel("More",
                                  tabsetPanel(type = "tabs",
                                              tabPanel("Kernels",
-                                                      includeHTML('kernels_def.html'))
+                                                      includeHTML('kernels_def.html')),
+                                             tabPanel("Diagnostics",
+                                                      includeHTML('diagnostic_table.html'))
                                  ))
                         )
                         
