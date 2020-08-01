@@ -118,10 +118,4 @@ $$
 ::: 
 ::::
 
-We have:
-\begin{align*}
-\kappa_j^{E}\geq \kappa_j^{BW} \geq \kappa_j^{TW},\quad
-\kappa_j^{E}\geq \kappa_j^T,\quad
-\kappa_j^{TC} \geq \kappa_j^{TW}
-\end{align*}
 
