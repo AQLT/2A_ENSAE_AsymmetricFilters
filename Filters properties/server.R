@@ -46,8 +46,8 @@ shinyServer(function(input, output) {
     observeEvent({
         input$xlim
     },{
-        r$xlim <- c(eval(parse(text=input$xllim)),
-                    eval(parse(text=input$xulim)))
+        r$xlim <- c(max(eval(parse(text=input$xllim)), 0),
+                    min(eval(parse(text=input$xulim)), pi))
     })
 
     
