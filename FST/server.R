@@ -9,6 +9,8 @@
 
 library(shiny)
 library(plotly)
+# rkhs <- readRDS("FST/rkhs.RDS")
+rkhs <- readRDS("rkhs.RDS")
 # devtools::install_github("AQLT/rjdfilters")
 source("shinyFunctions.R")
 
@@ -29,10 +31,18 @@ shinyServer(function(input, output) {
     })
   
     output$plot_guguemos <- renderPlotly({
-        plotly_guguemos(r$data, color = input$color, lpp_filters = input$lpp_filters)
+        plotly_guguemos(r$data, color = input$color, lpp_filters = input$lpp_filters,
+                        rkhs_filters = input$rkhs_filters,
+                        rkhs_compute = input$lags == 6)
     })
     output$plot_wildi <- renderPlotly({
-        plotly_wildi(r$data, color = input$color, lpp_filters = input$lpp_filters)
+        plotly_wildi(r$data, color = input$color, lpp_filters = input$lpp_filters,
+                     rkhs_filters = input$rkhs_filters,
+                     rkhs_compute = input$lags == 6)
+    })
+    output$plot_2graph <- renderPlotly({
+      plot_2graph(r$data,
+                  rkhs_compute = input$lags == 6)
     })
     
 })

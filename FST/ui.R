@@ -36,10 +36,17 @@ shinyUI(fluidPage(
             actionButton("refresh", label = "Refresh"),
             selectInput(inputId = "color",
                         label = "Color",
-                        choices = c("fidelity.weight", "smoothness.weight", "timeliness.weight"),
-                        selected = "timeliness.weight"),
-            switchInput(inputId = "lpp_filters", value = TRUE,
-                        label="Local polynomial filters", size="normal",onStatus = "dreamrs")
+                        choices = c("default", "fidelity.weight", "smoothness.weight", "timeliness.weight"),
+                        selected = "default"),
+            fluidRow(
+                column(6, switchInput(inputId = "lpp_filters", value = TRUE,
+                                      label="Local polynomial filters", size="normal",onStatus = "dreamrs")),
+                column(6, switchInput(inputId = "rkhs_filters", value = TRUE,
+                                      label="RKHS filters", size="normal",onStatus = "dreamrs"))
+                # column(6, switchInput(inputId = "normalizedAxis", value = FALSE,
+                #                       label="Normalized axis", size="normal",onStatus = "dreamrs"))
+            )
+
             
             # sliderInput(inputId = "xlim",
             #             label = "x limits * pi for Phase/Gain functions",
@@ -54,7 +61,9 @@ shinyUI(fluidPage(
                         tabPanel(HTML("Grun-Rehomme <em>et al.</em>"),
                                  plotlyOutput("plot_guguemos", height = "80vh")),
                         tabPanel("Wildi and McElroy",
-                                 plotlyOutput("plot_wildi", height = "80vh")))
+                                 plotlyOutput("plot_wildi", height = "80vh")),
+                        tabPanel("Both",
+                                 plotlyOutput("plot_2graph", height = "80vh")))
             
         #     tabsetPanel(type = "tabs",
         #                 tabPanel("General results",
