@@ -107,7 +107,7 @@ write.table(round(Hbandgain,digits=3),file= paste("Hbandgain_",h,"_.txt"),sep="\
 jsymf <- .jcall("jdplus/math/linearfilters/SymmetricFilter",
                 "Ljdplus/math/linearfilters/SymmetricFilter;",
                 "ofInternal", rev(sym[1:7]))
-
+jsymf$gainFunction()
 sym_gain <- rjdfilters:::get_gain_function(jsymf)
 sym_phase <- rjdfilters:::get_phase_function(jsymf)
 sym_frf <- rjdfilters:::get_frequencyResponse_function(jsymf)
@@ -117,6 +117,12 @@ gain_asym <- function(b, q){
                    "of", asybiw(q,b),as.integer(-6))
   rjdfilters:::get_gain_function(jasymf)
 }
+# .jcall("jdplus/dfa/MSEDecomposition",
+#        "Ljdplus/dfa/MSEDecomposition;",
+#        "of", .jnull("java/util/function/DoubleUnaryOperator"),
+#        .jcast(jsymf$frequencyResponseFunction(), "java/util/function/DoubleFunction"),
+#        .jcast(jasymf$frequencyResponseFunction(), "java/util/function/DoubleFunction"),
+#        passband)
 frf_asym <- function(b, q){
   jasymf <- .jcall("jdplus/math/linearfilters/FiniteFilter",
                    "Ljdplus/math/linearfilters/FiniteFilter;",
@@ -142,7 +148,13 @@ for (q in 0:(m-1)){
   }
   tran <- function(b, q){
     sqrt(integrate(diff_f,0,pi,b=b, q = q)$value)
-  } 
+  }
+  plot_const(0)
+  plot_const(1)
+  plot_const(2)
+  plot_const(3)
+  plot_const(4)
+  plot_const(5)
   aa<-optimize(tran,c(m+0.01,h),tol=1e-5, q = q)
   band<-aa$minimum
   mingain<-c(mingain,aa$objective)
@@ -157,12 +169,17 @@ for (q in 0:(m-1)){
   tran <- function(b, q){
     sqrt(integrate(diff_f,0,pi,b=b, q = q)$value)
   } 
+  
   aa<-optimize(tran,c(m+0.01,h),tol=1e-5, q = q)
   band<-aa$minimum
   minfrf <- c(minfrf,aa$objective)
   webiwfrf[(m-q),(m-q+1):(2*m+1)] <- asybiw(q,band)
   Hbandfrf<-c(Hbandfrf,band)
 }
+plot_const <- function(q){
+  plot(Vectorize(function(x)tran(x,q)),m+0.01, h,main = sprintf("q=%i",q))
+}
+
 # for (q in 0:(m-1)){
 #   print(q)
 #   
@@ -191,6 +208,7 @@ for (q in 0:(m-1)){
   tran <- function(b, q){
     8*integrate(diff_f, 0,2*pi/12,b=b, q = q)$value
   } 
+  # plot(Vectorize(function(x)tran(x,5)),m+0.01, h)
   aa<-optimize(tran,c(m+0.01,h),tol=1e-5, q = q)
   band<-aa$minimum
   minphase2 <- c(minphase2,aa$objective)
@@ -199,19 +217,76 @@ for (q in 0:(m-1)){
 }
 
 formatage_poids <- function(weight, band){
-  res <- cbind(apply(weight,1,rev)[,rev(seq_len(nrow(weight)))], sym)
-  h <- (nrow(res) - 1)/2
-  rownames(res) <- rjdfilters:::coefficients_names(-h,h)
-  colnames(res) <- sprintf("q=%i", 0:h)
-  names(band) <-  sprintf("q=%i", 0:(h-1))
+  res <- apply(rbind(sym, weight),1,function(x){
+    x[cumsum(x)==0] <- NA
+    c(na.omit(x), rep(0, sum(is.na(x))))
+  })
+  res <- res[, rev(seq_len(ncol(res)))]
+  h_tmp <- (nrow(res) - 1)/2
+  rownames(res) <- rjdfilters:::coefficients_names(-h_tmp,h_tmp)
+  colnames(res) <- sprintf("q=%i", 0:h_tmp)
+  names(band) <-  sprintf("q=%i", 0:(h_tmp-1))
   list(weight = res, band = band)
 }
 rkhs <- list(frf = formatage_poids(webiwfrf, Hbandfrf),
              gain = formatage_poids(webiwgain, Hbandgain),
              # phase = formatage_poids(webiwphase, Hbandphase),
              phase = formatage_poids(webiwphase2, Hbandphase2))
-webiwgain_frf <- webiwgain
-webiwgain2 - webiwgain
+diagnostics_matrix(rkhs$frf$weight[,1], lb = -6)
+saveRDS(rkhs, file = "RKHS/rkhs.RDS")
+saveRDS(rkhs, file = "FST/rkhs.RDS")
 
-col_names
-list(weight = webiwphase, band = Hbandphase)
+rkhs <- readRDS(file = "RKHS/rkhs.RDS")
+names(rkhs) <- c("$b_{q,\\gamma}$", "$b_{q,G}$",
+                 "$b_{q,\\varphi}$")
+all_q <- c(0,1,2)
+
+rkhs_diagnostics <- do.call(rbind,lapply(names(rkhs),
+                                       function(method){
+  f <- filterproperties(horizon = 6, kernel = "Henderson", ic = 3.5)
+  a_coeff <- rkhs[[method]]$weight[,sprintf("q=%i",all_q)]
+  data <- apply(a_coeff,2,diagnostics_matrix, lb = 6,sweight = f$filters.coef[,"q=6"])
+  data <- t(data)
+  data<- data.frame(q = rownames(data),
+                    Method = factor(method, levels = names(rkhs), ordered = TRUE),
+                    data,
+                    stringsAsFactors = FALSE)
+  rownames(data) <- NULL
+  data
+}))
+rkhs_diagnostics <- rkhs_diagnostics[order(rkhs_diagnostics$q,rkhs_diagnostics$Method),]
+
+rkhs_diagnostics[,"T_g"] <- rkhs_diagnostics[,"T_g"] *10^3
+rkhs_diagnostics[,-c(1,2)] <- round(rkhs_diagnostics[,-c(1,2)],3)
+colnames(rkhs_diagnostics)[-(1:2)] <-  paste("$", colnames(rkhs_diagnostics)[-(1:2)] , "$")
+rkhs_diagnostics[,"q"] <-  paste("$", rkhs_diagnostics[,"q"]  , "$")
+
+colnames(rkhs_diagnostics) <- gsub("T_g", "T_g \\times 10^{-3}",
+                                 colnames(rkhs_diagnostics), fixed = TRUE)
+saveRDS(rkhs_diagnostics,file = "Rapport de stage/data/rkhs_diagnostics.RDS")
+
+title <- "Quality criteria of asymmetric filters ($q=0,1,2$) computed by the RKHS methodology $h=6$."
+groupement <- table(rkhs_diagnostics[,1])
+
+library(kableExtra)
+rkhs_diagnostics[,-1] %>% 
+  kable(format.args = list(digits = 3), align = "c", booktabs = T, row.names = FALSE,
+        escape = FALSE,caption = title) %>% 
+  kable_styling(latex_options=c(#"striped", 
+    "scale_down", "hold_position")) %>%
+  pack_rows(index = groupement, escape = FALSE)
+
+i <- 1
+lp_diagnostics[lp_diagnostics$q=="$ q=0 $",-(1:5)] - 
+  rbind(rkhs_diagnostics[i,-(1:5)],rkhs_diagnostics[i,-(1:5)],
+        rkhs_diagnostics[i,-(1:5)], rkhs_diagnostics[i,-(1:5)])
+
+i <- 2
+lp_diagnostics[lp_diagnostics$q=="$ q=0 $",-(1:5)] - 
+  rbind(rkhs_diagnostics[i,-(1:5)],rkhs_diagnostics[i,-(1:5)],
+        rkhs_diagnostics[i,-(1:5)], rkhs_diagnostics[i,-(1:5)])
+
+i <- 3
+lp_diagnostics[lp_diagnostics$q=="$ q=0 $",-(1:5)] - 
+  rbind(rkhs_diagnostics[i,-(1:5)],rkhs_diagnostics[i,-(1:5)],
+        rkhs_diagnostics[i,-(1:5)], rkhs_diagnostics[i,-(1:5)])
