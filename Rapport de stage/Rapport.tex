@@ -78,12 +78,87 @@
 \setcounter{secnumdepth}{5}
 %début contraintes ensae
 \usepackage{pdfpages, setspace, mathptmx} %times roman
+\usepackage{textpos}%pour textblock
 \onehalfspacing 
+\definecolor{rougeENSAE}{RGB}{188, 24, 39}
+
 \makeatletter
+%CREDITS : @antuki
 \def\@maketitle{%
-  \newpage\setcounter{page}{0} % pour que la page d'après soit la page 1
-  \includepdf[fitpaper=true, pages=-]{img/pdg.pdf}
+  \clearpage
+ \thispagestyle{empty}
+
+\begin{textblock*}{\textwidth}(-7cm,-3.5cm)
+\begin{center}
+\includegraphics[height=3cm]{img/900px-LOGO-ENSAE.png}
+\end{center}
+\end{textblock*}
+
+\begin{minipage}{0.4\textwidth}
+  \begin{flushleft} \large
+    \textbf{Alain \textsc{Quartier-la-Tente} \vspace{8.75mm} }
+  \end{flushleft}
+\end{minipage}
+\begin{minipage}{0.6\textwidth}
+  \begin{flushright} 
+  \large{
+    \textbf{ENSAE 2\textsuperscript{ème} année\\}
+  }     
+  \small
+    \textbf{ 
+        \textit{Stage d'application\\
+        Année scolaire 2019 - 2020}
+    }
+  \end{flushright}
+\end{minipage}
+
+\vspace*{5cm}
+
+\begin{center}
+    \fbox{\parbox{0.9\textwidth}{
+        \begin{huge}\begin{center}
+        \textbf{Real-time detection of turning points with linear filters}\\
+        
+        %\textbf{Détection en temps réel des points de retournement}\\
+        \end{center}\end{huge}}}
+\end{center}
+
+\vfill
+    
+\begin{minipage}{0.5\textwidth}
+    \begin{flushleft} \large 
+    \textbf{Banque Nationale de Belgique\\
+        Cellule Recherche et Développement
+    }
+  \end{flushleft}
+\end{minipage} 
+\begin{minipage}{0.5\textwidth}
+  \begin{flushright} \large
+    \textbf{
+        Maître de stage : Jean \textsc{Palate}\\
+        08/06/2020 - 14/08/2020
+    }
+  \end{flushright}
+\end{minipage}    
+
+\vspace*{1cm}
+
+
+\textcolor{rougeENSAE}{\rule{10mm}{1.5mm}}
+
+\scriptsize
+\textbf{ENSAE Paris}\newline TSA 26644
+\rightline{\href{www.ensae.fr}{\textcolor{rougeENSAE}{\textbf{www.ensae.fr}}}$\quad \qquad \qquad$}
+
+Service des relations entreprises et des stages\newline
+5, avenue Henry Le Chatelier -- 91764 PALAISEAU CEDEX -- FRANCE -- Tél : +33 (0)1 70 26 67 39 -- Courriel : stage\symbol{64}ensae.fr
+
+\normalsize
+
+\clearpage
+\setcounter{page}{0}
 }
+
 \makeatother% cinsérer page de garde
 
 \usepackage{stmaryrd}
@@ -108,16 +183,50 @@
 \newcommand{\E}[2][]{{\mathds{E}}_{#1}
   \def\temp{#2}\ifx\temp\empty
   \else
-  \left[#2\right]
+    \left[#2\right]
   \fi
 }
 \newcommand{\V}[2][]{{\mathds{V}}_{#1}
   \def\temp{#2}\ifx\temp\empty
   \else
-  \left[#2\right]
+    \left[#2\right]
   \fi
 }
 \newcommand\ud{\,\mathrm{d}}
+
+% blocks
+\usepackage{environ}
+\usepackage[tikz]{bclogo}
+
+\tikzstyle{titlestyle} =[draw=black!80,fill=black!20, text=black,
+ right=10pt, rounded corners]
+\mdfdefinestyle{symmaryboxstyle}{
+	linecolor=black!80, backgroundcolor = black!5,
+	skipabove=\baselineskip, innertopmargin=\baselineskip,
+	innerbottommargin=\baselineskip,
+	userdefinedwidth=\textwidth,
+	middlelinewidth=1.2pt, roundcorner=5pt,
+	skipabove={\dimexpr0.5\baselineskip+\topskip\relax},
+	frametitleaboveskip=\dimexpr-\ht\strutbox\relax,
+	innerlinewidth=0pt,
+}
+\NewEnviron{summary}[1]{%
+\begin{mdframed}[style=symmaryboxstyle,
+frametitle={%
+      \tikz[baseline=(current bounding box.east),outer sep=0pt]
+      \node[titlestyle,anchor=east]
+    {Summary --- #1};}
+]
+\vspace{-0.5em}
+\BODY
+\end{mdframed}
+}
+
+\usepackage{amsthm}
+%\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+
+\usepackage{mathrsfs}
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
@@ -156,6 +265,9 @@
 }
 \newpage
 
+\hypertarget{abstract}{%
+\section{Abstract}\label{abstract}}
+
 \hypertarget{introduction}{%
 \section{Introduction}\label{introduction}}
 
@@ -164,11 +276,13 @@
 
 Indiquer pourquoi on se place dans le cadre de la désaisonnalisation.
 
-Dire que l'on se place dans le cadre de X-12-ARIMA qui est une méthode non-paramétrique : on va s'intéresser à deux approches : \textcite{proietti2008} (section \ref{sec:lppfilters}) et \textcite{ch15HBSA} (section \ref{sec:GuguemosEtAl}).
+Dire que l'on se place dans le cadre de X-12-ARIMA qui est une méthode non-paramétrique : on va s'intéresser à deux approches : \textcite{proietti2008} (section \ref{sec:lppfilters}) et \textcite{ch15HBSA} (section \ref{sec:GuggemosEtAl}).
 
 Mentionner également \textcite{ch14HBSA} (section @ref(sec:Dagum\})) et \textcite{ch16HBSA} / \textcite{trilemmaWMR2019} (section \ref{sec:WildiMcLeroy}).
 
 Description du trilemma.
+
+Parler aussi de la timeliness
 
 \hypertarget{sec:propMM}{%
 \section{Moving average and filters}\label{sec:propMM}}
@@ -193,12 +307,12 @@ M_\theta(X_t)=\sum_{k=-p}^{+f}\theta_kX_{t+k}
 \hypertarget{gain-and-phase-shift-functions}{%
 \subsection{Gain and phase shift functions}\label{gain-and-phase-shift-functions}}
 
-Let \(X_t=\e^{i\omega t}\), the result of the moving average \(M_\theta\) in \(X_t\) is:
+Let \(X_t=\e^{-i\omega t}\), the result of the moving average \(M_\theta\) in \(X_t\) is:
 \[
-Y_t = M_{\theta}X_t = \sum_{k=-p}^{+f} \theta_k \e^{i \omega (t+k)}
-= \left(\sum_{k=-p}^{+f} \theta_k \e^{i \omega k}\right)\cdot X_t.
+Y_t = M_{\theta}X_t = \sum_{k=-p}^{+f} \theta_k \e^{-i \omega (t+k)}
+= \left(\sum_{k=-p}^{+f} \theta_k \e^{-i \omega k}\right)\cdot X_t.
 \]
-The function \(\Gamma_\theta(\e^{i \omega k})=\sum_{k=-p}^{+f} \theta_k e^{i \omega k}\) is called the \emph{transfer function} or \emph{frequency response function}.
+The function \(\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{-i \omega k}\) is called the \emph{transfer function} or \emph{frequency response function}\footnote{The frequency response function can equivalently be defined as \(\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{i \omega k}\) or \(\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{2\pi i \omega k}\).}.
 It can be rewritten as:
 \[
 \Gamma_\theta(\omega) = G_\theta(\omega)\e^{-i\Phi_\theta(\omega)}
@@ -306,7 +420,7 @@ All time series are affected by noise that can blur the signal extraction.
 Hence, we seek to reduce the variance of the noise.
 The sum of the sum of the squares of the coefficients \(\sum_{k=-p}^{+f}\theta_k^2\) is the \emph{variance reduction} ratio.
 
-Indeed, let \(\{\varepsilon_t\}\) a sequence of independent random variables with\(\E{\varepsilon_t}=0 \E{}\), \(\V{\varepsilon_t}=\sigma^2\).
+Indeed, let \(\{\varepsilon_t\}\) a sequence of independent random variables with \(\E{\varepsilon_t}=0\), \(\V{\varepsilon_t}=\sigma^2\).
 \[
 \V{M_\theta\varepsilon_t}=\V{\sum_{k=-p}^{+f} \theta_k \varepsilon_{t+k}}
 = \sum_{k=-p}^{+f} \theta_k^2 \V{\varepsilon_{t+k}}=
@@ -325,37 +439,37 @@ The approximation is summarised by quality indicators.
 In this paper we focus on the ones defined by \textcite{ch15HBSA} and \textcite{trilemmaWMR2019} to build the asymmetric filters.
 
 \textcite{ch15HBSA} propose a general approach to derive linear filters, based on an optimization problem of three criteria: \emph{Fidelity} (\(F_g\), noise reduction), \emph{Smoothness} (\(S_g\)) and \emph{Timeliness} (\(T_g\), phase shift between input and ouput signals).
-See section \ref{sec:GuguemosEtAl} for more details.
+See section \ref{sec:GuggemosEtAl} for more details.
 
 \textcite{trilemmaWMR2019} propose an approach based on the decomposition of the mean squared error between the symmetric and the asymmetric filter in four quantities: \emph{Accuracy} (\(A_w\)), \emph{Timeliness} (\(T_w\)), \emph{Smoothness} (\(S_w\)) and \emph{Residual} (\(R_w\)).
 See section \ref{sec:WildiMcLeroy} for more details.
 
 All the indicators are summarized in table \ref{tab:QC}.
 
-\textbackslash begin\{table\}{[}!ht{]}
-\[
-\begin{array}{ccc}
+\begin{table}[!ht]
+$$\begin{array}{ccc}
 \hline \text{Sigle} & \text{Description} & \text{Formula}\\
 \hline b_{c} & \text{constant bias} & \sum_{k=-p}^{+f}\theta_{k}-1\\
 \hline b_{l} & \text{linear bias} & \sum_{k=-p}^{+f}k\theta_{k}\\
 \hline b_{q} & \text{quadratic bias} & \sum_{k=-p}^{+f}k^{2}\theta_{k}\\
 \hline F_{g} & \text{variance reduction / fidelity} & \sum_{k=-p}^{+f}\theta_{k}^{2}\\
-\hline S_{g} & \text{Smoothness (Guguemos)} & \sum_{j}(\nabla^{3}\theta_{j})^{2}\\
-\hline T_{g} & \text{Timeliness (Guguemos)} & \int_{0}^{2\pi/12}\rho_{\theta}(\omega)\left|\varphi_{\theta}(\omega)\right|^{2}\ud\omega\\
-\hline A_{w} & \text{Accuracy (Wildi)} & \int_0^{2\pi/12}\left(\rho_{s}(\omega)-\rho_{\theta}(\omega)\right)^{2}h(\omega)\ud\omega\\
-\hline T_{w} & \text{Timeliness (Wildi)} & \int_0^{2\pi/12} \rho_{s}(\lambda)\rho_{\theta}(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h(\omega)\ud\omega\\
-\hline S_{w} & \text{Smoothness (Wildi)} & \int_{2\pi/12}^{\pi}\left(\rho_{s}(\omega)-\rho_{\theta}(\omega)\right)^{2}h(\omega)\ud\omega\\
-\hline R_{w} & \text{Residual (Wildi)} & \int_{2\pi/12}^{\pi} \rho_{s}(\lambda)\rho_{\theta}(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h(\omega)\ud\omega\\
+\hline S_{g} & \text{Smoothness (Guggemos)} & \sum_{j}(\nabla^{3}\theta_{j})^{2}\\
+\hline T_{g} & \text{Timeliness (Guggemos)} & \int_{0}^{2\pi/12}\rho_{\theta}(\omega)\sin(\varphi_{\theta}(\omega))^{2}\ud\omega\\
+\hline A_{w} & \text{Accuracy (Wildi)} & 2\int_0^{2\pi/12}\left(\rho_{s}(\omega)-\rho_{\theta}(\omega)\right)^{2}h_{RW}(\omega)\ud\omega\\
+\hline T_{w} & \text{Timeliness (Wildi)} & 8\int_0^{2\pi/12} \rho_{s}(\omega)\rho_{\theta}(\omega)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h_{RW}(\omega)\ud\omega\\
+\hline S_{w} & \text{Smoothness (Wildi)} & 2\int_{2\pi/12}^{\pi}\left(\rho_{s}(\omega)-\rho_{\theta}(\omega)\right)^{2}h_{RW}(\omega)\ud\omega\\
+\hline R_{w} & \text{Residual (Wildi)} & 8\int_{2\pi/12}^{\pi} \rho_{s}(\omega)\rho_{\theta}(\omega)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h_{RW}(\omega)\ud\omega\\
 \hline \\
-\end{array}
-\]
-\textbackslash caption\{Criteria used to check the quality of a linear filter defined by its coefficients \(\theta=(\theta_k)_{-p\leq k\leq f}\) and its gain and phase shift function, \(\rho_{\theta}\) and \(\varphi_\theta\).
+\end{array} $$
+\caption{Criteria used to check the quality of a linear filter defined by its coefficients $\theta=(\theta_k)_{-p\leq k\leq f}$ and its gain and phase shift function, $\rho_{\theta}$ and $\varphi_\theta$.} 
 \label{tab:QC}
 \footnotesize
-\emph{Note: $X_g$ criteria are from \textcite{ch15HBSA} and $X_g$ criteria from \textcite{trilemmaWMR2019}.}
+\emph{Note: $X_g$ criteria are derived from \textcite{ch15HBSA} and $X_g$ criteria from \textcite{trilemmaWMR2019}.}
 
-\emph{$\rho_s$ represent the gain function of a symmetric filter to compare with the asymmetric ones.}
-\textbackslash end\{table\}
+\emph{$\rho_s$ represent the gain function of an Henderson symmetric filter to compare with the asymmetric ones.}
+
+\emph{$h_{RW}$ is the spectral density of a random walk: $h_{RW}(\omega)=\frac{1}{2(1-\cos(\omega))}$.}
+\end{table}
 
 \hypertarget{sec:lppfilters}{%
 \section{Local polynomial filters}\label{sec:lppfilters}}
@@ -591,7 +705,7 @@ We find the similar results than in section~\ref{fig:kernels}:
 \item
   The triweight kernel gives the filter with the narrowest distribution.
   The narrowest a distribution is, the higher the variance reduction should be.
-  Indeed, the distribution of the coefficients of the filter can be interprated as the output signal of an additive outlier.
+  Indeed, the distribution of the coefficients of the filter can be interpreted as the output signal of an additive outlier.
   As a result, with a wide distribution, an additive outlier will be more persistent than with a narrow distribution.
   Therefore, it's the triweight that has the higher variance reduction for all \(h\leq30\).
 \item
@@ -720,7 +834,7 @@ Therefore, even if the real-time filter is unbiased (if the series is generated 
 
 \begin{figure}[!ht]
 \includegraphics[width=\textwidth]{img/daf/coef_gain_1}
-\caption{Coefficients and gain function of direct asymmetric filters (DAF) computed by local polynomial of degree $3$ with the Henderson kerne for $h=6$.}\label{fig:filtersdafcoefs}\footnotesize
+\caption{Coefficients and gain function of direct asymmetric filters (DAF) computed by local polynomial of degree $3$ with the Henderson kernel for $h=6$.}\label{fig:filtersdafcoefs}\footnotesize
 \end{figure}
 
 For all the kernels, we find the same results as in \textcite{proietti2008}:
@@ -772,18 +886,29 @@ In the seasonal adjustment method, the I-C ratio\footnote{To compute the I-C rat
   if \(3.5< R\) a 23-term Henderson is used (\(h=12\)).
 \end{itemize}
 
+In this report, for simplicity we only consider 13-term symmetric filters: the ratio \(\delta^2/\sigma^2\) is fixed to \(3.5\).
+
 When \(U\) corresponds to the first \(d^*+1\) first the columns of \(X\), \(d^*<d\), the constraint is that the asymmetric filter should reproduce polynomial of degree \(d^*\), the potential bias depends on the value of \(\delta\).
 This will reduce the variance at the expense of a bias: it is the idea followed by \textcite{proietti2008} to propose three class of asymmetric filters:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  \emph{Linear-Constant} (LC): \(y_t\) linear (\(d=1\)) and \(v\) preserve constant signals (\(d^*=0\)), \(v\) depend on the ratio \(\delta_1^2/\sigma^2\). We obtain Musgrave filters when the Henderson kernel is used.
+  \emph{Linear-Constant} (LC): \(y_t\) linear (\(d=1\)) and \(v\) preserve constant signals (\(d^*=0\)). We obtain Musgrave filters when the Henderson kernel is used.
 \item
-  \emph{Quadratic-Linear} (QL): \(y_t\) quadratic (\(d=2\)) and \(v\) preserve linear signals (\(d^*=1\)), \(v\) depend on the ratio \(\delta_2^2/\sigma^2\).
+  \emph{Quadratic-Linear} (QL): \(y_t\) quadratic (\(d=2\)), \(v\) depend on the ratio \(\delta_2^2/\sigma^2\).
 \item
-  \emph{Cubic-Quadratic} (CQ): \(y_t\) cubic (\(d=3\)) and \(v\) preserve linear signals (\(d^*=1\)), \(v\) depend on the ratio \(\delta_2^2/\sigma^2\).
+  \emph{Cubic-Quadratic} (CQ): \(y_t\) cubic (\(d=3\)), \(v\) depend on the ratio \(\delta_2^2/\sigma^2\).
 \end{enumerate}
+
+The table \ref{tab:criteriaLp} show the quality criteria of the different methods with the Henderson kernel and \(h=6\).
+For real-time filters (\(q=0\)), the more complex the filter is (in terms of polynomial preservation), the less the timeliness is and the more the fidelity/smoothness is:the reduction of the time-delay is at the expense of an increase variance.
+This change when \(q\) increases: for \(q=2\) the QL filter has a greater timeliness that the LC filter.
+This unexpected result underlines the fact that in the approach of \textcite{proietti2008}, the timeliness is never set as a goal to minimize.
+
+Regarding the mean square revision error (\(A_w+S_w+T_w+R_w\)), LC and QL filters always gives better results than CQ and DAF filters. Similar results are founded applying the different filters to the Industrial production indices of the European Union between 2003 and 2019.
+
+This suggest to focus on LC and QL filters, i.e.: to build asymmetric linear filters that preserve polynomial trends of degree less than one.
 
 \begin{table}[!h]
 
@@ -796,28 +921,51 @@ Method & $ b_c $ & $ b_l $ & $ b_q $ & $ F_g $ & $ S_g $ & $ T_g \times 10^{-3} 
 \midrule
 \addlinespace[0.3em]
 \multicolumn{11}{l}{\textbf{$ q=0 $}}\\
-\hspace{1em}LC & 0 & -0.407 & -2.161 & 0.388 & 1.272 & 30.341 & 0.098 & 0.488 & 2.705 & 1.796\\
-\hspace{1em}QL & 0 & 0.000 & -0.473 & 0.711 & 5.149 & 0.047 & 0.067 & 1.894 & 1.054 & 0.967\\
-\hspace{1em}CQ & 0 & 0.000 & 0.000 & 0.913 & 11.942 & 0.015 & 0.016 & 2.231 & 0.997 & 0.573\\
-\hspace{1em}DAF & 0 & 0.000 & 0.000 & 0.943 & 14.203 & 0.003 & 0.015 & 2.178 & 1.005 & 0.571\\
+\hspace{1em}LC & 0 & -0.407 & -2.161 & 0.388 & 1.272 & 30.341 & 0.098 & 0.488 & 0.409 & 0.548\\
+\hspace{1em}QL & 0 & 0.000 & -0.473 & 0.711 & 5.149 & 0.047 & 0.067 & 1.894 & 0.000 & 0.106\\
+\hspace{1em}CQ & 0 & 0.000 & 0.000 & 0.913 & 11.942 & 0.015 & 0.016 & 2.231 & 0.000 & 0.102\\
+\hspace{1em}DAF & 0 & 0.000 & 0.000 & 0.943 & 14.203 & 0.003 & 0.015 & 2.178 & 0.000 & 0.098\\
 \addlinespace[0.3em]
 \multicolumn{11}{l}{\textbf{$ q=1 $}}\\
-\hspace{1em}LC & 0 & -0.121 & -0.525 & 0.268 & 0.433 & 4.797 & 0.009 & 0.119 & 1.527 & 0.832\\
-\hspace{1em}QL & 0 & 0.000 & -0.061 & 0.287 & 0.707 & 0.694 & 0.005 & 0.192 & 1.134 & 0.613\\
-\hspace{1em}CQ & 0 & 0.000 & 0.000 & 0.372 & 0.571 & 0.158 & 0.022 & 0.575 & 1.064 & 0.785\\
-\hspace{1em}DAF & 0 & 0.000 & 0.000 & 0.409 & 0.366 & 0.061 & 0.020 & 0.760 & 1.044 & 0.717\\
+\hspace{1em}LC & 0 & -0.121 & -0.525 & 0.268 & 0.433 & 4.797 & 0.009 & 0.119 & 0.063 & 0.112\\
+\hspace{1em}QL & 0 & 0.000 & -0.061 & 0.287 & 0.707 & 0.694 & 0.005 & 0.192 & 0.007 & 0.042\\
+\hspace{1em}CQ & 0 & 0.000 & 0.000 & 0.372 & 0.571 & 0.158 & 0.022 & 0.575 & 0.001 & 0.061\\
+\hspace{1em}DAF & 0 & 0.000 & 0.000 & 0.409 & 0.366 & 0.061 & 0.020 & 0.760 & 0.000 & 0.059\\
 \addlinespace[0.3em]
 \multicolumn{11}{l}{\textbf{$ q=2 $}}\\
-\hspace{1em}LC & 0 & 0.003 & 1.076 & 0.201 & 0.080 & 0.347 & 0.009 & 0.012 & 1.047 & 0.424\\
-\hspace{1em}QL & 0 & 0.000 & 0.033 & 0.215 & 0.052 & 2.083 & 0.000 & 0.011 & 1.230 & 0.638\\
-\hspace{1em}CQ & 0 & 0.000 & 0.000 & 0.370 & 0.658 & 0.131 & 0.021 & 0.558 & 1.059 & 0.755\\
-\hspace{1em}DAF & 0 & 0.000 & 0.000 & 0.398 & 0.768 & 0.023 & 0.017 & 0.677 & 1.030 & 0.634\\
+\hspace{1em}LC & 0 & 0.003 & 1.076 & 0.201 & 0.080 & 0.347 & 0.009 & 0.012 & 0.004 & 0.015\\
+\hspace{1em}QL & 0 & 0.000 & 0.033 & 0.215 & 0.052 & 2.083 & 0.000 & 0.011 & 0.023 & 0.067\\
+\hspace{1em}CQ & 0 & 0.000 & 0.000 & 0.370 & 0.658 & 0.131 & 0.021 & 0.558 & 0.001 & 0.055\\
+\hspace{1em}DAF & 0 & 0.000 & 0.000 & 0.398 & 0.768 & 0.023 & 0.017 & 0.677 & 0.000 & 0.048\\
 \bottomrule
 \end{tabular}}
 \end{table}
 
-\hypertarget{sec:GuguemosEtAl}{%
-\section{\texorpdfstring{General optimisation problem: \textcite{ch15HBSA}}{General optimisation problem: @ch15HBSA}}\label{sec:GuguemosEtAl}}
+The results for the different kernels can also be visualised in an online application available at \url{https://aqlt.shinyapps.io/FiltersProperties/}.
+
+\begin{summary}{local polynomial filters}
+
+\textbf{Advantages}:
+
+\begin{itemize}
+\item
+  Simple models with an easy interpretation.
+\item
+  The asymmetric linear filter is independent of the data and of the date of estimation.
+\end{itemize}
+
+\textbf{Drawbacks}:
+
+\begin{itemize}
+\tightlist
+\item
+  Timeliness is not controlled.
+\end{itemize}
+
+\end{summary}
+
+\hypertarget{sec:GuggemosEtAl}{%
+\section{\texorpdfstring{General optimisation problem: \textcite{ch15HBSA}}{General optimisation problem: @ch15HBSA}}\label{sec:GuggemosEtAl}}
 
 \textcite{ch15HBSA} defined a general approach to derive linear filters, based on an optimization problem of three criteria:
 
@@ -867,6 +1015,29 @@ a=\begin{pmatrix}
 \alpha=\gamma=0,\quad
 \beta=1\]
 
+\colorbox{BurntOrange}{Parler de la convexité}
+
+\begin{summary}{FST filters}
+
+\textbf{Advantages}:
+
+\begin{itemize}
+\item
+  The approach can be customized adding new criteria.
+\item
+  The asymmetric linear filter is independent of the symmetric filter, the data and the date of estimation.
+\end{itemize}
+
+\textbf{Drawbacks}:
+
+\begin{itemize}
+\tightlist
+\item
+  The different criteria are not normalized: the associated weights cannot be compared.
+\end{itemize}
+
+\end{summary}
+
 \hypertarget{sec:WildiMcLeroy}{%
 \section{\texorpdfstring{Data-dependent filter: \textcite{trilemmaWMR2019}}{Data-dependent filter: @trilemmaWMR2019}}\label{sec:WildiMcLeroy}}
 
@@ -884,31 +1055,218 @@ Let:
 \end{itemize}
 
 If we assume that \(\left\{ x_{t}\right\}\) is weakly stationary with a continuous spectral density \(h\), the mean square revision error, \(\E{(y_{t}-\hat{y}_{t})^{2}}\), can be written as:
-\[
+\begin{equation}
 \E{(y_{t}-\hat{y}_{t})^{2}}=\frac{1}{2\pi}\int_{-\pi}^{\pi}\left|\Gamma_s(\omega)-{\Gamma_\theta}(\omega)\right|^{2}h(\omega)\ud\omega=\frac{1}{2\pi}\times2\times\int_{0}^{\pi}\left|\Gamma_s(\omega)-{\Gamma_\theta}(\omega)\right|^{2}h(\omega)\ud\omega
-\]
-\[
-\begin{alignedat}{1}\left|\Gamma_s(\omega)-\Gamma_\theta(\omega)\right|^{2} & =\rho_s(\omega)^{2}+\rho_\theta(\omega)^{2}+2\rho_s(\lambda)\rho_\theta(\lambda)\left(1-\cos(\varphi_s(\omega)-\varphi_\theta(\omega)\right)\\
- & =\left(\rho_s(\omega)^{2}-\rho_\theta(\omega)\right)^{2}+4\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_s(\omega)-\varphi_\theta(\omega)}{2}\right)
-\end{alignedat}
-\]
-The interval \([0,\pi]\) is then splitted in two: the pass-band \([0,\omega_1]\) and the stop-band \([\omega_1,\pi]\).
-Moreover, for symmetric filters the phase shift is zero: \(\varphi_s(\omega)=0\).
+\label{eq:msedef}
+\end{equation}
 
-The mean squared error can then be decomposed additively into four quantities:
-\[
-\begin{alignedat}{1}
-Accuracy =A_w&= 2\int_0^{\omega_1}\left(\rho_s(\omega)^{2}-\rho_\theta(\omega)\right)^{2}h(\omega)\ud\omega\\
-Smoothness =S_w&= 8\int_0^{\omega_1}\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h(\omega)\ud\omega\\
-Timeliness =T_w&= 2\int_{\omega_1}^\pi\left(\rho_s(\omega)^{2}-\rho_\theta(\omega)\right)^{2}h(\omega)\ud\omega\\
+This equality can also be generalized to non-stationary integrated process (for example imposing cointegration between both signals and using pseudo-spectral density, see \textcite{optimrtfWMR2013}).
+
+\begin{align}
+\left|\Gamma_s(\omega)-\Gamma_\theta(\omega)\right|^{2} & =\rho_s(\omega)^{2}+\rho_\theta(\omega)^{2}+2\rho_s(\lambda)\rho_\theta(\lambda)\left(1-\cos(\varphi_s(\omega)-\varphi_\theta(\omega)\right) \nonumber\\
+ & =\left(\rho_s(\omega)-\rho_\theta(\omega)\right)^{2}+4\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_s(\omega)-\varphi_\theta(\omega)}{2}\right)
+ \label{eq:msedecomp}
+\end{align}
+
+The interval \([0,\pi]\) is then splitted in two: the pass-band \([0,\omega_1]\) (the frequency interval that contains the target signal) and the stop-band \([\omega_1,\pi]\).
+
+The mean squared error defined in equation \eqref{eq:msedef} can then be decomposed additively into four quantities:
+\begin{align*}
+Accuracy =A_w&= 2\int_0^{\omega_1}\left(\rho_s(\omega)-\rho_\theta(\omega)\right)^{2}h(\omega)\ud\omega\\
+Timeliness =T_w&= 8\int_0^{\omega_1}\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h(\omega)\ud\omega\\
+Smoothness =S_w&= 2\int_{\omega_1}^\pi\left(\rho_s(\omega)^{2}-\rho_\theta(\omega)\right)^{2}h(\omega)\ud\omega\\
 Residual =R_w&= 8\int_{\omega_1}^\pi\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h(\omega)\ud\omega\\
-\end{alignedat}
+\end{align*}
+
+One of the drawbacks of this method is that there is no guarantee that there is a unique solution.
+
+\begin{remark}
+
+The formulas of the four criteria slightly differ from the ones defined in \textcite{trilemmaWMR2019} to have coherent definitions between all sections:
+
+\begin{itemize}
+\item
+  in this paper the interval integrations is \([0,\pi]\) rather than \([-\pi;\pi]\) (the integral are then only multiplied by 2 because all the functions are even);
+\item
+  the pass-pand interval is defined as the frequency interval that contains the target signals whereas in \textcite{trilemmaWMR2019} it depends on the gain function of the symmetric filer (pass-band\(=\{\omega |\rho_s(\omega)\geq 0.5\}\)).
+\end{itemize}
+
+\end{remark}
+
+In general, the residual \(R_w\) is small since \(\rho_s(\omega)\rho_\theta(\omega)\) is close to 0 in the stop-band.
+Moreover, user priorities are rarely concerned about the time-shift properties of components in the stop-band.
+That's why, to derive linear filters the residual is not taken into account and that the authors suggest to compute then minimizing a weighted sum of the first three indicators:
+\[
+\mathcal{M}(\vartheta_{1},\vartheta_{2})=\vartheta_{1}T_w(\theta)+\vartheta_{2}S_w(\theta)+(1-\vartheta_{1}-\vartheta_{2})A_w(\theta)
 \]
+One of the drawbacks of this method is that there is no guarantee that there is a unique solution.
+
+In this paper we focus in non-parametric approaches to derive linear filters.
+That's why this approach is not considered.
+However, the decomposition of the mean squared error gave useful indicators to compare linear filters because, in contrary the one presented in section \ref{sec:GuggemosEtAl}, their values can be easily interpreted and compared to each other.
+
+To have criteria that don't depend on the data, we take for the symmetric filter the Henderson filter and we fix the spectral density to the one of a random walk:
+\[
+h_{RW}(x)=\frac{1}{2(1-\cos(x))}
+\]
+The formula presented in table \ref{tab:QC} are then found using the fact that for a symmetric filter the phase shit is equal to zero (\(\varphi_s(\omega)=0\)).
+
+\begin{summary}{Data-dependent filters}
+
+\textbf{Advantages}:
+
+\begin{itemize}
+\tightlist
+\item
+  The values of the different criteria can be compared: the weight can be easily interpreted.
+\end{itemize}
+
+\textbf{Drawbacks}:
+
+\begin{itemize}
+\item
+  Data-dependent filter: it depends on the symmetric filter, the data and the date of estimation.
+\item
+  Some optimisation problems might occur (several minimum, etc.).
+\end{itemize}
+
+\end{summary}
 
 \hypertarget{sec:Dagum}{%
-\section{\texorpdfstring{\textcite{ch14HBSA}}{@ch14HBSA}}\label{sec:Dagum}}
+\section{Asymmetric filters and Reproducing Kernel Hilbert Space}\label{sec:Dagum}}
 
-Description des filtres RKHS, lien avec filtres lpp ?
+\textcite{dagumbianconcini2008} developed a general approach to derive linear filters based on Reproducing Kernel Hilbert Space (RKHS) methodology.
+
+A RKHS is a Hilbert space characterized by a kernel that reproduces, via an inner product defined by a density function \(f_0(t)\), every function of the space.
+Therefore, a kernel estimator \(K_p\) of order \(p\) (i.e.~: that reproduce without distortion a polynomial trend of degree \(p-1\)) can be decomposed into the product of a reproducing kernel \(R_{p-1}\), belonging to the space of polynomials of degree \(p-1\), and a probability density function \(f_0\).
+
+For any sequence \(\left(P_{i}\right)_{0\leq i\leq p-1}\) of orthonormal polynomials in \(\mathbb{L}^{2}(f_{0})\)\footnote{\(\mathbb{L}^{2}(f_{0})\) is the Hilbert space defined by the inner product:
+  \[
+  \left\langle U(t),V(t)\right\rangle =\E{U(t)V(t)}=\int_{\R}U(t)V(t)f_{0}(t)\ud t
+  \]}, the kernel estimator \(K_p\) is defined by:
+\[
+K_{p}(t)=\sum_{i=0}^{p-1}P_{i}(t)P_{i}(0)f_{0}(t)
+\]
+The weight of a symmetric filter are then derived with:
+\[
+\forall j\in\left\llbracket -h,h\right\rrbracket\::\: w_{j}=\frac{K_p(j/b)}{\sum_{i=-h}^{^h}K_p(i/b)}
+\]
+where \(b\) is a time-invariant global bandwidth parameter.
+
+The density \(f_0\) corresponds to the continuous versions of the kernel defined in \ref{sec:kernels}.
+For example, the biweight function is \(f_{0B}(t)=(15/16)(1-t^2)^2,t\in [-1,1]\).
+The local polynomial filter obtained with the biweight kernel is then obtained using the bandwidth \(b=m+1\).
+
+The goal of \textcite{dagumbianconcini2008} is to derive asymmetric filters from the Henderson symmetric filter, therefore the ideal kernel function would be the Henderson one.
+However, as shown in section \ref{sec:kernels}, the Henderson density is a function of the bandwidth and needs to be calculated any time \(m\) changes (as its corresponding orthonormal polynomial). That's why the authors use the biweight kernel to approximate the Henderson kernel (for \(h\geq 24\) they suggest to consider the triweight kernel).
+
+The asymmetric weighted are obtained adapting the kernels to the length of the asymmetric filters:
+\[
+\forall j\in\left\llbracket -h,p\right\rrbracket\::\: w_{a,j}=\frac{K_p(j/b)}{\sum_{i=-h}^{^p}K_p(i/b)}
+\]
+With \(b=h+1\), \textcite{proietti2008} show that we obtain the direct asymmetric filters (DAF).
+
+In \textcite{dagumbianconcini2015}, the authors suggest to perform an optimal bandwidth selection (parameter \(b\)), decomposing the mean squared revision error as in equation \eqref{eq:msedecomp} but with a uniform spectarl density (\(h(\omega)=1\)).
+The bandwidth can then be chosen to minimise the mean squared revision error, the phase shift, etc.
+The following bandwidth selection are studied:
+\begin{align*}
+b_{q,G}&=\underset{b_q\in]h;2 h+1]}{\min}
+\sqrt{2\int_{0}^{\pi}
+\left(\rho_s(\omega)-\rho_\theta(\omega)\right)^{2}\ud \omega
+}\\
+b_{q,\gamma}&=\underset{b_q\in]h;2 h+1]}{\min}
+\sqrt{2\int_{0}^{\pi}
+\lvert \Gamma_s(\omega)-\Gamma_\theta(\omega)\rvert^2\ud \omega
+} \\
+b_{q,\varphi}&=\underset{b_q\in]h;2 h+1]}{\min}
+8\int_{0}^{2\pi/12}
+\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)\ud \omega
+\end{align*}
+
+One of the drawbacks of the optimal bandwidth selection is that there is no guarantee that there is a unique solution.
+
+\begin{remark}
+
+The formulas of \(b_{q,G}\), \(b_{q,\gamma}\) and \(b_{q,\varphi}\) slightly differ from the ones defined in \textcite{dagumbianconcini2015} to have coherent definitions between all sections:
+
+\begin{itemize}
+\tightlist
+\item
+  \(b_{q,\varphi}\) is defined as
+  \[
+  b_{q,\varphi}=\underset{b_q\in]h;2 h+1]}{\min}
+  \sqrt{2\int_{\Omega_S}
+  \rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)\ud \omega}
+  \]
+\end{itemize}
+
+With \(\Omega_S=[0,2\pi/36]\) the frequency domain associated to cycles of 16 months or longer.
+
+\begin{itemize}
+\tightlist
+\item
+  in \textcite{dagumbianconcini2015} a different formula is used for the frequency response function (\(\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{2\pi i \omega k}\)), it only changes the interval integration.
+\end{itemize}
+
+\end{remark}
+
+The table \ref{tab:criteriarkhs}
+
+\begin{table}[!h]
+
+\caption{\label{tab:criteriarkhs}Quality criteria of asymmetric filters ($q=0,1,2$) computed by the RKHS methodology $h=6$.}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{ccccccccccc}
+\toprule
+Method & $ b_c $ & $ b_l $ & $ b_q $ & $ F_g $ & $ S_g $ & $ T_g \times 10^{-3} $ & $ A_w $ & $ S_w $ & $ T_w $ & $ R_w $\\
+\midrule
+\addlinespace[0.3em]
+\multicolumn{11}{l}{\textbf{$ q=0 $}}\\
+\hspace{1em}$b_{q,\gamma}$ & 0 & -1.526 & 3.893 & 0.222 & 0.469 & 74.991 & 0.017 & 0.069 & 2.164 & 0.671\\
+\hspace{1em}$b_{q,G}$ & 0 & -2.039 & 6.937 & 0.177 & 0.305 & 98.650 & 0.082 & 0.066 & 3.547 & 0.715\\
+\hspace{1em}$b_{q,\varphi}$ & 0 & -0.614 & 0.033 & 0.381 & 1.204 & 23.323 & 0.019 & 0.549 & 0.451 & 0.356\\
+\addlinespace[0.3em]
+\multicolumn{11}{l}{\textbf{$ q=1 $}}\\
+\hspace{1em}$b_{q,\gamma}$ & 0 & -0.516 & 0.992 & 0.226 & 0.303 & 14.386 & 0.002 & 0.047 & 0.313 & 0.170\\
+\hspace{1em}$b_{q,G}$ & 0 & -0.923 & 2.880 & 0.189 & 0.248 & 27.386 & 0.039 & 0.036 & 0.786 & 0.213\\
+\hspace{1em}$b_{q,\varphi}$ & 0 & -0.176 & 0.295 & 0.276 & 0.359 & 2.901 & 0.003 & 0.182 & 0.050 & 0.071\\
+\addlinespace[0.3em]
+\multicolumn{11}{l}{\textbf{$ q=2 $}}\\
+\hspace{1em}$b_{q,\gamma}$ & 0 & 0.041 & 0.863 & 0.202 & 0.090 & 0.328 & 0.006 & 0.010 & 0.004 & 0.018\\
+\hspace{1em}$b_{q,G}$ & 0 & -0.007 & 1.001 & 0.197 & 0.096 & 0.637 & 0.009 & 0.010 & 0.008 & 0.021\\
+\hspace{1em}$b_{q,\varphi}$ & 0 & 0.105 & 0.820 & 0.215 & 0.077 & 0.064 & 0.003 & 0.025 & 0.005 & 0.010\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\begin{summary}{RKHS filters}
+
+\textbf{Advantages}:
+
+\begin{itemize}
+\tightlist
+\item
+  Filters that apply to irregular frequency series (for example with a lot of missing values) can easily be computed.
+\end{itemize}
+
+\textbf{Drawbacks}:
+
+\begin{itemize}
+\item
+  The linear filters don't preserve polynomial trends of degree 1 or more.
+\item
+  Some optimisation problems might occur (several minimum, etc.).
+\end{itemize}
+
+\end{summary}
+
+\hypertarget{comparison-of-the-different-filters}{%
+\section{Comparison of the different filters}\label{comparison-of-the-different-filters}}
+
+Mettre les graphiques 3D,
+
+\url{https://aqlt.shinyapps.io/FSTfilters/}
 
 \hypertarget{results}{%
 \section{Results}\label{results}}
