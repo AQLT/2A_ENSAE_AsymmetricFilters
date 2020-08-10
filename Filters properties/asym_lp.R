@@ -151,42 +151,59 @@ plot(sa)
 lines(trend, col = "blue")
 
 
+all_q = c(0,1,2)
 
-error_ipi_crisis <- sapply(c("BE", "BG", "CZ", "DK", "DE",
-                             "EE", "EL", "ES", "FR", "HR", "IT", "CY", "LV", "LT", "LU",
-                             "HU", "MT", "NL", "AT", "PL", "PT", "RO", "SI", "SK", "FI", "SE",
-                             "UK", "NO"),function(serie){
-  print(serie)
-  x <- ipi_c_eu[, serie]
-  mysa <- jx13(x, spec = "RSA3")
-  indicators <- get_indicators(mysa,"sa","t","i", "diagnostics.ic-ratio-henderson",
-                               "diagnostics.ic-ratio")
-  get_indicators(mysa,"decomposition.d12filter",
-                 "decomposition.tlen")
-  indicators$`diagnostics.ic-ratio-henderson`
-  sa <- indicators$sa
-  # icr <- sum(abs(diff(indicators$i,1)))/sum(abs(diff(indicators$t,1)))
-  icr <- indicators$`diagnostics.ic-ratio`
-  all_asym_filters <- get_all_asym_filters(sa, icr, q=0, horizon = 6,
-                                           kernels = "Henderson")
-  all_asym_filters <- lapply(names(all_asym_filters), function(kernel){
-    sym_trend <- localpolynomials(sa,
-                                  horizon = 6,
-                                  degree = 3,
-                                  kernel = kernel,
-                                  endpoints = "LC",
-                                  ic = icr)
-    add_trend <- ts.intersect(sym_trend, all_asym_filters[[kernel]])
-    colnames(add_trend) <- c("Symmetric trend", colnames(all_asym_filters[[kernel]]))
-    for(i in seq_len(ncol(add_trend))[-1]){
-      add_trend[,i] <- (add_trend[,1] - add_trend[,i])
-    }
-    window(add_trend,start = 2003,extend = TRUE)
-  })
-  names(all_asym_filters) <- c("Henderson")
-  c(apply(window(all_asym_filters[["Henderson"]][,-1],2007,2011)^2,2,mean))
-})
-round(error_ipi_crisis,2)
+error_ipi_crisis <- do.call(rbind, lapply(all_q, function(q){
+  print(q)
+  do.call(rbind, lapply(c("BE", "BG", "CZ", "DK", "DE",
+           "EE", "EL", "ES", "FR", "HR", "IT", "CY", "LV", "LT", "LU",
+           "HU", "MT", "NL", "AT", "PL", "PT", "RO", "SI", "SK", "FI", "SE",
+           "UK", "NO"),function(serie){
+             print(serie)
+             x <- ipi_c_eu[, serie]
+             mysa <- jx13(x, spec = "RSA3")
+             indicators <- get_indicators(mysa,"sa","t","i", "diagnostics.ic-ratio-henderson",
+                                          "diagnostics.ic-ratio")
+             get_indicators(mysa,"decomposition.d12filter",
+                            "decomposition.tlen")
+             indicators$`diagnostics.ic-ratio-henderson`
+             sa <- indicators$sa
+             # icr <- sum(abs(diff(indicators$i,1)))/sum(abs(diff(indicators$t,1)))
+             icr <- indicators$`diagnostics.ic-ratio`
+             all_asym_filters <- get_all_asym_filters(sa, 3.5, q=q, horizon = 6,
+                                                      kernels = "Henderson")
+             all_asym_filters <- lapply(names(all_asym_filters), function(kernel){
+               sym_trend <- localpolynomials(sa,
+                                             horizon = 6,
+                                             degree = 3,
+                                             kernel = kernel,
+                                             endpoints = "LC",
+                                             ic = 3.5)
+               add_trend <- ts.intersect(sym_trend, all_asym_filters[[kernel]])
+               colnames(add_trend) <- c("Symmetric trend", colnames(all_asym_filters[[kernel]]))
+               for(i in seq_len(ncol(add_trend))[-1]){
+                 add_trend[,i] <- (add_trend[,1] - add_trend[,i])
+               }
+               window(add_trend,start = 2003,extend = TRUE)
+             })
+             names(all_asym_filters) <- c("Henderson")
+             
+             data.frame(pays = serie,
+                        method = factor(colnames(all_asym_filters[["Henderson"]])[-1],
+                                        levels = c("LC", "QL", "CQ", "DAF"), ordered = TRUE),
+                        q = q,
+                        mse_crisis = apply(window(all_asym_filters[["Henderson"]][,-1],2007,c(2010,12))^2,2,mean),
+                        mse_all = apply(all_asym_filters[["Henderson"]][,-1]^2, 2,mean),
+                        stringsAsFactors = FALSE)
+           }))
+}))
+library(dplyr)
+
+stat_error_ipi_crisis <- error_ipi_crisis %>% 
+  group_by(q, method) %>% 
+  summarise(`2007-2010` = mean(mse_crisis),
+            `2003-2019` = mean(mse_all))  %>% as.data.frame()
+saveRDS(stat_error_ipi_crisis, file = "Rapport de stage/data/stat_error_ipi_crisis.RDS")
 
 sum(error_ipi_crisis[2,] < error_ipi_crisis[3,])
 ncol(error_ipi_crisis)
