@@ -132,12 +132,13 @@ Service des relations entreprises et des stages\newline
 	frametitleaboveskip=\dimexpr-\ht\strutbox\relax,
 	innerlinewidth=0pt,
 }
-\NewEnviron{summary}[1]{%
+\NewEnviron{summary}[2][true]{%
 \begin{mdframed}[style=symmaryboxstyle,
+nobreak=#1,
 frametitle={%
       \tikz[baseline=(current bounding box.east),outer sep=0pt]
       \node[titlestyle,anchor=east]
-    {Summary --- #1};}
+    {Summary --- #2};}
 ]
 \vspace{-0.5em}
 \BODY
@@ -149,4 +150,6 @@ frametitle={%
 \newtheorem*{remark}{Remark}
 
 \usepackage{mathrsfs}
+\usepackage{fontawesome5}
+
 
