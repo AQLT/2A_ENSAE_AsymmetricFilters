@@ -37,6 +37,13 @@ library(kableExtra)
 
 En français + Anglais
 
+This paper focuses on the study
+
+The paper focuses on the adaptation of local polynomial filters at the end of the sample period. We show that for real time estimation of signals (i.e., exactly at the boundary of the time support) we cannot rely on the automatic adaptation of the local polynomial smoothers, since the direct real time filter turns out to be strongly localized, and thereby yields extremely volatile estimates. As an alternative, we evaluate a general family of asymmetric filters that minimizes the mean square revision error subject to polynomial reproduction con- straints; in the case of the Henderson filter it nests the well-known Musgrave’s surrogate filters. The class of filters depends on unknown features of the series such as the slope and the curvature of the under- lying signal, which can be estimated from the data. Several empirical examples illustrate the effectiveness of our proposal.
+
+The paper concerns the design of nonparametric low-pass filters that have the property of repro- ducing a polynomial of a given degree. Two approaches are considered. The first is locally weighted polynomial regression (LWPR), which leads to linear filters depending on three parameters: the band- width, the order of the fitting polynomial, and the kernel. We find a remarkable linear (hyperbolic) relationship between the cutoff period (frequency) and the bandwidth, conditional on the choices of the order and the kernel, upon which we build the design of a low-pass filter.
+The second hinges on a generalization of the maximum concentration approach, leading to filters related to discrete prolate spheroidal sequences (DPSS). In particular, we propose a new class of low- pass filters that maximize the concentration over a specified frequency range, subject to polynomial reproducing constraints. The design of generalized DPSS filters depends on three parameters: the bandwidth, the polynomial order, and the concentration frequency. We discuss the properties of the corresponding filters in relation to the LWPR filters, and illustrate their use for the design of low-pass filters by investigating how the three parameters are related to the cutoff frequency.
+
 \newpage
 
 # Introduction
@@ -1123,7 +1130,7 @@ With this simple example we cannot generalize properties on the different asymme
 Therefore, it is pointless to optimize asymmetric filters when too much future observations are available.
 
 Moreover, this example also illustrate that the different methods performs better than the DAF filters. 
-The real-time estimatesmethods that use this filter could be easily improved.
+The real-time estimates methods that use this filter could be easily improved.
 This is for example the case of STL (Seasonal-Trend decomposition based on Loess) seasonal adjustment method proposed by @cleveland90.
 
 
@@ -1148,7 +1155,20 @@ This is for example the case of STL (Seasonal-Trend decomposition based on Loess
 
 # Conclusion
 
-This study could be extended in many ways. 
+To sum up, several lessons can be learn from this study on asymmetric filters.
+
+First, to build asymmetric filters there is no need to seek to preserve polynomial trends of degree more than 2: it introduces more bias in the detection of turning point with a low gain on the revision error. 
+Moreover, introduce a small bias in polynomial preservation can lead to filters that performs globally better, as we have shown with RKHS $b_{q,\phi}$ filter with the French IPI of manufacture of motor vehicles, trailers and semi-trailers.
+
+Second, focusing on the Fidelity-Smoothness-Timeliness criteria, the FST approach can lead to asymmetric filters that performs better than the other ones (local polynomials and RKHS). 
+More investigations should be done in that direction to understand when it performs better and if the improvement is statistically significant.
+
+Third, all the methods have advantages and drawbacks and lots of degrees of freedom on the criteria used to build them. 
+Therefore, more studies should be done on the effects of this degrees of freedom to see how they impact the estimation and if we cannot simplify them, as it is done in the X-12ARIMA algorithm to choose the length of the Henderson filter. 
+
+Finally, the study on asymmetric filters should be focus on real-time estimates and when few future observations are available. Indeed, for monthly data, when two or more future observations are available, the different methods gives similar results and the gain to compute optimize filters is small.
+
+This study could also be extended in many ways. 
 One lead could be to do more investigation on the length of the filters. 
 In most of studies on asymmetric filters, the asymmetric filter uses as many past observations as the symmetric filters. However, we could consider asymmetric filters that takes more past observations. Moreover, in this paper we have only focus on regular monthly data but we could have some issues with high frequency data and irregular data. 
 In addition to the problem of choosing the length of the filter, we could check if we find similar results as for short filters.
@@ -1156,17 +1176,6 @@ In addition to the problem of choosing the length of the filter, we could check 
 Another lead could be to study the impact of atypical points: in X-12ARIMA there is a strong correction of atypical points on the irregular before applying the filters to extract the trend. 
 This therefore prompts us to study what would be their impact on the estimation of trends and turning points, but also to explore new kinds of asymmetric filters based on robust methods.
 
-
-<!-- Regarding areas for improvement / opening, I noted: -->
-<!-- - issues related to high frequency series / irregular series. In addition to the problems of choosing the length of the filter, we should see if we find the same results as for short filters. -->
-<!-- - study the properties of asymmetric filters induced by model-based approaches (like what Wildi did for TRAMO-SEATS). -->
-<!-- - study the impact of atypical points: in X-11 there is a strong correction of atypical points on the irregular before applying the filters to extract the trend (I had also read a few weeks ago that 'about 50% of the points were corrected by this automatic procedure: does this statistic ring a bell?). This therefore prompts us to study what would be their impact on the estimation of trends / turning points and to study robust methods. -->
-
-
-<!-- Concernant les pistes d’amélioration/ouverture, j’ai noté : -->
-<!-- - les enjeux (issue/concern) liées aux séries haute fréquence/séries irrégulières. Outre les problèmes de choix de la longueur du filtre, il faudrait voir si on retrouve les mêmes résultats que pour des filtres courts. -->
-<!-- - étudier les propriétés des filtres asymétriques induits par les approches model-based (comme ce que Wildi a fait pour TRAMO-SEATS). -->
-<!-- - étudier l’impact des points atypiques : dans X-11 il y a une forte correction des points atypiques sur l’irrégulier avant d’appliquer les filtres pour extraire la tendance (j’avais d’ailleurs lu il y a quelques semaines qu’environ 50 % des points étaient corrigés par cette procédure automatique : cette statistique vous dit quelque chose ?). Cela pousse donc à étudier quel serait leur impact sur l’estimation des tendances/points de retournement et à étudier des méthodes robustes. -->
 
 <!-- une conclusion : elle doit situer le point d’arrivée, indiquer ce qui a pu être réalisé mais aussi ce qui n’a pu être entrepris. Elle peut aussi ouvrir la voie pour ce qui pourrait être la continuation du travail entrepris. -->
 
