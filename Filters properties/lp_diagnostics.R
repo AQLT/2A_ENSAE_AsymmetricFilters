@@ -1,7 +1,5 @@
 library(rjdfilters)
 
-?filterproperties
-
 kernels = c("Henderson", "Gaussian", "Trapezoidal",
             "Triweight", "Tricube", "Biweight",
             "Parabolic", "Triangular", "Uniform")
