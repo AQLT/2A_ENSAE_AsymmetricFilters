@@ -36,7 +36,8 @@ shinyUI(fluidPage(
             actionButton("refresh", label = "Refresh"),
             selectInput(inputId = "color",
                         label = "Color",
-                        choices = c("default", "fidelity.weight", "smoothness.weight", "timeliness.weight"),
+                        choices = c("default", "fidelity.weight", "smoothness.weight", "timeliness.weight",
+                                    "method"),
                         selected = "default"),
             fluidRow(
                 column(6, switchInput(inputId = "lpp_filters", value = TRUE,
@@ -45,7 +46,9 @@ shinyUI(fluidPage(
                                       label="RKHS filters", size="normal",onStatus = "dreamrs"))
                 # column(6, switchInput(inputId = "normalizedAxis", value = FALSE,
                 #                       label="Normalized axis", size="normal",onStatus = "dreamrs"))
-            )
+            ),
+            switchInput(inputId = "tlpp_filters", value = FALSE,
+                        label="Timeliness local polynomial filters", size="normal",onStatus = "dreamrs")
 
             
             # sliderInput(inputId = "xlim",

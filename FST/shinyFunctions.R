@@ -1,6 +1,23 @@
 library(rjdfilters)
 library(plotly)
 
+rkhs <- readRDS("rkhs.RDS")
+tlpp_lc <- readRDS("timeliness_lpp_lc.RDS")
+tlpp_ql <- readRDS("timeliness_lpp_ql.RDS")
+tlpp <- lapply(names(tlpp_lc), function(q){
+  list(results = rbind(tlpp_lc[[q]]$results,
+                       tlpp_ql[[q]]$results),
+       text_guggemos = c(tlpp_lc[[q]]$text_guggemos,
+                         tlpp_ql[[q]]$text_guggemos),
+       text_wildi = c(tlpp_lc[[q]]$text_wildi,
+                         tlpp_ql[[q]]$text_wildi),
+       text_both = c(tlpp_lc[[q]]$text_both,
+                     tlpp_ql[[q]]$text_both),
+       legend = rep("Local polynomial (Timeliness)", 2*nrow(tlpp_lc[[q]]$results))
+       )
+})
+names(tlpp) <- names(tlpp_lc)
+
 all_fst_res <- function(lags=6, leads=0, pdegree=2, smoothness.weight=1, smoothness.degree=3, 
                         timeliness.weight=0, timeliness.passband=pi/6, timeliness.antiphase=T,
                         resolution=100){
@@ -58,7 +75,8 @@ all_fst_res <- function(lags=6, leads=0, pdegree=2, smoothness.weight=1, smoothn
 }
 plotly_guguemos <- function(x, color = "timeliness.weight", mode = "markers", lpp_filters = TRUE,
                             rkhs_filters = TRUE,
-                            rkhs_compute = TRUE){
+                            rkhs_compute = TRUE,
+                            data_tlpp = NULL){
   if(color == "default"){
     color <- "timeliness.weight"
   }
@@ -67,17 +85,25 @@ plotly_guguemos <- function(x, color = "timeliness.weight", mode = "markers", lp
                         sprintf('</br> Smoothness (%.3f): %.3f', x$smoothness.weight, x[,"Smoothness"]),
                         sprintf('</br> Timeliness (%.3f): %.3f x 10^-3', x$timeliness.weight, x[,"Timeliness"]*1000))
   n <- nrow(x)
+  if(rkhs_compute){
+    legend_method <- c(rep("FST",n-7), rep("Local polynomial",4), rep("RKHS",3))
+  }else{
+    legend_method <- c(rep("FST",n-4), rep("Local polynomial",4))
+  }
+  
+  
   legend_pos <- c(LC = n-6, QL = n-5, CQ = n-4, DAF = n-3)
-  if(!rkhs_compute)
+  if(!rkhs_compute){
     legend_pos <- legend_pos + 3
+  }
   
   text_legend[legend_pos] <- paste0(c("LC</br>","QL</br>", "CQ</br>", "DAF</br>"),
                                     text_legend[legend_pos])
   if(!lpp_filters){
     text_legend <- text_legend[-legend_pos]
     x <- x[-legend_pos,]
+    legend_method <- legend_method[-legend_pos]
   }
-  
   if(rkhs_compute){
     n <- nrow(x)
     legend_pos <- c(rkhs_frf = n-2, rkhs_gain = n-1, rkhs_phase = n)
@@ -86,20 +112,26 @@ plotly_guguemos <- function(x, color = "timeliness.weight", mode = "markers", lp
     if(!rkhs_filters){
       text_legend <- text_legend[-legend_pos]
       x <- x[-legend_pos,]
+      legend_method <- legend_method[-legend_pos]
     }
   }
-  # if(normalizedAxis){
-  #   # x <- apply(x,2,function(x){
-  #   #   (x - min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)-min(x, na.rm = TRUE))
-  #   # })
-  #   x <- t(apply(x,1,function(x){
-  #     x/sum(x,na.rm = TRUE)
-  #   }))
-  # }
+  
+  if(!is.null(data_tlpp)){
+    x <- rbind(x, data_tlpp$results)
+    text_legend <- c(text_legend, data_tlpp$text_wildi)
+  }
+  
+  if(color == "method"){
+    x_color <- c(legend_method,
+                 data_tlpp$legend)
+  }else{
+    x_color <- x[,color]
+  }
+  
   plot_ly(x=x[,"Fidelity"],
           y=x[,"Smoothness"],
           z=x[,"Timeliness"],
-          type="scatter3d", mode=mode, color=x[,color],
+          type="scatter3d", mode=mode, color=x_color,
           hoverinfo = 'text',
           text = text_legend
   ) %>% 
@@ -113,8 +145,9 @@ plotly_guguemos <- function(x, color = "timeliness.weight", mode = "markers", lp
 }
 plotly_wildi <- function(x, color = "timeliness.weight", mode = "markers", lpp_filters = TRUE,
                          rkhs_filters = TRUE,
-                         rkhs_compute = TRUE){
-  if(color == "default"){
+                         rkhs_compute = TRUE,
+                         data_tlpp = NULL){
+  if((color == "default")){
     color <- "timeliness.weight"
   }
   
@@ -125,15 +158,24 @@ plotly_wildi <- function(x, color = "timeliness.weight", mode = "markers", lpp_f
                         sprintf('</br> Residuals: %.3f', x[,"residual"]))
   
   n <- nrow(x)
+  if(rkhs_compute){
+    legend_method <- c(rep("FST",n-7), rep("Local polynomial",4), rep("RKHS",3))
+  }else{
+    legend_method <- c(rep("FST",n-4), rep("Local polynomial",4))
+  }
+  
   
   legend_pos <- c(LC = n-6, QL = n-5, CQ = n-4, DAF = n-3)
-  if(!rkhs_compute)
+  if(!rkhs_compute){
     legend_pos <- legend_pos + 3
+  }
+    
   text_legend[legend_pos] <- paste0(c("LC</br>","QL</br>", "CQ</br>", "DAF</br>"),
                                  text_legend[legend_pos])
   if(!lpp_filters){
     text_legend <- text_legend[-legend_pos]
     x <- x[-legend_pos,]
+    legend_method <- legend_method[-legend_pos]
   }
   if(rkhs_compute){
     n <- nrow(x)
@@ -143,41 +185,29 @@ plotly_wildi <- function(x, color = "timeliness.weight", mode = "markers", lpp_f
     if(!rkhs_filters){
       text_legend <- text_legend[-legend_pos]
       x <- x[-legend_pos,]
+      legend_method <- legend_method[-legend_pos]
     }
   }
   
-  # if(normalizedAxis){
-  #   # x <- apply(x,2,function(x){
-  #   #   (x - min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)-min(x, na.rm = TRUE))
-  #   # })
-  #   x <- t(apply(x,1,function(x){
-  #     x/sum(x,na.rm = TRUE)
-  #   }))
-  # }
-  # annotations <- lapply(names(legend_pos), function(ep){
-  #   x_p <- legend_pos[ep]
-  #   list(
-  #     x = x[x_p, "accuracy"],
-  #     y = x[x_p, "smoothness"],
-  #     z = x[x_p, "timeliness"],
-  #     text = ep,
-  #     textangle = 0,
-  #     ax = 0,
-  #     ay = -75,
-  #     font = list(
-  #       color = "black",
-  #       size = 12
-  #     ),
-  #     arrowcolor = "black",
-  #     arrowsize = 3,
-  #     arrowwidth = 1,
-  #     arrowhead = 1
-  #   )
-  # })
+  if(!is.null(data_tlpp)){
+    x <- rbind(x, data_tlpp$results)
+    text_legend <- c(text_legend, data_tlpp$text_wildi)
+  }
+  
+  if(color == "method"){
+    x_color <- c(legend_method,
+                 data_tlpp$legend)
+  }else{
+    x_color <- x[,color]
+  }
+  
+  
+
+
   plot_ly(x=x[,"accuracy"],
           y=x[,"smoothness"],
           z=x[,"timeliness"],
-          type="scatter3d", mode=mode, color=x[,color],
+          type="scatter3d", mode=mode, color=x_color,
           hoverinfo = 'text',
           text = text_legend
   ) %>% 
@@ -204,7 +234,7 @@ plot_2graph <- function(x, mode = "markers",
   x <- apply(x,2,function(x){
     (x - min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)-min(x, na.rm = TRUE))
   })
-  if(color == "default"){
+  if(color %in% c("default","method")){
     color_text <- c(rep("Guggemos", nrow(x)), rep("Wildi", nrow(x)))
   }else{
     color_text <- c(x[,color], x[,color])
