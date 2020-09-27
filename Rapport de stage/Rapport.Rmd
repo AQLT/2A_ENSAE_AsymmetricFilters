@@ -38,19 +38,22 @@ library(kableExtra)
 
 \newpage
 
-# Abstract
+# Abstract {.unnumbered}
 
 
 \begin{abstract}
 
-In the business cycle analysis, estimates are usually derived from moving average techniques. 
-When it comes to real-time estimates, classic asymmetric moving average introduce revisions as new observations are available and also delays in the detecting turning points.
-This paper describes and compare different approaches to build asymmetric filters: local polynomials filters, methods based on an optimization of filters properties (Fidelity-Smoothness-Timeliness, FST, approach and a data-dependent filter) and filters based on Reproducing Kernel Hilbert Space.
-It also describes how local polynomials filters can be extended to include a timeliness criteria to minimize phase shift.
+In the business cycle analysis, estimates are usually derived from moving average (also called linear filters) techniques. 
+In the center of the series, symmetric filters are applied. 
+However, due to the lack of future observations, real-time estimates must rely on asymmetric moving averages.
+Classic asymmetric moving averages minimize revisions errors but introduce delays in the detecting turning points.
 
-The paper emphasizes that constraining asymmetric filters to preserve linear and constant trends is enough to reduce revision error and time lag. 
-The more future observations are available, the more the different methods produce similar results.
-Finally, the FST approach gives promising results to build asymmetric moving averages.
+This paper describes and compares different approaches to build asymmetric filters: local polynomials filters, methods based on an optimization of filters' properties (Fidelity-Smoothness-Timeliness, FST, approach and a data-dependent filter) and filters based on Reproducing Kernel Hilbert Space.
+It also describes how local polynomials filters can be extended to include a timeliness criterion to minimize phase shift.
+
+This paper shows that constraining asymmetric filters to preserve constant and linear trends only (and not necessarily polynomial ones) reduce revision error and time lag. 
+Besides, the more future observations are available, the more the different methods produce similar results.
+Finally, the FST approach seems to outperform the other methods.
 \end{abstract}
 
 <!-- \selectlanguage{french} -->
@@ -71,17 +74,10 @@ Finally, the FST approach gives promising results to build asymmetric moving ave
 
 <!-- This paper focuses on the study -->
 
-<!-- This chapter deals with a reproducing kernel approach to obtain time-varying asymmetric trend- cycle filters that converge fast and monotonically to the corresponding symmetric ones. It shows that the bandwidth parameter that minimizes the distance between the gain functions of the asymmetric and symmetric filters is to be preferred. Respect to the asymmetric filters incorporated in the X12ARIMA software currently applied by the majority of official statistical agencies, the new set of weights produces both smaller revisions and time delay to detect true turning points. The theoretical results are empirically corroborated with a set of leading, coincident, and lagging indicators of the US economy. -->
-
-<!-- Asymmetric nonparametric trend-cycle filters obtained with local time- varying bandwidth parameters via the Reproducing Kernel Hilbert Space (RKHS) methodology reduce significantly revisions and turning point detection respect to the currently used by statistical agencies. The best choice of local time-varying bandwidth is the one obtained by minimizing the distance between the gain functions of the RKHS asymmetric and the symmetric filter to which it must converge. Since the input to these kernel filters is seasonally adjusted series, it is important to evaluate the impact that the seasonal adjustment method can have. The purpose of this chapter is to assess the effects of the seasonal adjustment methods when the real time trend is predicted with such nonparametric kernel filters. The seasonal adjustments compared are the two officially adopted by statistical agencies: X12ARIMA and TRAMO-SEATS applied to a sample of US leading, coincident, and lagging indicators. -->
-
-<!-- The paper focuses on the adaptation of local polynomial filters at the end of the sample period. We show that for real time estimation of signals (i.e., exactly at the boundary of the time support) we cannot rely on the automatic adaptation of the local polynomial smoothers, since the direct real time filter turns out to be strongly localized, and thereby yields extremely volatile estimates. As an alternative, we evaluate a general family of asymmetric filters that minimizes the mean square revision error subject to polynomial reproduction con- straints; in the case of the Henderson filter it nests the well-known Musgrave’s surrogate filters. The class of filters depends on unknown features of the series such as the slope and the curvature of the under- lying signal, which can be estimated from the data. Several empirical examples illustrate the effectiveness of our proposal. -->
-
-<!-- The paper concerns the design of nonparametric low-pass filters that have the property of repro- ducing a polynomial of a given degree. Two approaches are considered. The first is locally weighted polynomial regression (LWPR), which leads to linear filters depending on three parameters: the band- width, the order of the fitting polynomial, and the kernel. We find a remarkable linear (hyperbolic) relationship between the cutoff period (frequency) and the bandwidth, conditional on the choices of the order and the kernel, upon which we build the design of a low-pass filter. -->
 
 \newpage
 
-# Introduction
+# Introduction {.unnumbered}
 
 With the COVID-19 crisis, one of the major questions on the economy was when it will collapse and when it will recover. 
 It illustrates that business cycle analysis, and in particular the early detection of turning points in a series, is a major topic in the analysis of economic outlook.
@@ -91,14 +87,14 @@ A moving average is a statistical method that consists in applying a rolling wei
 ]. 
 For example, the X-12ARIMA seasonal adjustment method uses Henderson moving averages and composite moving averages to estimate the main components of a time series, while TRAMO-SEATS uses Wiener-Kolmogorov filters. 
 Symmetric filters are applied to the center of the series, but when it comes to estimate the most recent points, all of these methods must rely on asymmetric filters. 
-For example, X-12ARIMA or TRAMO-SEATS apply symmetrical averages to the forecasts obtained from an ARIMA model of the series. 
-However, since the predicted values are linear combinations of past values, it consists in applying to use methods do use skewed moving averages at the end of the series.
+For example, even if X-12ARIMA or TRAMO-SEATS apply symmetrical averages to the forecasts obtained from an ARIMA model of the series, in reality it consists in applying asymmetric filters at the end of the series, because the predicted values are linear combinations of past values.
 
-If the classic asymmetric moving averages have good properties regarding the size of future revisions induces by the process^[See for example @pierce1980SA.], they create phase shifts that impact the real-time estimation of turning points, introducing time delay in the detection.
+If the classic asymmetric moving averages have good properties regarding the future revisions induced by the process^[See for example @pierce1980SA.], they create phase shifts that impact the real-time estimation of turning points, introducing time delay in the detection.
 
 This report aims to describe and compare the recent approaches around trend-cycle extraction and asymmetric filters: local polynomial filters, methods based on an optimization of filters properties and filters based on Reproducing Kernel Hilbert Space.
-Due to the link between seasonal adjustment and trend-cycle extraction (section \@ref(sec:SAtoTCE)), we here focus on non-parametric methods that could be included in X-12ARIMA.
-After a description of the general properties of a linear filter (section \@ref(sec:propMM)), we described the linear filters methods developed by @proietti2008, @ch15HBSA, @trilemmaWMR2019 and @dagumbianconcini2008 (sections \@ref(sec:lppfilters) to \@ref(sec:Dagum)).
+Due to the link between seasonal adjustment and trend-cycle extraction (section \@ref(sec:SAtoTCE)), we focus on non-parametric methods that could be included in X-12ARIMA.
+After a description of the general properties of a linear filter (section \@ref(sec:propMM)), we describe the linear filters methods developed by @proietti2008, @ch15HBSA, @trilemmaWMR2019 and @dagumbianconcini2008 (sections \@ref(sec:lppfilters) to \@ref(sec:Dagum)).
+Finally, in section \@ref(sec:comparison), we compare the different methods, first theoretically and then applying them to a real time series.
 
 \newpage
 
@@ -120,8 +116,8 @@ In X-12ARIMA and TRAMO-SEATS (the most popular seasonal adjustment methods), pri
 Thus, the estimation of trend-cycle component is technically linked to the seasonal component.
 
 Moreover, since the trend-cycle extraction methods are applied to seasonally adjusted data, both problems cannot be separated.
-This link also explains that in this paper, all the methods used are implemented in the core libraries of JDemetra+ ^[https://github.com/jdemetra/jdemetra-core.], the seasonal adjustment software recommended by Eurostat. 
-An \faIcon{r-project} interface is implemented in the package `rjdfilters`^[https://github.com/palatej/rjdfilters.] was developed during this internship.
+This link also explains that in this paper, all the methods used are implemented in the core libraries of JDemetra+ ^[See https://github.com/jdemetra/jdemetra-core.], the seasonal adjustment software recommended by Eurostat. 
+An \faIcon{r-project} interface is implemented in the package `rjdfilters`^[Available at https://github.com/palatej/rjdfilters.] was developed during this internship.
 
 In this paper we focus methods that could be implemented in X-12ARIMA. 
 To maintain consistency with the non-parametric approach of X-12ARIMA, we focus on non-parametric extraction methods. 
@@ -1063,7 +1059,7 @@ b_{q,\varphi}&=\underset{b_q\in]h;2 h+1]}{\min}
 One of the drawbacks of the optimal bandwidth selection is that there is no guarantee that there is a unique solution. 
 
 :::: {.remark}
-The formulas of $b_{q,G}$, $b_{q,\gamma}$ and $b_{q,\varphi}$ slightly differ from the ones defined in @dagumbianconcini2015 to have coherent definitions between all sections:
+To have coherent definitions between all sections, the formulas of $b_{q,G}$, $b_{q,\gamma}$ and $b_{q,\varphi}$ slightly differ from the ones defined in @dagumbianconcini2015 where:
 
 - $b_{q,\varphi}$ is defined as 
 $$
@@ -1074,13 +1070,13 @@ $$
 
 With $\Omega_S=[0,2\pi/36]$ the frequency domain associated to cycles of 16 months or longer.
 
-- in @dagumbianconcini2015 a different formula is used for the frequency response function ($\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{2\pi i \omega k}$): it only changes the interval integration.
+- a different formula is used for the frequency response function ($\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{2\pi i \omega k}$): it only changes the interval integration.
 ::::
 
 
 The table \@ref(tab:criteriarkhs) shows the quality criteria of the RKHS filters.
 Even if the symmetric filter preserves quadratic trends, this is not the case of the asymmetric filters: they only preserve constant trends.
-The more data is available (i.e.: $q$ increases), the less the asymmetric filters distort polynomial trends (for example, for $q=2$, $b_c\simeq0$).
+The more data is available (i.e.: $q$ increases), the less the asymmetric filters distort polynomial trends (for example, for $q=2$, $b_l\simeq0$ for $b_{q,G}$).
 
 ```{r criteriarkhs, echo = FALSE}
 rkhs_diagnostics <- readRDS("data/rkhs_diagnostics.RDS")
@@ -1097,7 +1093,7 @@ rkhs_diagnostics[,-1] %>%
 :::: {.summary data-latex="{RKHS filters}"}
 **Advantages**:
 
-- Filters that apply to irregular frequency series (for example with a lot of missing values) can easily be computed.
+- Filters to apply to irregular frequency series (for example with a lot of missing values) can easily be computed.
 
 **Drawbacks**:
 
@@ -1106,7 +1102,7 @@ rkhs_diagnostics[,-1] %>%
 - Some optimization problems might occur (several minimum, etc.).
 ::::
 
-# Comparison of the different filters
+# Comparison of the different filters {#sec:comparison}
 
 ## Comparison with the FST approach
 
@@ -1115,18 +1111,18 @@ Indeed, a linear filter can be considered as suboptimal if we can find a set of 
 
 For $h=6$ (13-term symmetric filter), for the RKHS filters we find that:
 
-- imposing that asymmetric filter preserve constants, the FST approach gives better results for all values of $q$ for the filters computed with $b_{q,G}$ and $b_{q,\gamma}$, and for $q\leq 3$ for the one computed with $b_{q,\varphi}$.
+- imposing that asymmetric filters preserve constants, the FST approach gives better results for all values of $q$ for the filters computed with $b_{q,G}$ and $b_{q,\gamma}$, and for $q\leq 3$ for the one computed with $b_{q,\varphi}$.
 
-- imposing that asymmetric filter preserve linear trends, the FST approach gives better results for $q\in[2,5]$ for the filters computed with $b_{q,G}$ and $b_{q,\gamma}$, and for $q\in[2,4]$ for the one computed with $b_{q,\varphi}$.
+- imposing that asymmetric filters preserve linear trends, the FST approach gives better results for $q\in[2,5]$ for the filters computed with $b_{q,G}$ and $b_{q,\gamma}$, and for $q\in[2,4]$ for the one computed with $b_{q,\varphi}$.
 
 \faArrowCircleRight{} Therefore, the RKHS approach seems not to be the better approach to build asymmetric filters to apply to monthly regular data (i.e.: data for which we usually use $h=6$).
 
 For the local polynomial filters we find that:
 
-- imposing that asymmetric filter preserve constants, the FST approach gives better results than the LC method for all values of $q$. 
+- imposing that asymmetric filters preserve constants, the FST approach gives better results than the LC method for all values of $q$. 
 Adding the timeliness criterion allows to have better results than the FST approach for $q=0,1$.
 
-- imposing that asymmetric filter preserve linear trends, the FST approach gives better results for $q\in[2,5]$ for the LC and QL methods. 
+- imposing that asymmetric filters preserve linear trends, the FST approach gives better results for $q\in[2,5]$ for the LC and QL methods. 
 Adding the timeliness criterion doesn't change the results.
 
 \faArrowCircleRight{} In terms of quality criteria, local polynomial seems to perform better for real-time and one-period ahead filters ($q=0,1$).
@@ -1137,7 +1133,7 @@ Those comparisons can be seen in an online application available at https://aqlt
 
 In this section we compare the different asymmetric filters applying them to the French industrial production index of manufacture of motor vehicles, trailers and semi-trailers^[This series is produced by the INSEE, the French National Statistical Office, and is available at https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/010537940.]. 
 For simplicity, for the FST approach we only show an extreme filter example minimizing the phase shift by putting a large weight to the timeliness ($\alpha = 0$, $\beta = 1$, $\gamma = 1000$). For local polynomial filters, the Henderson kernel is used with $R=3.5$.
-The figure \@ref(fig:cl2all) shows the results around a turning point (the economic crisis of 2009) and during "normal cycles" (between 2000 and 2008).
+The figure \@ref(fig:cl2all) shows the results around a turning point (the economic crisis of 2009) and during "normal cycles" (between 2000 and 2008), from $q=0$ (real-time estimates) to $q=3$ (three future available observations).
 
 \begin{figure}[!ht]
 \animategraphics[autoplay,loop,width=\textwidth,controls]{2}{img/illustration/illustration_}{1}{7}
@@ -1152,14 +1148,14 @@ For this example, in terms of time lag to detect the turning point of February 2
 A turning point (upturn) is defined to occur at time $t$ if $y_{t-k}\geq\cdots\geq y_{t-1}<y_t\leq y_{t+1}\leq\cdots y_{t+m}$. 
 A downturn would be equivalently defined as a date $t$ $y_{t-k}\leq\cdots\leq y_{t-1}>y_t\geq y_{t+1}\geq\cdots y_{t+m}$.
 Following @Zellner1991, $k=3$ and $m=1$ are chosen given the smoothness of the trend-cycle data. 
-], the DAF is the worst filters since it introduces a delay of one month until $q=3$. 
-LC, QL, $b_{q,\gamma}$ filters introduce a delay only for real-time filter ($q=0$) of one month except for the QL filter for which it is of two months.
+], the DAF is the worst filter since it introduces a delay of one month until $q=3$. 
+LC, QL, $b_{q,\gamma}$ filters introduce a delay only for real-time filter ($q=0$) of two months for QL filter and one month for the others.
 Surprisingly, the FST filter that minimize the phase shift introduce a time lag for $q=0$ and $q=1$ (the upturn is detected earlier), whereas $b_{q,\phi}$ doesn't introduce any time lag.
 
 In terms of revision error, the DAF filters also give the worst results. 
 For real-time estimates ($q=0$), the LC and RKHS filters minimize the revision between 2000 and 2008 but when more data are available all the methods (except the DAF filters) give similar results. 
-As excepted, the QL filter minimize the revision around the turning point of 2009 since it is the only filter that preserve polynomial trends of degree 1. 
-The fact that, around the turning point, $b_{q,\phi}$ performs better than the other RKHS filters can be explain by the fact that this filter distort less polynomial trends of degree 1 and 2 ($b_l$ and $b_q$ statistics are lower, table \@ref(tab:criteriaLp)).
+As excepted, the QL filter minimizes the revision around the turning point of 2009 since it is the only filter that preserve polynomial trends of degree 1. 
+For small values of $q$, $b_{q,\phi}$ filter distorts less polynomial trends of degree 1 and 2 than the other RKHS filters ($b_l$ and $b_q$ statistics are lower, table \@ref(tab:criteriarkhs)): it explains why it performs better around the turning point.
 
 With this simple example we cannot generalize properties on the different asymmetric filters, but it gives some leads to extend this study:
 
@@ -1170,7 +1166,7 @@ With this simple example we cannot generalize properties on the different asymme
 - for almost all the filters, there is no time lag to detect the turning points when two future observations are available, and the different methods gives similar results. 
 Therefore, it is pointless to optimize asymmetric filters when too much future observations are available.
 
-Moreover, this example also illustrate that the different methods performs better than the DAF filters. 
+Moreover, this example also illustrates that the different methods perform better than the DAF filters. 
 The real-time estimates methods that use this filter could be easily improved.
 This is for example the case of STL (Seasonal-Trend decomposition based on Loess) seasonal adjustment method proposed by @cleveland90.
 
@@ -1194,30 +1190,31 @@ This is for example the case of STL (Seasonal-Trend decomposition based on Loess
 
 \newpage
 
-# Conclusion
+# Conclusion {.unnumbered}
 
-To sum up, several lessons can be learn from this study on asymmetric filters.
+To sum up, this study presents many results about how to build asymmetric filters to minimize revision and time shift in the detection of turning points.
 
-First, to build asymmetric filters there is no need to seek to preserve polynomial trends of degree more than one: it introduces more bias in the detection of turning point with a low gain on the revision error. 
-Moreover, introduce a small bias in polynomial preservation can lead to filters that performs globally better, as we have shown with RKHS $b_{q,\phi}$ filter with the French IPI of manufacture of motor vehicles, trailers and semi-trailers.
+First, there is no need to seek to preserve polynomial trends of degree more than one to build asymmetric filters: it introduces more bias in the detection of turning point with a low gain on the revision error. Moreover, introducing a small bias in polynomial preservation can lead to filters that performs globally better. 
+This property has been illustrated empirically on the French IPI of manufacture of motor vehicles, trailers and semi-trailers in section \@ref(sec:comparison) using the RKHS $b_{q,\phi}$ filter.
 
-Second, focusing on the Fidelity-Smoothness-Timeliness criteria, the FST approach can lead to asymmetric filters that outperform the other ones (local polynomials and RKHS). 
+Second, focusing on some specific criteria, the FST approach can lead to asymmetric filters that outperform the other ones (local polynomials and RKHS). 
 More research should be done in that direction to understand when it performs better and if the improvement is statistically significant.
 
-Third, all the methods lots of degrees of freedom on the criteria used to build them. 
-Therefore, more theoretical and empirical studies should be done on the effects of this degrees of freedom to see how they impact the estimation and if we cannot simplify them, as it is done in the X-12ARIMA algorithm to choose the length of the Henderson filter. 
+<!-- Third, all the methods lots of degrees of freedom on the criteria used to build them.  -->
+<!-- Therefore, more theoretical and empirical studies should be done on the effects of this degrees of freedom to see how they impact the estimation and if we cannot simplify them, as it is done in the X-12ARIMA algorithm to choose the length of the Henderson filter.  -->
 
-Finally, the study on asymmetric filters should be focus on real-time estimates and when few future observations are available. 
+Finally, the study of asymmetric filters should focus on estimates when few future observations are available. 
 Indeed, for monthly data, when two or more future observations are available, the different methods give similar results and the gain to compute optimize filters is small.
-Consequently, adding the timeliness criterion to local polynomial filters will mainly be useful for the LC methods for which it has an impact when few future observations are known.
+Consequently, adding the timeliness criterion to local polynomial filters will mainly be useful for the LC method, for which it has an impact only when few future observations are known (whereas for the QL method is has almost no impact on real-time estimates).
 
-This study could also be extended in many ways. 
+This study could be extended in many ways.
 One lead could be to do more investigation on the length of the filters. 
-In most of studies on asymmetric filters, the asymmetric filter uses as many past observations as the symmetric filters. However, we could consider asymmetric filters that takes more past observations. Moreover, in this paper we have only focus on regular monthly data, but we could have some issues with high frequency data and irregular data. 
-In addition to the problem of choosing the length of the filter, we could check if we find similar results as for short filters.
+In most of the studies on asymmetric filters, the asymmetric filters use as many past observations as the symmetric filters.
+However, we could consider asymmetric filters that take into account more past observations. 
+Moreover, in this paper we only focused on regular monthly data, but if we focus on high frequency or irregular data, some properties may not be effective anymore and, besides, some more issues could appear (as the problem of choosing the length of the filter).
 
-Another lead could be to study the impact of atypical points: in X-12ARIMA there is a strong correction of atypical points on the irregular before applying the filters to extract the trend. 
-This therefore prompts us to study what would be their impact on the estimation of trends and turning points, but also to explore new kinds of asymmetric filters based on robust methods.
+Another lead could be to study the impact of atypical points: in X-12ARIMA there is a strong correction of atypical points of the irregular component before applying the filters to extract the trend. 
+It encourages to study what is the impact of atypical points on the estimation of trends and turning points, but also to explore new kinds of asymmetric filters based on robust methods (like robust local regressions). 
 
 
 <!-- une conclusion : elle doit situer le point d’arrivée, indiquer ce qui a pu être réalisé mais aussi ce qui n’a pu être entrepris. Elle peut aussi ouvrir la voie pour ce qui pourrait être la continuation du travail entrepris. -->
@@ -1225,7 +1222,7 @@ This therefore prompts us to study what would be their impact on the estimation 
 
 \newpage
 
-# References
+# References {.unnumbered}
 
 
 
