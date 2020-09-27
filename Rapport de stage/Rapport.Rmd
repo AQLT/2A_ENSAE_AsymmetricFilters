@@ -25,6 +25,11 @@ biblio-style: authoryear
 urlcolor: blue
 ---
 
+<!-- output: -->
+<!--   bookdown::word_document2: -->
+<!--     toc: true -->
+<!-- always_allow_html: true -->
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
                       fig.path = "img/")
@@ -36,11 +41,37 @@ library(kableExtra)
 # Abstract
 
 
-<!-- In the business cycle analysis, estimates are usually derived from moving average techniques. -->
+\begin{abstract}
+
+In the business cycle analysis, estimates are usually derived from moving average techniques. 
+When it comes to real-time estimates, classic asymmetric moving average introduce revisions as new observations are available and also delays in the detecting turning points.
+This paper describes and compare different approaches to build asymmetric filters: local polynomials filters, methods based on an optimization of filters criteria (Fidelity-Smoothness-Timeliness, FST, approach and a data-dependent filter) and filters based on Reproducing Kernel Hilbert Space.
+It also describes how local polynomials filters can be extended to include a timeliness criteria to minimize phase shift.
+
+The paper emphasizes that constraining asymmetric filters to preserve linear and constant trends is enough to reduce revision error and time lag. 
+The more future observations are available, the more the different methods produce similar results.
+Finally, the FST approach gives promising results to build asymmetric moving averages.
+\end{abstract}
+
+<!-- \selectlanguage{french} -->
+<!-- \begin{abstract} -->
+<!-- Résumé en français -->
+<!-- \end{abstract} -->
+<!-- \selectlanguage{english} -->
+
+<!-- \selectlanguage{french} -->
+<!-- \begin{abstract} -->
+<!-- Résumé en français -->
+<!-- \end{abstract} -->
+<!-- \selectlanguage{english} -->
+<!-- \begin{abstract} -->
+<!-- Résumé en anglais -->
+<!-- \end{abstract} -->
+<!-- \usepackage[french,english]{babel} -->
 
 <!-- This paper focuses on the study -->
 
-<!-- For real time trend-cycle analysis, official statistical agencies generally produce estimates derived from asymmetric moving average techniques. However, the use of the asymmetric filters introduces revisions as new observations are incor- porated to the series and also delays in detecting true turning points. This chapter deals with a reproducing kernel approach to obtain time-varying asymmetric trend- cycle filters that converge fast and monotonically to the corresponding symmetric ones. It shows that the bandwidth parameter that minimizes the distance between the gain functions of the asymmetric and symmetric filters is to be preferred. Respect to the asymmetric filters incorporated in the X12ARIMA software currently applied by the majority of official statistical agencies, the new set of weights produces both smaller revisions and time delay to detect true turning points. The theoretical results are empirically corroborated with a set of leading, coincident, and lagging indicators of the US economy. -->
+<!-- This chapter deals with a reproducing kernel approach to obtain time-varying asymmetric trend- cycle filters that converge fast and monotonically to the corresponding symmetric ones. It shows that the bandwidth parameter that minimizes the distance between the gain functions of the asymmetric and symmetric filters is to be preferred. Respect to the asymmetric filters incorporated in the X12ARIMA software currently applied by the majority of official statistical agencies, the new set of weights produces both smaller revisions and time delay to detect true turning points. The theoretical results are empirically corroborated with a set of leading, coincident, and lagging indicators of the US economy. -->
 
 <!-- Asymmetric nonparametric trend-cycle filters obtained with local time- varying bandwidth parameters via the Reproducing Kernel Hilbert Space (RKHS) methodology reduce significantly revisions and turning point detection respect to the currently used by statistical agencies. The best choice of local time-varying bandwidth is the one obtained by minimizing the distance between the gain functions of the RKHS asymmetric and the symmetric filter to which it must converge. Since the input to these kernel filters is seasonally adjusted series, it is important to evaluate the impact that the seasonal adjustment method can have. The purpose of this chapter is to assess the effects of the seasonal adjustment methods when the real time trend is predicted with such nonparametric kernel filters. The seasonal adjustments compared are the two officially adopted by statistical agencies: X12ARIMA and TRAMO-SEATS applied to a sample of US leading, coincident, and lagging indicators. -->
 
@@ -52,7 +83,7 @@ library(kableExtra)
 
 # Introduction
 
-With the COVID-19 crisis, one of the major question on the economy was when it will collapse and when it will recover. 
+With the COVID-19 crisis, one of the major questions on the economy was when it will collapse and when it will recover. 
 It illustrates that business cycle analysis, and in particular the early detection of turning points in a series, is a major topic in the analysis of economic outlook.
 Moving averages, or linear filters, are ubiquitous in business cycle extraction and seasonal adjustment methods^[
 A moving average is a statistical method that consists in applying a rolling weighted mean to a times series: for each date it computes a weighted mean of $p$ past points and $q$ future points where $p,q\geq0$ depends on the moving average.
@@ -60,25 +91,25 @@ A moving average is a statistical method that consists in applying a rolling wei
 For example, the X-12ARIMA seasonal adjustment method uses Henderson moving averages and composite moving averages to estimate the main components of a time series, while TRAMO-SEATS uses Wiener-Kolmogorov filters. 
 Symmetric filters are applied to the center of the series, but when it comes to estimate the most recent points, all of these methods must rely on asymmetric filters. 
 For example, X-12ARIMA or TRAMO-SEATS apply symmetrical averages to the forecasts obtained from an ARIMA model of the series. 
-However, since the predicted values are linear combinations of past values, it consist in applying to use methods do use skewed moving averages at the end of the series.
+However, since the predicted values are linear combinations of past values, it consists in applying to use methods do use skewed moving averages at the end of the series.
 
 If the classic asymmetric moving averages have good properties regarding the size of future revisions induces by the process^[See for example @pierce1980SA.], they induce phase shifts that impact the real-time estimation of turning points, introducing time delay in the detection.
 
 This report aims to describe and compare the recent approaches around trend-cycle extraction and asymmetric filters. 
 Due to the link between seasonal adjustment and trend-cycle extraction (section \@ref(sec:SAtoTCE)), we here focus on non-parametric methods that could be included in X-12ARIMA.
-After a description of the general properties link between seasonal adjustment and trend-cycle estimation (\@ref(sec:SAtoTCE)), we described the linear filters methods developed by @proietti2008, @ch15HBSA, @trilemmaWMR2019 and @dagumbianconcini2008 (sections \@ref(sec:lppfilters) to \@ref(sec:Dagum}).
+After a description of the general properties of a linear filter (section \@ref(sec:propMM)), we described the linear filters methods developed by @proietti2008, @ch15HBSA, @trilemmaWMR2019 and @dagumbianconcini2008 (sections \@ref(sec:lppfilters) to \@ref(sec:Dagum)).
 
 \newpage
 
 # From seasonal adjustment to trend-cycle estimation {#sec:SAtoTCE}
 
-Since the 20th century, more and more infra-annual statistics are produced, especially by national institutes, to analyse the short-term evolution of economies. 
+Since the 20th century, more and more infra-annual statistics are produced, especially by national institutes, to analyze the short-term evolution of economies. 
 It is for example the case of the gross domestic product (GDP), unemployment rate, household consumption of goods and industrial production indices.
 However, most of those time series are affected by seasonal and trading days effects. 
 A seasonal effect is an effect that occurs in the same calendar month with similar magnitude and direction from year to year. 
 For instance, automobile production is usually lower during summer, due to holidays, and chocolate sales are usually higher in December, due to Christmas. 
 Trading days effect appears when a time series is affected by calendar month’s weekday composition. 
-For example retail sales are usually higher on Saturday, thus it is likely that they will be higher in months with a surplus of weekend days.
+For example, retail sales are usually higher on Saturday, thus it is likely that they will be higher in months with a surplus of weekend days.
 
 Seasonal and trading days effects can hamper the analysis of infra-annual movements of a time series or the spatial comparison. 
 This is the reason why time series are often seasonally and trading days adjusted, where seasonal adjustment is the process of removing the effects of seasonal and trading day fluctuations.
@@ -87,9 +118,9 @@ To perform seasonal adjustment, most of the algorithm decompose the data in seve
 In X-12ARIMA and TRAMO-SEATS (the most popular seasonal adjustment methods), prior to the decomposition, the initial series is pre-adjustment from deterministic effects (outliers, calendar effects).
 Thus, the estimation of trend-cycle component technically is linked to the seasonal component.
 
-Moreover, since the trend-cycle extraction methods are applied to seasonally adjusted data, both problem cannot be separated.
+Moreover, since the trend-cycle extraction methods are applied to seasonally adjusted data, both problems cannot be separated.
 This link also explains that in this paper, all the methods used are implemented in the core libraries of JDemetra+ ^[https://github.com/jdemetra/jdemetra-core.], the seasonal adjustment software recommended by Eurostat. 
-An \faIcon{r-project} interface is implemented in the package `rjdfilters`^[https://github.com/palatej/rjdfilters.] was developped during this internship.
+An \faIcon{r-project} interface is implemented in the package `rjdfilters`^[https://github.com/palatej/rjdfilters.] was developed during this internship.
 
 In this paper we focus methods that could be implemented in X-12ARIMA. 
 To maintain consistency with the non-parametric approach of X-12ARIMA, we focus on non-parametric extraction methods. 
@@ -100,7 +131,7 @@ Furthermore, for simplicity the data used is seasonally adjusted: the study shou
 
 # Moving average and filters {#sec:propMM}
 
-A lot of papers describes the definition and the properties of moving average and linear filters (see for example @ch12HBSA). 
+Lots of papers describe the definition and the properties of moving average and linear filters (see for example @ch12HBSA). 
 Here we summarize some of the main results.
 
 Let $p$ et $f$ two integers, a moving average $M_\theta$ or $M$ is defined by a set of coefficients $\theta=(\theta_{-p},\dots,\theta_{f})'$ such as:
@@ -134,7 +165,7 @@ This function is sometimes represented as $\phi_\theta(\omega)=\frac{\Phi_\theta
 ]. 
 For all symmetric moving average we have $\Phi_\theta(\omega)\equiv 0 \pmod{\pi}$.
 
-To sum up, applying a moving average to an harmonic times series affects in in two different ways:
+To sum up, applying a moving average to a harmonic times series affects in in two different ways:
 
 - by multiplying it by an amplitude coefficient $G_{\theta}\left(\omega\right)$;
 
@@ -215,7 +246,7 @@ $$
 \forall j \in \left\llbracket 1,d\right\rrbracket:\:
 \sum_{k=-p}^{+f}k^j\theta_k=0
 $$
-- If $M_\theta$ is symmetric ($p=f$ and $\theta_{-k} = \theta_k$) and conserve polynomial of degree $2d$ then it also conserve polynomial of degree $2d+1$.
+- If $M_\theta$ is symmetric ($p=f$ and $\theta_{-k} = \theta_k$) and conserves polynomial of degree $2d$ then it also conserves polynomial of degree $2d+1$.
 
 ### Variance reduction
 
@@ -233,11 +264,11 @@ $$
 ## Real-time estimation and asymmetric moving average {#defAsymProb}
 
 For symmetric filters, the phase shift function is equal to zero.
-Therefore, there is no delay in any frequency: that's why they are prefered to the asymmetric ones. 
+Therefore, there is no delay in any frequency: that's why they are preferred to the asymmetric ones. 
 However, they cannot be used in the beginning and in the end of the time series because no past/future value can be used. 
 Thus, for real-time estimation, it is needed to build asymmetric moving average that approximate the symmetric moving average.
 
-The approximation is summarised by quality indicators. 
+The approximation is summarized by quality indicators. 
 In this paper we focus on the ones defined by @ch15HBSA and @trilemmaWMR2019 to build the asymmetric filters.
 
 @ch15HBSA propose a general approach to derive linear filters, based on an optimization problem of three criteria: *Fidelity* ($F_g$, noise reduction), *Smoothness* ($S_g$) and *Timeliness* ($T_g$, phase shift between input and ouput signals). 
@@ -258,9 +289,9 @@ $$\begin{array}{ccc}
 \hline S_{g} & \text{Smoothness (Guggemos)} & \sum_{j}(\nabla^{3}\theta_{j})^{2}\\
 \hline T_{g} & \text{Timeliness (Guggemos)} & \int_{0}^{2\pi/12}\rho_{\theta}(\omega)\sin(\varphi_{\theta}(\omega))^{2}\ud\omega\\
 \hline A_{w} & \text{Accuracy (Wildi)} & 2\int_0^{2\pi/12}\left(\rho_{s}(\omega)-\rho_{\theta}(\omega)\right)^{2}h_{RW}(\omega)\ud\omega\\
-\hline T_{w} & \text{Timeliness (Wildi)} & 8\int_0^{2\pi/12} \rho_{s}(\omega)\rho_{\theta}(\omega)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h_{RW}(\omega)\ud\omega\\
+\hline T_{w} & \text{Timeliness (Wildi)} & 8\int_0^{2\pi/12} \rho_{s}(\omega)\rho_{\theta}(\omega)\sin^{2}\left(\frac{\varphi_s(\omega)-\varphi_\theta(\omega)}{2}\right)h_{RW}(\omega)\ud\omega\\
 \hline S_{w} & \text{Smoothness (Wildi)} & 2\int_{2\pi/12}^{\pi}\left(\rho_{s}(\omega)-\rho_{\theta}(\omega)\right)^{2}h_{RW}(\omega)\ud\omega\\
-\hline R_{w} & \text{Residual (Wildi)} & 8\int_{2\pi/12}^{\pi} \rho_{s}(\omega)\rho_{\theta}(\omega)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h_{RW}(\omega)\ud\omega\\
+\hline R_{w} & \text{Residual (Wildi)} & 8\int_{2\pi/12}^{\pi} \rho_{s}(\omega)\rho_{\theta}(\omega)\sin^{2}\left(\frac{\varphi_s(\omega)-\varphi_\theta(\omega)}{2}\right)h_{RW}(\omega)\ud\omega\\
 \hline \\
 \end{array} $$
 \caption{Criteria used to check the quality of a linear filter defined by its coefficients $\theta=(\theta_k)_{-p\leq k\leq f}$ and its gain and phase shift function, $\rho_{\theta}$ and $\varphi_\theta$.} 
@@ -268,21 +299,22 @@ $$\begin{array}{ccc}
 \footnotesize
 \emph{Note: $X_g$ criteria are derived from \textcite{ch15HBSA} and $X_w$ criteria from \textcite{trilemmaWMR2019}.}
 
-\emph{$\rho_s$ represent the gain function of an Henderson symmetric filter to compare with the asymmetric ones.}
+\emph{$\rho_s$ and $\varphi_s$ represent the gain and phase shift function of the Henderson symmetric filter.}
 
 \emph{$h_{RW}$ is the spectral density of a random walk: $h_{RW}(\omega)=\frac{1}{2(1-\cos(\omega))}$.}
 \end{table}
 
 # Local polynomial filters {#sec:lppfilters}
 
-In this section we detail the filters that arised from fitting a local polynomial to our time series, as described by @proietti2008.
+In this section we detail the filters that arise from fitting a local polynomial to our time series, as described by @proietti2008.
 
 We assume that our time series $y_t$ can be decomposed as 
 $$
 y_t=\mu_t+\varepsilon_t
 $$
-where $\mu_t$ is the signal (trend) and $\varepsilon_{t}\overset{i.i.d}{\sim}\mathcal{N}(0,\sigma^{2})$ is the noise^[The time series is therefore seasonnally adjusted]. 
-We assume that $\mu_t$ can be locally approximated by a polynomial of degree $d$ of the time $t$ between $y_t$ and the neighboring observations $\left(y_{t+j}\right)_{j\in\left\llbracket -h,h\right\rrbracket}$. Then $\mu_t\simeq m_{t}$ with:
+where $\mu_t$ is the signal (trend) and $\varepsilon_{t}\overset{i.i.d}{\sim}\mathcal{N}(0,\sigma^{2})$ is the noise^[The time series is therefore seasonally adjusted]. 
+We assume that $\mu_t$ can be locally approximated by a polynomial of degree $d$ of the time $t$ between $y_t$ and the neighboring observations $\left(y_{t+j}\right)_{j\in\left\llbracket -h,h\right\rrbracket}$. 
+Then $\mu_t\simeq m_{t}$ with:
 $$
 \forall j\in\left\llbracket -h,h\right\rrbracket :\:
 y_{t+j}=m_{t+j}+\varepsilon_{t+j},\quad m_{t+j}=\sum_{i=0}^{d}\beta_{i}j^{i}
@@ -323,7 +355,7 @@ Two parameters are crucial in determining the accuracy of the approximation:
 
 - the degree $d$ of the polynomial;
 
-- the number of neighboured $H=2h+1$ (or the *bandwidth* $h$).
+- the number of neighbors $H=2h+1$ (or the *bandwidth* $h$).
 
 In order to estimate $\beta$ we need $H\geq d+1$ and the estimation is done by the weighted least squares (WLS), which consists of minimizing the following objective function:
 $$
@@ -357,7 +389,7 @@ $$
 \right)^s
 $$
 with $r>0$, $s\geq 0$. 
-It encompass all kernels used in this report, except Henderson, trapezoidal and gaussian kernel.The following kernels are considered in this report:
+It encompasses all kernels used in this report, except Henderson, trapezoidal and gaussian kernel.The following kernels are considered in this report:
 
 
 \begin{multicols}{2}
@@ -456,11 +488,11 @@ Therefore it is never used to extract trend-cycle component.
 Otherwise you will only be able to see the results for $h=2$.}
 \end{figure}
 
-The figure \@ref(fig:kernels) summarises the coefficients of the different kernels.
-Analysing the coefficients we can already anticipate some properties of the associated filters:
+The figure \@ref(fig:kernels) summarizes the coefficients of the different kernels.
+Analyzing the coefficients we can already anticipate some properties of the associated filters:
 
 - The triweight kernel has the narrowest distribution.
-The narrowest a distribution is, the smallest the weights of furthest neighbours are: the associated filter should have a high weight in the current observation ($t$).
+The narrowest a distribution is, the smallest the weights of furthest neighbors are: the associated filter should have a high weight in the current observation ($t$).
 
 - For $h$ high the Henderson kernel is equivalent to the triweight kernel (since $h+1\sim h+2 \sim h+3$, $\kappa_j^H\sim\kappa_j^{TW}$), the associated filter should also be equivalent.
 However, for $h$ small ($h\leq10$) the Henderson kernel is closer to the biweight kernel than to the triweight kernel.
@@ -471,7 +503,8 @@ However, for $h$ small ($h\leq10$) the Henderson kernel is closer to the biweigh
 
 When $p=0$ (local adjustment by a constant) we obtain the **Nadaraya-Watson**'s estimator.
 
-With the uniform kernel we obtain the **Macaulay filter**. When $p=0,1$, this is the arithmetic moving average: $w_j=w=\frac{1}{2h+1}$.
+With the uniform kernel we obtain the **Macaulay filter**. 
+When $p=0,1$, this is the arithmetic moving average: $w_j=w=\frac{1}{2h+1}$.
 
 The **Epanechnikov** kernel is often recommended as the optimal kernel that minimize the mean square error of the estimation by local polynomial.
 
@@ -481,7 +514,7 @@ The **Henderson filter** is a specific case of a local cubic fit ($p=3$), widely
 He showed that the three following problems were equivalent:
 
 1. minimize the variance of third difference of the series by the application of the moving average;  
-2. minimize the sum of squares of third difference of the coefficients of the filter, it's the *smothness criterion*: $S=\sum_j(\nabla^{3}\theta_{j})^{2}$;  
+2. minimize the sum of squares of third difference of the coefficients of the filter, it's the *smoothness criterion*: $S=\sum_j(\nabla^{3}\theta_{j})^{2}$;  
 3. fit a local cubic polynomial by weighted least squares, where the weights are chose to minimize the sum of squares of the resulting filter.
 
 Resolving the last problem leads to the kernel presented in section \@ref(sec:kernels).
@@ -533,11 +566,11 @@ However, those negative coefficients are negligible compare to the central coeff
 Figure \@ref(fig:filtersSymgains) plots the gain functions of the different filters. 
 Gain functions are usually plotted between 0 and $\pi$. 
 However, locally weighted polynomial regression are low-pass filters: they leave almost unchanged low frequency components (such as the trend) and attenuate high frequency fluctuations (noise). 
-For a monthly data, a cycle of 3 years correspond to the frequency $2\pi/36$ and a cycle of 7 years to the frequency  $2\pi/84$.
+For a monthly data, a cycle of 3 years corresponds to the frequency $2\pi/36$ and a cycle of 7 years to the frequency  $2\pi/84$.
 Therefore, an ideal pass-band filter will have a gain function equal to 1 for low frequency ($\leq 2\pi/36$) and equal to 0 for other frequencies.
 
 When the bandwidth $h$ increases, the gain function decreases for low frequencies: short business cycles will then be attenuated.
-For a fixed value of $h$, gaussian, Henderson and triweight filters will preserve more short business cycles than the others filters (especially uniform, trapezoidal and Epanechnikov). 
+For a fixed value of $h$, gaussian, Henderson and triweight filters will preserve more short business cycles than the other filters (especially uniform, trapezoidal and Epanechnikov). 
 Moreover, the gain function of those filters decreases faster to zero with less fluctuations: it enhances the higher variance reduction ratio shown in table \@ref(tab:varianceReductionSymmetricFilters).
 
  
@@ -550,7 +583,7 @@ Moreover, the gain function of those filters decreases faster to zero with less 
 Otherwise you will only be able to see the results for $h=2$.}
 \end{figure}
 
-Just analysing the symmetric filters properties, there is no doubt that Henderson, triweight and biweight filters have similar properties and will perform better than the other kernel for trend-cycle extraction. 
+Just analyzing the symmetric filters properties, there is no doubt that Henderson, triweight and biweight filters have similar properties and will perform better than the other kernel for trend-cycle extraction. 
 The same results are found with asymmetric filters. 
 Thus, in order to simplify the presentation analysis, in the next sections we will only show the results with the Henderson filter.
 
@@ -561,11 +594,11 @@ Thus, in order to simplify the presentation analysis, in the next sections we wi
 
 As mentioned in section \@ref(defAsymProb), symmetric filters cannot be used in boundary points. For real-time estimation, three different approaches can be used:
 
-1. Build a asymmetric filter fitting local polynomial to the available observations $y_{t}$ for $t\in\left\llbracket n-h,n\right\rrbracket$.
+1. Build an asymmetric filter fitting local polynomial to the available observations $y_{t}$ for $t\in\left\llbracket n-h,n\right\rrbracket$.
 
 2. Apply the symmetric filter to the series extended by forecast (or backcast) $\hat{y}_{n+l\mid n},l\in\left\llbracket 1,h\right\rrbracket$.
 
-3. Build a asymmetric filter which minimize the mean square revision error subject to polynomial reproducing constraints.
+3. Build an asymmetric filter which minimize the mean square revision error subject to polynomial reproducing constraints.
 
 @proietti2008 show that the first two approaches are equivalent when the forecast is done by a polynomial extrapolation of order $d$ (forecasts generated with the same polynomial model than the symmetric filter). 
 This is called the *direct asymmetric filter* (DAF).
@@ -590,14 +623,14 @@ w_{a}=K_{p}X_{p}(X'_{p}K_{p}X_{p})^{-1}e_{1},
 $$
 Moreover, we have the following results with the DAF $w_a$:
 
-- it satisfy the same polynomial reproduction constraints as the symmetric filter (conserve polynomial of degree $d$). 
+- it satisfies the same polynomial reproduction constraints as the symmetric filter (conserve polynomial of degree $d$). 
 Thus, the bias in estimating an unknown function of time has the same order of magnitude as in the interior of time support.
 
 - $w_a$ minimize the weighted distance (by the kernel function) between the asymmetric filter coefficients and the symmetric ones. 
 Therefore, for the DAF it is equivalent to fit a local polynomial and to minimize the revisions
 
 However, the weights $w_{a,0}$ of the DAF are highly concentrated in the current observation $t$ with an important change between $q=0$ (real-time filter) and $q=h$ (see figure \@ref(fig:filtersdafcoefs)). 
-Moreover the real-time filter doesn't have a satisfying gain functions: it is closer to one for all the frequencies (it thus have a low noise reduction power).
+Moreover the real-time filter doesn't have a satisfying gain functions: it is closer to one for all the frequencies (it thus has a low noise reduction power).
 Therefore, even if the real-time filter is unbiased (if the series is generated by a polynomial of degree $d$) it is at the expenses of a high variance. 
 
 \begin{figure}[!ht]
@@ -650,7 +683,7 @@ With the filter we assume that the data is generated by a linear process and tha
 The asymmetric filters depends on the ratio $\delta_1/\sigma$, which is related to the "I-C" ratio $R=\frac{\bar{I}}{\bar{C}}=\frac{\sum\lvert I_t-I_{t-1}\rvert}{\sum\lvert C_t-C_{t-1}\rvert}$ ($\delta_1/\sigma=2/(R\sqrt{\pi})$), the ratio between the expected absolute difference of the irregular and of the trend-cycle.
 In the seasonal adjustment method, the I-C ratio^[
 To compute the I-C ratio, a first decomposition of the seasonally adjusted series is computed using a 13-term Henderson moving average.
-] is used to determine the bandwidth to used for the Henderson filter. For monthly data:
+] is used to determine the bandwidth to use for the Henderson filter. For monthly data:
 
 - if $R<1$ a 9-term Henderson is used ($h=4$);
 
@@ -685,7 +718,7 @@ We obtain Musgrave filters when the Henderson kernel is used.
 <!-- ``` -->
 
 The table \@ref(tab:criteriaLp) show the quality criteria of the different methods with the Henderson kernel and $h=6$. 
-For real-time filters ($q=0$), the more complex the filter is (in terms of polynomial preservation), the less the timeliness is and the more the fidelity/smoothness is:the reduction of the time-delay is at the expense of an increase variance. 
+For real-time filters ($q=0$), the more complex the filter is (in terms of polynomial preservation), the less the timeliness is and the more the fidelity/smoothness is: the reduction of the time-delay is at the expense of an increase variance. 
 This change when $q$ increases: for $q=2$ the QL filter has a greater timeliness that the LC filter. 
 This unexpected result underlines the fact that in the approach of @proietti2008, the timeliness is never set as a goal to minimize.
 
@@ -705,7 +738,7 @@ lp_diagnostics[,-1] %>%
 Regarding the mean square revision error ($A_w+S_w+T_w+R_w$), LC and QL filters always gives better results than CQ and DAF filters. 
 This "theorical" mean square revision error can be compared to the "empirical" one computed applying the filters to real data.
 The table \@ref(tab:mseIPI) shows the average mean square revision error of the different filters applied to the Industrial production indices of the European Union between 2003 and 2019. 
-The mean square revision errors are different in level but give sames results comparing the different filters: this validate the formula used for the criteria $A_w,S_w,T_w,\text{ and }R_w$ (see section \@ref(sec:WildiMcLeroy)). 
+The mean square revision errors are different in level but give same results comparing the different filters: this validate the formula used for the criteria $A_w,S_w,T_w,\text{ and }R_w$ (see section \@ref(sec:WildiMcLeroy)). 
 
 Taking for the value $R$ the "I-C" ratio computed with the raw data gives the same summary results.
 
@@ -719,31 +752,32 @@ Taking for the value $R$ the "I-C" ratio computed with the raw data gives the sa
 Method & 2007-2010 & 2003-2019 & $A_w+S_w+T_w+R_w$\\
 \midrule
 \addlinespace[0.3em]
-\multicolumn{4}{l}{\textbf{0}}\\
+\multicolumn{4}{l}{$q=0$}\\
 \hspace{1em}LC & 1.54 & 0.855 & 1.543\\
 \hspace{1em}QL & 2.04 & 1.560 & 2.068\\
 \hspace{1em}CQ & 2.88 & 2.363 & 2.349\\
 \hspace{1em}DAF & 3.03 & 2.489 & 2.290\\
 \addlinespace[0.3em]
-\multicolumn{4}{l}{\textbf{1}}\\
+\multicolumn{4}{l}{$q=1$}\\
 \hspace{1em}LC & 2.96 & 1.315 & 0.304\\
 \hspace{1em}QL & 2.31 & 1.074 & 0.247\\
 \hspace{1em}CQ & 2.62 & 1.342 & 0.660\\
 \hspace{1em}DAF & 2.72 & 1.437 & 0.840\\
 \addlinespace[0.3em]
-\multicolumn{4}{l}{\textbf{2}}\\
+\multicolumn{4}{l}{$q=2$}\\
 \hspace{1em}LC & 6.78 & 2.774 & 0.040\\
 \hspace{1em}QL & 7.45 & 3.074 & 0.101\\
 \hspace{1em}CQ & 7.99 & 3.620 & 0.635\\
 \hspace{1em}DAF & 7.94 & 3.618 & 0.742\\
 \bottomrule
 \end{tabular}
+
 \emph{Note: the filters are computed with $h=6$ (13-terms symmetric filter) and $R=3.5$.}
 \end{table}
 
-\faArrowCircleRight{} All those results suggest to focus on LC and QL filters and to focus on asymmetric linear filters that preserve polynomial trends of degree less than one.
+\faArrowCircleRight{} All those results suggest focusing on LC and QL filters and to focus on asymmetric linear filters that preserve polynomial trends of degree less than one.
 
-The results for the different kernels can also be visualised in an online application available at https://aqlt.shinyapps.io/FiltersProperties/.
+The results for the different kernels can also be visualized in an online application available at https://aqlt.shinyapps.io/FiltersProperties/.
 
 :::: {.summary data-latex="{Local polynomial filters}"}
 **Advantages**:
@@ -760,9 +794,9 @@ The results for the different kernels can also be visualised in an online applic
 
 
 
-# General optimisation problem: @ch15HBSA {#sec:GuggemosEtAl}
+# General optimization problem: FST filters {#sec:GuggemosEtAl}
 
-## FST filters
+## Description of the approach
 
 @ch15HBSA defined a general approach to derive linear filters, based on an optimization problem of three criteria:
 
@@ -780,7 +814,7 @@ $$
 $S_g$ could also be rewritten in a positive quadratic form: $S_g(\theta)=\theta'S\theta$ with $S$ a symmetric matrix of order $p+f+1$.
 
 
-- *Timeliness*, $T_g$: it measures the phase-shift between input and output signal for specific frequencies. 
+- *Timeliness*, $T_g$: it measures the phase shift between input and output signal for specific frequencies. 
 When a linear filter is applied, the level input signal is also altered by the gain function. 
 Therefore, it is natural to consider that the higher the gain is, the higher the phase shift impact is. 
 That's why the timeliness criterion depends on the gain and phase shift functions ($\rho_\theta$ and $\varphi_{\theta}$), the link between both functions being made by a penalty function $f$.
@@ -830,12 +864,12 @@ This approach can be called as the "FST approach" in reference to the three indi
 - The different criteria are not normalized: the associated weights cannot be compared.
 ::::
 
-## Extension with the revision criteria
+## Extension with the revision criterion
 
 The FST --- Fidelity-Smoothness-Timeliness --- approach is the only one that do not directly include a criterion on the revision error relative to a symmetric filter.  
 This approach could be somewhat generalized in order to include the revision criterion, replacing in the orthogonal form $\theta$ by $(w-\theta)$ (with $w$ the symmetric filter), and $F$ by a matrix relative to the data (see @ch12HBSA).
 
-In this paper, we consider the method that consist to extend the minimization problem of local polynomial filters adding the Timeliness criteria defined by @ch15HBSA^[This method is for example coded in Java by Jean Palate in https://github.com/palatej/jdemetra-core.].
+In this paper, we consider the method that consist to extend the minimization problem of local polynomial filters adding the Timeliness criterion defined by @ch15HBSA^[This method is for example coded in Java by Jean Palate in https://github.com/palatej/jdemetra-core.].
 Using the same notations as in section \@ref(subsec:lppasymf), $\theta=v$ and noting $g=v-w_p$, the Timeliness criterion can be rewritten:
 $$
 T_g(v)=v'Tv=g'Tg+2w_p'Tg+w_p'Tw_p
@@ -855,7 +889,7 @@ c\text{ a constant independent of }v
 \end{cases}
 \end{align*}
 
-Adding the Timeliness criteria, it becomes:
+Adding the Timeliness criterion, it becomes:
 $$
 \widetilde\varphi(v)=g'\widetilde Qg-
 2\widetilde Pg+2l'(U_{p}'v-U'w)+
@@ -874,7 +908,7 @@ The figures \@ref(fig:lppguglc) show the impact of $\alpha_T$ on the coefficient
 
 - The $\alpha_T$ impact logarithmically the coefficients: we can restraint $\alpha_T$ to $[0,2000]$.
 
-- As expected, to include the timeliness criteria has more impact for the value of $q$ that gives filters with higher timeliness: it corresponds to $q\leq2$ for the LC method. For the QL method we find thant $\alpha_T$ has an impact for medium values of $q$ ($2\leq q\leq4$).
+- As expected, to include the timeliness criterion has more impact for the value of $q$ that gives filters with higher timeliness: it corresponds to $q\leq2$ for the LC method. For the QL method we find thant $\alpha_T$ has an impact for medium values of $q$ ($2\leq q\leq4$).
 
 
 \begin{figure}[!ht]
@@ -894,7 +928,7 @@ Otherwise you will only be able to see the results for $q=0$.}
 <!-- \end{figure} -->
 
 
-# Data-dependent filter: @trilemmaWMR2019 {#sec:WildiMcLeroy}
+# Data-dependent filter {#sec:WildiMcLeroy}
 
 In @trilemmaWMR2019, the authors proposed a data-dependent approach to derive linear filters. They decompose the mean square revision error in a trilemma between three quantities : *accuracy*, *timeliness* and *smoothness*.
 
@@ -933,7 +967,7 @@ Residual =R_w&= 8\int_{\omega_1}^\pi\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\
 :::: {.remark}
 The formulas of the four criteria slightly differ from the ones defined in @trilemmaWMR2019 to have coherent definitions between all sections:
 
-- in this paper the interval integrations is $[0,\pi]$ rather than $[-\pi;\pi]$ (the integral are then only multiplied by 2 because all the functions are even);
+- in this paper the interval integrations is $[0,\pi]$ rather than $[-\pi;\pi]$ (the integrals are then only multiplied by 2 because all the functions are even);
 
 - the pass-pand interval is defined as the frequency interval that contains the target signals whereas in @trilemmaWMR2019 it depends on the gain function of the symmetric filer (pass-band$=\{\omega |\rho_s(\omega)\geq 0.5\}$).
 :::: 
@@ -941,7 +975,7 @@ The formulas of the four criteria slightly differ from the ones defined in @tril
 
 In general, the residual $R_w$ is small since $\rho_s(\omega)\rho_\theta(\omega)$ is close to 0 in the stop-band. 
 Moreover, user priorities are rarely concerned about the time-shift properties of components in the stop-band. 
-That's why, to derive linear filters the residual is not taken into account and that the authors suggest to compute then minimizing a weighted sum of the first three indicators:
+That's why, to derive linear filters the residual is not taken into account; and that's why the authors suggest minimizing a weighted sum of the first three indicators:
 $$
 \mathcal{M}(\vartheta_{1},\vartheta_{2})=\vartheta_{1}T_w(\theta)+\vartheta_{2}S_w(\theta)+(1-\vartheta_{1}-\vartheta_{2})A_w(\theta)
 $$
@@ -956,20 +990,22 @@ To have criteria that don't depend on the data, we take for the symmetric filter
 $$
 h_{RW}(x)=\frac{1}{2(1-\cos(x))}
 $$
-The formula presented in table \@ref(tab:QC) are then found using the fact that for a symmetric filter the phase shit is equal to zero ($\varphi_s(\omega)=0$).
+We then found the formula presented in table \@ref(tab:QC).
 
 :::: {.summary data-latex="{Data-dependent filters}"}
 **Advantages**:
 
-- The values of the different criteria can be compared: the weight can be easily interpreted.
+- The values of the different criteria can be compared: the weights can be easily interpreted.
 
 **Drawbacks**:
 
 - Data-dependent filter: it depends on the symmetric filter, the data and the date of estimation.
 
-- Some optimisation problems might occur (several minimum, etc.).
+- Some optimization problems might occur (several minimum, etc.).
 ::::
 
+We could also use a non-parametric approach to build asymmetric using $h_{RW}$ for the spectral density of the series. 
+However, due to a lack of time, this option is not considered in this study.
 
 
 # Asymmetric filters and Reproducing Kernel Hilbert Space {#sec:Dagum}
@@ -988,7 +1024,7 @@ $$
 $$
 K_{p}(t)=\sum_{i=0}^{p-1}P_{i}(t)P_{i}(0)f_{0}(t)
 $$
-The weight of a symmetric filter are then derived with:
+The weights of a symmetric filter are then derived with:
 $$
 \forall j\in\left\llbracket -h,h\right\rrbracket\::\: w_{j}=\frac{K_p(j/b)}{\sum_{i=-h}^{^h}K_p(i/b)}
 $$
@@ -1007,7 +1043,7 @@ $$
 $$
 With $b=h+1$, @proietti2008 show that we obtain the direct asymmetric filters (DAF).
 
-In @dagumbianconcini2015, the authors suggest to perform an optimal bandwidth selection (parameter $b$), decomposing the mean squared revision error as in equation \@ref(eq:msedecomp) but with a uniform spectarl density ($h(\omega)=1$).
+In @dagumbianconcini2015, the authors suggest performing an optimal bandwidth selection (parameter $b$), decomposing the mean squared revision error as in equation \@ref(eq:msedecomp) but with a uniform spectarl density ($h(\omega)=1$).
 The bandwidth can then be chosen to minimize the mean squared revision error, the phase shift, etc. 
 The following bandwidth selection are studied:
 \begin{align*}
@@ -1038,12 +1074,12 @@ $$
 
 With $\Omega_S=[0,2\pi/36]$ the frequency domain associated to cycles of 16 months or longer.
 
-- in @dagumbianconcini2015 a different formula is used for the frequency response function ($\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{2\pi i \omega k}$), it only changes the interval integration.
+- in @dagumbianconcini2015 a different formula is used for the frequency response function ($\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{2\pi i \omega k}$): it only changes the interval integration.
 ::::
 
 
 The table \@ref(tab:criteriarkhs) shows the quality criteria of the RKHS filters.
-Even if the symmetric filter preserve quadratic trends, this is not the case of the asymmetric filters: they only preserve constant trends.
+Even if the symmetric filter preserves quadratic trends, this is not the case of the asymmetric filters: they only preserve constant trends.
 The more data is available (i.e.: $q$ increases), the less the asymmetric filters distort polynomial trends (for example, for $q=2$, $b_c\simeq0$).
 
 ```{r criteriarkhs, echo = FALSE}
@@ -1067,7 +1103,7 @@ rkhs_diagnostics[,-1] %>%
 
 - The linear filters don't preserve polynomial trends of degree 1 or more.
 
-- Some optimisation problems might occur (several minimum, etc.).
+- Some optimization problems might occur (several minimum, etc.).
 ::::
 
 # Comparison of the different filters
@@ -1088,9 +1124,10 @@ For $h=6$ (13-term symmetric filter), for the RKHS filters we find that:
 For the local polynomial filters we find that:
 
 - imposing that asymmetric filter preserve constants, the FST approach gives better results than the LC method for all values of $q$. 
-Adding the timeliness criteria allows to have better results than the FST approach for $q=0,1$.
+Adding the timeliness criterion allows to have better results than the FST approach for $q=0,1$.
 
-- imposing that asymmetric filter preserve linear trends, the FST approach gives better results for $q\in[2,5]$ for the LC and QL methods. Adding the timeliness criteria doesn't change the results.
+- imposing that asymmetric filter preserve linear trends, the FST approach gives better results for $q\in[2,5]$ for the LC and QL methods. 
+Adding the timeliness criterion doesn't change the results.
 
 \faArrowCircleRight{} In terms of quality criteria, local polynomial seems to perform better for real-time and one-period ahead filters ($q=0,1$).
 
@@ -1115,7 +1152,7 @@ For this example, in terms of time lag to detect the turning point of February 2
 A turning point (upturn) is defined to occur at time $t$ if $y_{t-k}\geq\cdots\geq y_{t-1}<y_t\leq y_{t+1}\leq\cdots y_{t+m}$. 
 A downturn would be equivalently defined as a date $t$ $y_{t-k}\leq\cdots\leq y_{t-1}>y_t\geq y_{t+1}\geq\cdots y_{t+m}$.
 Following @Zellner1991, $k=3$ and $m=1$ are chosen given the smoothness of the trend-cycle data. 
-], the DAF is the worst filters since it introduce a delay of one month until $q=3$. 
+], the DAF is the worst filters since it introduces a delay of one month until $q=3$. 
 LC, QL, $b_{q,\gamma}$ filters introduce a delay only for real-time filter ($q=0$) of one month except for the QL filter for which it is of two months.
 Surprisingly, the FST filter that minimize the phase shift introduce a time lag for $q=0$ and $q=1$ (the upturn is detected earlier), whereas $b_{q,\phi}$ doesn't introduce any time lag.
 
@@ -1124,13 +1161,13 @@ For real-time estimates ($q=0$), the LC and RKHS filters minimize the revision b
 As excepted, the QL filter minimize the revision around the turning point of 2009 since it is the only filter that preserve polynomial trends of degree 1. 
 The fact that, around the turning point, $b_{q,\phi}$ performs better than the other RKHS filters can be explain by the fact that this filter distort less polynomial trends of degree 1 and 2 ($b_l$ and $b_q$ statistics are lower, table \@ref(tab:criteriaLp)).
 
-With this simple example we cannot generalize properties on the different asymmetric filters but it gives some leads to extend this study:
+With this simple example we cannot generalize properties on the different asymmetric filters, but it gives some leads to extend this study:
 
-- minimize the timeliness doesn't imply earlier detection of turning points: more investigations on the timeliness criteria could be done;
+- minimize the timeliness doesn't imply earlier detection of turning points: more investigations on the timeliness criterion could be done;
 
 - accept some bias in polynomial trends preservation can lead to asymmetric filters that performs better in term of turning points detection;
 
-- for almost all the filters, there is no time lag to detect the turning points when two future observations are available and the different methods gives similar results. 
+- for almost all the filters, there is no time lag to detect the turning points when two future observations are available, and the different methods gives similar results. 
 Therefore, it is pointless to optimize asymmetric filters when too much future observations are available.
 
 Moreover, this example also illustrate that the different methods performs better than the DAF filters. 
@@ -1161,20 +1198,22 @@ This is for example the case of STL (Seasonal-Trend decomposition based on Loess
 
 To sum up, several lessons can be learn from this study on asymmetric filters.
 
-First, to build asymmetric filters there is no need to seek to preserve polynomial trends of degree more than 2: it introduces more bias in the detection of turning point with a low gain on the revision error. 
+First, to build asymmetric filters there is no need to seek to preserve polynomial trends of degree more than one: it introduces more bias in the detection of turning point with a low gain on the revision error. 
 Moreover, introduce a small bias in polynomial preservation can lead to filters that performs globally better, as we have shown with RKHS $b_{q,\phi}$ filter with the French IPI of manufacture of motor vehicles, trailers and semi-trailers.
 
-Second, focusing on the Fidelity-Smoothness-Timeliness criteria, the FST approach can lead to asymmetric filters that performs better than the other ones (local polynomials and RKHS). 
-More investigations should be done in that direction to understand when it performs better and if the improvement is statistically significant.
+Second, focusing on the Fidelity-Smoothness-Timeliness criteria, the FST approach can lead to asymmetric filters that outperform the other ones (local polynomials and RKHS). 
+More research should be done in that direction to understand when it performs better and if the improvement is statistically significant.
 
-Third, all the methods have advantages and drawbacks and lots of degrees of freedom on the criteria used to build them. 
-Therefore, more studies should be done on the effects of this degrees of freedom to see how they impact the estimation and if we cannot simplify them, as it is done in the X-12ARIMA algorithm to choose the length of the Henderson filter. 
+Third, all the methods lots of degrees of freedom on the criteria used to build them. 
+Therefore, more theoretical and empirical studies should be done on the effects of this degrees of freedom to see how they impact the estimation and if we cannot simplify them, as it is done in the X-12ARIMA algorithm to choose the length of the Henderson filter. 
 
-Finally, the study on asymmetric filters should be focus on real-time estimates and when few future observations are available. Indeed, for monthly data, when two or more future observations are available, the different methods gives similar results and the gain to compute optimize filters is small.
+Finally, the study on asymmetric filters should be focus on real-time estimates and when few future observations are available. 
+Indeed, for monthly data, when two or more future observations are available, the different methods give similar results and the gain to compute optimize filters is small.
+Consequently, adding the timeliness criterion to local polynomial filters will mainly be useful for the LC methods for which it has an impact when few future observations are known.
 
 This study could also be extended in many ways. 
 One lead could be to do more investigation on the length of the filters. 
-In most of studies on asymmetric filters, the asymmetric filter uses as many past observations as the symmetric filters. However, we could consider asymmetric filters that takes more past observations. Moreover, in this paper we have only focus on regular monthly data but we could have some issues with high frequency data and irregular data. 
+In most of studies on asymmetric filters, the asymmetric filter uses as many past observations as the symmetric filters. However, we could consider asymmetric filters that takes more past observations. Moreover, in this paper we have only focus on regular monthly data, but we could have some issues with high frequency data and irregular data. 
 In addition to the problem of choosing the length of the filter, we could check if we find similar results as for short filters.
 
 Another lead could be to study the impact of atypical points: in X-12ARIMA there is a strong correction of atypical points on the irregular before applying the filters to extract the trend. 
