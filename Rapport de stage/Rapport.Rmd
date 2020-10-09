@@ -962,7 +962,7 @@ Smoothness =S_w&= 2\int_{\omega_1}^\pi\left(\rho_s(\omega)^{2}-\rho_\theta(\omeg
 Residual =R_w&= 8\int_{\omega_1}^\pi\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h(\omega)\ud\omega\\
 \end{align*}
 
-:::: {.remark}
+:::: {.remark data-latex=""}
 To have coherent definitions between all sections, the formulas of the four criteria slightly differ from the ones defined in @trilemmaWMR2019:
 
 - in this paper the interval integrations is $[0,\pi]$ rather than $[-\pi;\pi]$ (the integrals are then only multiplied by 2 because all the functions are even);
@@ -1059,7 +1059,7 @@ b_{q,\varphi}&=\underset{b_q\in]h;2 h+1]}{\min}
 
 One of the drawbacks of the optimal bandwidth selection is that there is no guarantee that there is a unique solution. 
 
-:::: {.remark}
+:::: {.remark data-latex=""}
 To have coherent definitions between all sections, the formulas of $b_{q,G}$, $b_{q,\gamma}$ and $b_{q,\varphi}$ slightly differ from the ones defined in @dagumbianconcini2015 where:
 
 - $b_{q,\varphi}$ is defined as 
@@ -1155,7 +1155,7 @@ Following @Zellner1991, $k=3$ and $m=1$ are chosen given the smoothness of the t
 LC, QL, $b_{q,\gamma}$ filters introduce a delay only for real-time filter ($q=0$) of two months for QL filter and one month for the others.
 Surprisingly, the FST filter that minimize the phase shift introduce a time lag for $q=0$ and $q=1$ (the upturn is detected earlier), whereas $b_{q,\phi}$ doesn't introduce any time lag.
 
-:::: {.remark}
+:::: {.remark data-latex=""}
 Those results differ from the one obtained in the real-time during the economic crisis. 
 Indeed, here we take the time series already seasonally adjusted in the overall period, whereas during the real-time estimates, the seasonal adjustment process also introduce a time lag.
 ::::
