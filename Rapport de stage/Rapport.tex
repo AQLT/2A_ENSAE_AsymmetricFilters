@@ -1046,7 +1046,8 @@ The results for the different kernels can also be visualized in an online applic
 \item
   Simple models with an easy interpretation.
 \item
-  The asymmetric linear filter is independent of the data and of the date of estimation.
+  The asymmetric linear filter is independent of the date of estimation.
+  However, it depends on the data if we calibrate the filter with the ``I-C'' ratio.
 \end{itemize}
 
 \textbf{Drawbacks}:
@@ -1409,7 +1410,8 @@ Method & $ b_c $ & $ b_l $ & $ b_q $ & $ F_g $ & $ S_g $ & $ T_g \times 10^{-3} 
 \textbf{Advantages}:
 
 \begin{itemize}
-\tightlist
+\item
+  The asymmetric linear filter is independent of the data and of the date of estimation.
 \item
   Filters to apply to irregular frequency series (for example with a lot of missing values) can easily be computed.
 \end{itemize}
@@ -1481,6 +1483,13 @@ For this example, in terms of time lag to detect the turning point of February 2
   Following \textcite{Zellner1991}, \(k=3\) and \(m=1\) are chosen given the smoothness of the trend-cycle data. }, the DAF is the worst filter since it introduces a delay of one month until \(q=3\).
 LC, QL, \(b_{q,\gamma}\) filters introduce a delay only for real-time filter (\(q=0\)) of two months for QL filter and one month for the others.
 Surprisingly, the FST filter that minimize the phase shift introduce a time lag for \(q=0\) and \(q=1\) (the upturn is detected earlier), whereas \(b_{q,\phi}\) doesn't introduce any time lag.
+
+\begin{remark}
+
+Those results differ from the one obtained in the real-time during the economic crisis.
+Indeed, here we take the time series already seasonally adjusted in the overall period, whereas during the real-time estimates, the seasonal adjustment process also introduce a time lag.
+
+\end{remark}
 
 In terms of revision error, the DAF filters also give the worst results.
 For real-time estimates (\(q=0\)), the LC and RKHS filters minimize the revision between 2000 and 2008 but when more data are available all the methods (except the DAF filters) give similar results.
