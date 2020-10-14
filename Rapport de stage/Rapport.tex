@@ -949,12 +949,12 @@ This will reduce the variance at the expense of a bias: it is the idea followed 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  \emph{Linear-Constant} (LC): \(y_t\) linear (\(d=1\)) and \(v\) preserve constant signals (\(d^*=0\)).
+  \emph{Linear-Constant} (LC): \(y_t\) linear (\(d=1\)) and \(v\) preserves constant signals (\(d^*=0\)).
   We obtain Musgrave filters when the Henderson kernel is used.
 \item
-  \emph{Quadratic-Linear} (QL): \(y_t\) quadratic (\(d=2\)), \(v\) depend on the ratio \(\delta_2^2/\sigma^2\).
+  \emph{Quadratic-Linear} (QL): \(y_t\) quadratic (\(d=2\)) and \(v\) preserves linear signals (\(d^*=1\)).
 \item
-  \emph{Cubic-Quadratic} (CQ): \(y_t\) cubic (\(d=3\)), \(v\) depend on the ratio \(\delta_2^2/\sigma^2\).
+  \emph{Cubic-Quadratic} (CQ): \(y_t\) cubic (\(d=3\)) and \(v\) preserves quadratic signals (\(d^*=2\)).
 \end{enumerate}
 
 The table \ref{tab:criteriaLp} shows the quality criteria of the different methods with the Henderson kernel and \(h=6\).
@@ -1317,14 +1317,15 @@ where \(b\) is a time-invariant global bandwidth parameter.
 
 The density \(f_0\) corresponds to the continuous versions of the kernel defined in \ref{sec:kernels}.
 For example, the biweight function is \(f_{0B}(t)=(15/16)(1-t^2)^2,t\in [-1,1]\).
-The local polynomial filter obtained with the biweight kernel is then obtained using the bandwidth \(b=m+1\).
+The local polynomial filter obtained with the biweight kernel is then obtained using the bandwidth \(b=h+1\).
 
 The goal of \textcite{dagumbianconcini2008} is to derive asymmetric filters from the Henderson symmetric filter, therefore the ideal kernel function would be the Henderson one.
-However, as shown in section \ref{sec:kernels}, the Henderson density is a function of the bandwidth and needs to be calculated any time \(m\) changes (as its corresponding orthonormal polynomial). That's why the authors use the biweight kernel to approximate the Henderson kernel (for \(h\geq 24\) they suggest to consider the triweight kernel).
+However, as shown in section \ref{sec:kernels}, the Henderson density is a function of the bandwidth and needs to be calculated any time \(m\) changes (as its corresponding orthonormal polynomial).
+That's why the authors use the biweight kernel to approximate the Henderson kernel (for \(h\geq 24\) they suggest to consider the triweight kernel).
 
 The asymmetric weighted are obtained adapting the kernels to the length of the asymmetric filters:
 \[
-\forall j\in\left\llbracket -h,p\right\rrbracket\::\: w_{a,j}=\frac{K_p(j/b)}{\sum_{i=-h}^{^p}K_p(i/b)}
+\forall j\in\left\llbracket -h,q\right\rrbracket\::\: w_{a,j}=\frac{K_p(j/b)}{\sum_{i=-h}^{^q}K_p(i/b)}
 \]
 With \(b=h+1\), \textcite{proietti2008} show that we obtain the direct asymmetric filters (DAF).
 
@@ -1465,7 +1466,8 @@ Those comparisons can be seen in an online application available at \url{https:/
 \subsection{Illustration with an example}\label{illustration-with-an-example}}
 
 In this section we compare the different asymmetric filters applying them to the French industrial production index of manufacture of motor vehicles, trailers and semi-trailers\footnote{This series is produced by the INSEE, the French National Statistical Office, and is available at \url{https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/010537940}.}.
-For simplicity, for the FST approach we only show an extreme filter example minimizing the phase shift by putting a large weight to the timeliness (\(\alpha = 0\), \(\beta = 1\), \(\gamma = 1000\)). For local polynomial filters, the Henderson kernel is used with \(R=3.5\).
+For simplicity, for the FST approach we only show an extreme filter example minimizing the phase shift by putting a large weight to the timeliness (\(\alpha = 0\), \(\beta = 1\), \(\gamma = 1000\)).
+For local polynomial filters, the Henderson kernel is used with \(R=3.5\).
 The figure \ref{fig:cl2all} shows the results around a turning point (the economic crisis of 2009) and during ``normal cycles'' (between 2000 and 2008), from \(q=0\) (real-time estimates) to \(q=3\) (three future available observations).
 
 \begin{figure}[!ht]
