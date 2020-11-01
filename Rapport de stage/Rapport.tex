@@ -88,7 +88,7 @@
   \clearpage
  \thispagestyle{empty}
 
-\begin{textblock*}{\textwidth}(-7cm,-3.5cm)
+\begin{textblock*}{\textwidth}(-7cm,-3.cm)
 \begin{center}
 \includegraphics[height=3cm]{img/900px-LOGO-ENSAE.png}
 \end{center}
@@ -271,33 +271,37 @@ frametitle={%
 \addcontentsline{toc}{section}{Abstracts}
 
 \begin{abstract}
-In the business cycle analysis, estimates are usually derived from moving average (also called linear filters) techniques. 
-In the center of the series, symmetric filters are applied. 
+
+In the business cycle analysis, estimates are usually derived from moving average (also called linear filters) techniques.
+In the center of the series, symmetric filters are applied.
 However, due to the lack of future observations, real-time estimates must rely on asymmetric moving averages.
 Classic asymmetric moving averages minimize revisions errors but introduce delays in the detecting turning points.
 
 This paper describes and compares different approaches to build asymmetric filters: local polynomials filters, methods based on an optimization of filters' properties (Fidelity-Smoothness-Timeliness, FST, approach and a data-dependent filter) and filters based on Reproducing Kernel Hilbert Space.
 It also describes how local polynomials filters can be extended to include a timeliness criterion to minimize phase shift.
 
-This paper shows that constraining asymmetric filters to preserve constant and linear trends only (and not necessarily polynomial ones) reduce revision error and time lag. 
+This paper shows that constraining asymmetric filters to preserve constant and linear trends only (and not necessarily polynomial ones) reduce revision error and time lag.
 Besides, the more future observations are available, the more the different methods produce similar results.
 Finally, the FST approach seems to outperform the other methods.
+
 \end{abstract}
 
 \renewcommand{\abstractname}{Résumé}
 
 \begin{abstract}
+
 Les moyennes mobiles (ou les filtres linéaires) sont omniprésents dans les méthodes d'extraction du cycle économique.
 Au centre de la série, des filtres symétriques sont appliqués.
 Cependant, en raison du manque d'observations futures, les estimations en temps réel doivent s'appuyer sur des moyennes mobiles asymétriques.
 Les moyennes mobiles asymétriques classiques minimisent les erreurs de révision mais introduisent des retards dans la détection des points de retournement (déphasage).
 
-Cet rapport décrit et compare différentes approches pour construire des filtres asymétriques: l'ajustement de polynôme locaux, des méthodes basées sur une optimisation des propriétés des filtres (l'approche *Fidelity-Smoothness-Timeliness* --- Fidélité-Lissage-Temporalité ---, FST, approche et un filtre dépendant des données) et des filtres basés sur les espaces de Hilbert à noyau reproduisant (RKHS).
+Ce rapport décrit et compare différentes approches pour construire des filtres asymétriques: l'ajustement de polynôme locaux, des méthodes basées sur une optimisation des propriétés des filtres (l'approche \emph{Fidelity-Smoothness-Timeliness} --- Fidélité-Lissage-Temporalité ---, FST, approche et un filtre dépendant des données) et des filtres basés sur les espaces de Hilbert à noyau reproduisant (RKHS).
 Il décrit également comment les filtres polynomiaux locaux peuvent être étendus pour inclure un critère de temporalité afin de minimiser le déphasage.
 
-Ce rapport montre que contraindre les filtres asymétriques à ne conserver que des les tendances constantes et linéaires (et pas nécessairement polynomiales) réduit l'erreur de révision et le décalage temporel.
+Ce rapport montre que contraindre les filtres asymétriques à ne conserver que les tendances constantes et linéaires (et pas nécessairement polynomiales) réduit l'erreur de révision et le décalage temporel.
 Par ailleurs, plus d'observations futures sont disponibles, plus les différentes méthodes produisent des résultats similaires.
 Enfin, l'approche FST semble l'emporter sur les autres méthodes.
+
 \end{abstract}
 
 \newpage
@@ -343,7 +347,7 @@ Thus, the estimation of trend-cycle component is technically linked to the seaso
 
 Moreover, since the trend-cycle extraction methods are applied to seasonally adjusted data, both problems cannot be separated.
 This link also explains that in this paper, all the methods used are implemented in the core libraries of JDemetra+ \footnote{See \url{https://github.com/jdemetra/jdemetra-core}.}, the seasonal adjustment software recommended by Eurostat.
-An \faIcon{r-project} interface is implemented in the package \texttt{rjdfilters}\footnote{Available at \url{https://github.com/palatej/rjdfilters}.} was developed during this internship.
+An \faIcon{r-project} interface is implemented in the package \texttt{rjdfilters}\footnote{Available at \url{https://github.com/palatej/rjdfilters}.} and was developed during this internship.
 
 In the literature, different approaches where considered for trend-cycle extraction\footnote{See for example \textcite{alexandrov2012TEreview} for a review of some modern approaches to trend extraction.}.
 Among the most popular, we can cite the Model-Based Approach and the non-parametric extraction methods:
@@ -1575,10 +1579,8 @@ Indeed, for monthly data, when two or more future observations are available, th
 Consequently, adding the timeliness criterion to local polynomial filters will mainly be useful for the LC method, for which it has an impact only when few future observations are known (whereas for the QL method is has almost no impact on real-time estimates).
 
 This study could be extended in many ways.
-One lead could be to do more investigation on the length of the filters.
-In most of the studies on asymmetric filters, the asymmetric filters use as many past observations as the symmetric filters.
-However, we could consider asymmetric filters that take into account more past observations.
-Moreover, in this paper we only focused on regular monthly data, but if we focus on high frequency or irregular data, some properties may not be effective anymore and, besides, some more issues could appear (as the problem of choosing the length of the filter).
+One lead could be to do more investigation on the selection of the length of the filters.
+In this paper we only focused on regular monthly data, but if we focus on high frequency or irregular data, some properties may not be effective anymore and, besides, some more issues could appear (as the problem of choosing the length of the filter).
 
 Another lead could be to study the impact of atypical points: in X-12ARIMA there is a strong correction of atypical points of the irregular component before applying the filters to extract the trend.
 It encourages to study what is the impact of atypical points on the estimation of trends and turning points, but also to explore new kinds of asymmetric filters based on robust methods (like robust local regressions).
