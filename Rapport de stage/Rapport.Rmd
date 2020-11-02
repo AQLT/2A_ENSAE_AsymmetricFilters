@@ -122,7 +122,7 @@ Among the most popular, we can cite the Model-Based Approach and the non-paramet
 - The Model-Based Approach assumes the specification of a stochastic time series model for the trend (ARIMA model, state space model, etc.) and the estimates is obtained by minimizing a penalty function, generally the mean squared error.
 This is for example the case of the Kalman filter, the Wiener-Kolmogorov filter (used in TRAMO-SEATS) and the Direct Filter Approach of @trilemmaWMR2019 (section \@ref(sec:WildiMcLeroy)).
 
-- The non-parametric extraction methods do not require specification of a model and can be easily applied to any time series. 
+- The non-parametric extraction methods do not assume that the structure of a model is fixed and can be easily applied to any time series. 
 This is for example the case of the Henderson and Musgrave filters (used in X-12ARIMA).
 Classical methods can be seen as local polynomial regression, approach generalized by @proietti2008 (section \@ref(sec:lppfilters)).  
 Non-parametric estimators can also be reproduced by exploiting Reproducing Kernel Hilbert Space (RKHS) methodology, like it is done by 
