@@ -6,7 +6,7 @@ kernels = c("Henderson", "Gaussian", "Trapezoidal",
 list_endpoints <- c("LC", "QL", "CQ", "DAF")
 lp_diagnostics <- do.call(rbind,lapply(list_endpoints, function(endpoints){
   data <- sapply(kernels, function(kernel){
-    f <- filterproperties(horizon = 6, kernel = kernel, endpoints = endpoints, ic = 3.5)
+    f <- lpp_properties(horizon = 6, kernel = kernel, endpoints = endpoints, ic = 3.5)
     result <- diagnostics_matrix(f$filters.coef[1:7,"q=0"], lb = 6)
     remove_row <- switch (endpoints,
       LC = -1,
@@ -77,7 +77,7 @@ kernel = c("Henderson")
 list_endpoints <- c("LC", "QL", "CQ", "DAF")
 all_q <- c(0,1,2)
 lp_diagnostics <- do.call(rbind,lapply(list_endpoints, function(endpoints){
-  f <- filterproperties(horizon = 6, kernel = kernel, endpoints = endpoints, ic = 3.5)
+  f <- lpp_properties(horizon = 6, kernel = kernel, endpoints = endpoints, ic = 3.5)
   a_coeff <- f$filters.coef[,sprintf("q=%i",all_q)]
   data <- apply(a_coeff,2,diagnostics_matrix, lb = 6,sweight = f$filters.coef[,"q=6"])
   data <- t(data)
@@ -129,7 +129,7 @@ tableau <- function(R = 3.5, horizon = 6,
   kernel = c("Henderson")
   list_endpoints <- c("LC", "QL", "CQ", "DAF")
   lp_diagnostics <- do.call(rbind,lapply(list_endpoints, function(endpoints){
-    f <- filterproperties(horizon = horizon, kernel = kernel, endpoints = endpoints, ic = R)
+    f <- lpp_properties(horizon = horizon, kernel = kernel, endpoints = endpoints, ic = R)
     a_coeff <- f$filters.coef[,sprintf("q=%i",all_q)]
     data <- apply(a_coeff,2,diagnostics_matrix, lb = horizon,sweight = f$filters.coef[,sprintf("q=%i",horizon)])
     data <- t(data)

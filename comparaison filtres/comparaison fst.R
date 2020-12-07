@@ -1,5 +1,5 @@
 library(rjdfilters)
-sym_filter <- filterproperties(6, kernel = "Henderson")$filters.coef[,sprintf("q=%i",6)]
+sym_filter <- lpp_properties(6, kernel = "Henderson")$filters.coef[,sprintf("q=%i",6)]
 
 all_fst_res <- function(lags=6, leads=0, pdegree=2, smoothness.weight=1, smoothness.degree=3, 
                         timeliness.weight=0, timeliness.passband=pi/6, timeliness.antiphase=T,
@@ -32,7 +32,7 @@ res_rkhs <- lapply(rkhs,function(x){
   t(apply(x$weight,2, diagnostics_matrix, lb = 6, sweight = sym_filter)[-(1:3),-7])
 })
 lpp_stats <- lapply(c("LC","QL","CQ","DAF"), function(endpoints){
-  a_coef <- filterproperties(6, kernel = "Henderson", endpoints = endpoints)$filters.coef
+  a_coef <- lpp_properties(6, kernel = "Henderson", endpoints = endpoints)$filters.coef
   t(apply(a_coef,2, diagnostics_matrix, lb = 6, sweight = sym_filter)[-(1:3),-7])
 })
 names(lpp_stats) <- c("LC","QL","CQ","DAF")

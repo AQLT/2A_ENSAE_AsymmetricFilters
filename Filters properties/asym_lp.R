@@ -3,6 +3,21 @@ library(rjdfilters)
 library(AQLTools)
 library(patchwork)
 library(ggplot2)
+asymmetric_lp<-function(y,
+                        horizon,
+                        degree = 3,
+                        kernel = c("Henderson", "Uniform", "Biweight", "Trapezoidal", "Triweight", "Tricube", "Gaussian", "Triangular", "Parabolic"),
+                        endpoints = c("LC", "QL", "CQ", "CC", "DAF", "CN"),
+                        ic = 4.5,
+                        q = 0,
+                        tweight = 0, passband = pi/12){
+  coef <- lpp_properties(horizon = horizon, degree = degree,
+                         kernel = kernel, endpoints = endpoints,
+                         ic = ic, tweight = tweight,
+                         passband = passband)
+  coef <- coef$filters.coef[,sprintf("q=%i",q)]
+  jasym_filter(y, coef, horizon)
+}
 ipi_c_eu <- eurostat::get_eurostat("sts_inpr_m",select_time = "M",
                                    filters = list(nace_r2="C",
                                                   unit = "I15", s_adj = "CA",
@@ -247,7 +262,7 @@ kernel = c("Henderson")
 list_endpoints <- c("LC", "QL", "CQ", "DAF")
 all_q <- c(0,1,2)
 lp_diagnostics <- do.call(rbind,lapply(list_endpoints, function(endpoints){
-  f <- filterproperties(horizon = 6, kernel = kernel, endpoints = endpoints, ic = 3.5)
+  f <- lpp_properties(horizon = 6, kernel = kernel, endpoints = endpoints, ic = 3.5)
   a_coeff <- f$filters.coef[,sprintf("q=%i",all_q)]
   data <- apply(a_coeff,2,diagnostics_matrix, lb = 6,sweight = f$filters.coef[,"q=6"])
   data <- data[-(1:6),]

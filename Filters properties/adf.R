@@ -18,7 +18,7 @@ all_result <- lapply(horizons, function(horizon){
                    coefs <- sapply(0:(2*horizon-1),function(d){
                      print(sprintf("h=%i, kernel = %s, d=%i",horizon,n_kernel,d))
                      
-                     k_coef <- filterproperties(horizon = horizon,
+                     k_coef <- lpp_properties(horizon = horizon,
                                                 kernel = n_kernel,
                                                 degree = d,
                                                 endpoints = "DAF")$filters.coef
@@ -53,7 +53,7 @@ coef_daf <- function(horizon, endpoints = "DAF"){
                                   n_kernel <- kernel
                                   if(kernel == "Epanechnikov")
                                     n_kernel <- "Parabolic"
-                                  k_coef <- filterproperties(horizon = horizon, kernel = n_kernel,
+                                  k_coef <- lpp_properties(horizon = horizon, kernel = n_kernel,
                                                              endpoints = endpoints)$filters.coef
                                   coefs_na = sapply(0:horizon, function(x){
                                     c(rep(1,horizon+1+x),rep(NA,nrow(k_coef)-(horizon+1+x)))
@@ -100,7 +100,7 @@ gain_daf <- function(horizon, endpoints = "DAF"){
                                      n_kernel <- kernel
                                      if(kernel == "Epanechnikov")
                                        n_kernel <- "Parabolic"
-                                     k_gain <- filterproperties(horizon = horizon, kernel = n_kernel,
+                                     k_gain <- lpp_properties(horizon = horizon, kernel = n_kernel,
                                                                 endpoints = endpoints)$filters.gain
                                      data.frame(k_gain, by = kernel,
                                                 x = seq(0, pi, length.out = nrow(k_gain)),

@@ -4,7 +4,7 @@ test2 <- apply(test,2,function(x){
   tmp <- na.omit(rev(x))
   c(tmp, rep(NA,sum(is.na(x))))
 })
-filter <- filterproperties(horizon = 6, degree = 3, kernel= "Henderson", endpoints = "LC",ic = 3.5)
+filter <- lpp_properties(horizon = 6, degree = 3, kernel= "Henderson", endpoints = "LC",ic = 3.5)
 round(timeliness(filter,lowerbound = 0,
                  penalty = function(x,y)x^2*sin(y)^2),3)
 # filter[,-7][filter[,-7]==0] <- NA # Pas obligatoire d'enlever les 0

@@ -243,7 +243,7 @@ all_q <- c(0,1,2)
 
 rkhs_diagnostics <- do.call(rbind,lapply(names(rkhs),
                                        function(method){
-  f <- filterproperties(horizon = 6, kernel = "Henderson", ic = 3.5)
+  f <- lpp_properties(horizon = 6, kernel = "Henderson", ic = 3.5)
   a_coeff <- rkhs[[method]]$weight[,sprintf("q=%i",all_q)]
   data <- apply(a_coeff,2,diagnostics_matrix, lb = 6,sweight = f$filters.coef[,"q=6"])
   data <- t(data)

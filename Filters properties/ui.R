@@ -54,7 +54,7 @@ shinyUI(fluidPage(
         mainPanel(
             tabsetPanel(type = "tabs",
                         tabPanel("General results",
-                                 plotOutput("plotFilterProperties", height = "80vh")),
+                                 plotOutput("plotlpp_properties", height = "80vh")),
                         tabPanel("Fixed endpoints",
                                  tabsetPanel(type = "tabs",
                                    tabPanel("Coefficients",
@@ -74,7 +74,7 @@ shinyUI(fluidPage(
                                                       plotOutput("phaseplot_kernel", height = "75vh"))
                                  )),
                         tabPanel("General statistics",
-                                 dataTableOutput("tableFilterProperties")),
+                                 dataTableOutput("tablelpp_properties")),
                         tabPanel("More",
                                  tabsetPanel(type = "tabs",
                                              tabPanel("Kernels",

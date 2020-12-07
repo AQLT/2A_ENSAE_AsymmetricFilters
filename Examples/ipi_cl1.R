@@ -24,6 +24,21 @@ ipi_fr <- readRDS("Examples/ipi_cl1.RDS")
 #                             "UK", "NO", "ME", "MK", "RS", "TR", "BA")],
 #                start = c(1990, 1), frequency = 12)
 # plot(ipi_c_eu[,"FR"])
+asymmetric_lp<-function(y,
+                        horizon,
+                        degree = 3,
+                        kernel = c("Henderson", "Uniform", "Biweight", "Trapezoidal", "Triweight", "Tricube", "Gaussian", "Triangular", "Parabolic"),
+                        endpoints = c("LC", "QL", "CQ", "CC", "DAF", "CN"),
+                        ic = 4.5,
+                        q = 0,
+                        tweight = 0, passband = pi/12){
+  coef <- lpp_properties(horizon = horizon, degree = degree,
+                         kernel = kernel, endpoints = endpoints,
+                         ic = ic, tweight = tweight,
+                         passband = passband)
+  coef <- coef$filters.coef[,sprintf("q=%i",q)]
+  jasym_filter(y, coef, horizon)
+}
 AQLTools::hc_stocks(ipi_fr)
 
 
@@ -56,7 +71,7 @@ diff_pic <- function(secteur = "CL1", q,...){
      spectral_pic(q=q, secteur = secteur,...))*12
 }
 diff_pic(q=0,endpoints = "CQ")
-henderson_f <- filterproperties(horizon = 6, kernel = "Henderson",ic = 3.5)
+henderson_f <- lpp_properties(horizon = 6, kernel = "Henderson",ic = 3.5)
 tmp_asym <- asymmetric_lp(ipi_fr[,"CL1"],6, ic = 3.5, q = 6)
 hc_stocks(tmp_asym)
 asymmetric_lp(ipi_fr[,"CL1"],6, ic = 3.5, q =0) -

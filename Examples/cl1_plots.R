@@ -14,14 +14,29 @@ rkhs <- readRDS("FST/rkhs.RDS")
 rkhs_apply <- function(y, component = c("frf", "gain", "phase"), q= 0){
   component=match.arg(component)
   coef <- rkhs[[component]]$weight[,sprintf("q=%i",q)]
-  stats::filter(y,rev(coef))
+  jasym_filter(y, coef, 6)
 }
 fst_apply <- function(y, q= 0){
   f <- fstfilter(lags = 6, leads = q, pdegree=2, 
                  smoothness.weight=1/1001, timeliness.weight = 1000/1001)$filter
-  coef <- c(f, rep(0,6-q))
-  stats::filter(y,rev(coef))
+  jasym_filter(y, f, 6)
 }
+asymmetric_lp<-function(y,
+                        horizon,
+                        degree = 3,
+                        kernel = c("Henderson", "Uniform", "Biweight", "Trapezoidal", "Triweight", "Tricube", "Gaussian", "Triangular", "Parabolic"),
+                        endpoints = c("LC", "QL", "CQ", "CC", "DAF", "CN"),
+                        ic = 4.5,
+                        q = 0,
+                        tweight = 0, passband = pi/12){
+  coef <- lpp_properties(horizon = horizon, degree = degree,
+                         kernel = kernel, endpoints = endpoints,
+                         ic = ic, tweight = tweight,
+                         passband = passband)
+  coef <- coef$filters.coef[,sprintf("q=%i",q)]
+  jasym_filter(y, coef, horizon)
+}
+
 
 ipi_fr <- readRDS("Examples/ipi_cl1.RDS")
 ipi <- ipi_fr[,"CL1"]

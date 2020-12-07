@@ -3,7 +3,7 @@ compare_filter <- function(x,
                            hend_horizon = 3, ic = 3.5,
                            fst_lag = 6, fst_leads = 3, 
                            pdegree = 2, xlim = c(0,pi)){
-  small_h <- filterproperties(horizon = hend_horizon,
+  small_h <- lpp_properties(horizon = hend_horizon,
                               kernel = "Henderson", endpoints = "LC",
                               ic = ic)
   f <- tryCatch({

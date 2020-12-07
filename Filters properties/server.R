@@ -14,7 +14,7 @@ source("shinyFunctions.R")
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
     r <- reactiveValues(allfilters_properties = NULL,
-                        selectedFilter = filterproperties(3),
+                        selectedFilter = lpp_properties(3),
                         xlim = c(0,2*pi/12))
     # eventReactive({
     #     c(input$horizon, input$degree, input$ic)
@@ -52,7 +52,7 @@ shinyServer(function(input, output) {
 
     
     # Plot
-    output$plotFilterProperties <- renderPlot({ 
+    output$plotlpp_properties <- renderPlot({ 
         layout(matrix(c(1,1,2,3), 2, 2, byrow = TRUE))
         par(mai = c(0.2, 0.3, 0.2, 0))
         plot_coef(filters_properties(),
@@ -67,7 +67,7 @@ shinyServer(function(input, output) {
                    q = as.numeric(input$q), main = "Phase",
                    xlim = r$xlim)
     })
-    output$tableFilterProperties <- renderDataTable(
+    output$tablelpp_properties <- renderDataTable(
         diagnostic_table(r$allfilters_properties,
                          horizon = input$horizon),
         escape = c(-1)

@@ -6,7 +6,7 @@ library(patchwork)
 alpha_t <- c(seq(0,99,5),
              seq(100,by = 20, length.out = 1000))
 result_all_q <- lapply(alpha_t,function(x){
-  henderson_f <- filterproperties(horizon = 6, kernel = "Henderson",
+  henderson_f <- lpp_properties(horizon = 6, kernel = "Henderson",
                                   tweight = x,endpoints =  "LC")
   henderson_f$filters.coef
 })
@@ -77,16 +77,16 @@ alpha_t <- c(seq(0,10,1),
              seq(11,200,5),
              seq(200, 3000, 10),
              10000)
-h13 <- filterproperties(horizon = 6, kernel = "Henderson",
+h13 <- lpp_properties(horizon = 6, kernel = "Henderson",
                  tweight = 0,endpoints =  "LC")$filters.coef[,"q=6"]
 result_lc <- lapply(alpha_t,function(x){
-  henderson_f <- filterproperties(horizon = 6, kernel = "Henderson",
+  henderson_f <- lpp_properties(horizon = 6, kernel = "Henderson",
                                   tweight = x,endpoints =  "LC")
   apply(henderson_f$filters.coef, 2, diagnostics_matrix,
         lb = -6, passband = pi/6, sweight = h13)
 })
 result_ql <- lapply(alpha_t,function(x){
-  henderson_f <- filterproperties(horizon = 6, kernel = "Henderson",
+  henderson_f <- lpp_properties(horizon = 6, kernel = "Henderson",
                                   tweight = x,endpoints =  "QL")
   apply(henderson_f$filters.coef, 2, diagnostics_matrix,
         lb = -6, passband = pi/6, sweight = h13)
@@ -151,4 +151,4 @@ tracer_coef(ncol = 2, limits = c(0,5000),
 )
 
 
-?filterproperties
+?lpp_properties
