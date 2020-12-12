@@ -45,7 +45,7 @@ all_fst_res <- function(lags=6, leads=0, pdegree=2, smoothness.weight=1, smoothn
     a_coef <- lpp_properties(lags, kernel = "Henderson", endpoints = endpoints)$filters.coef[,sprintf("q=%i",leads)]
     a_coef <- rjdfilters:::trailingZeroAsNa(a_coef)
     a_coef <- na.omit(a_coef)
-    c(fst(a_coef, lb = lags, passband = timeliness.passband)$criteria,
+    c(fst(a_coef, lags = lags, passband = timeliness.passband)$criteria,
       mse(sweights = sym_filter, a_coef,
           passband = timeliness.passband))
   }))
@@ -56,7 +56,7 @@ all_fst_res <- function(lags=6, leads=0, pdegree=2, smoothness.weight=1, smoothn
       a_coef <- x$weight[,sprintf("q=%i", leads)]
       a_coef <- rjdfilters:::trailingZeroAsNa(a_coef)
       a_coef <- na.omit(a_coef)
-      c(fst(a_coef, lb = lags, passband = timeliness.passband)$criteria,
+      c(fst(a_coef, lags = lags, passband = timeliness.passband)$criteria,
         mse(sweights = sym_filter, a_coef,
             passband = timeliness.passband))
     }))

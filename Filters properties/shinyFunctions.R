@@ -66,7 +66,7 @@ diagnostic_table<- function(x,
   sweight <- x[[1]][["Henderson"]]$filters.coef[,sprintf("q=%i", horizon)]
   res <- do.call(rbind, lapply(names(x),function(endpoints){
     do.call(rbind, lapply(names(x[[endpoints]]),function(kernel){
-      data <- apply(x[[endpoints]][[kernel]]$filters.coef,2,diagnostics_matrix, lb = horizon,
+      data <- apply(x[[endpoints]][[kernel]]$filters.coef,2,diagnostic_matrix, lb = horizon,
                     sweight = sweight)
       data <- data[,-ncol(data)]
       data <- t(data)

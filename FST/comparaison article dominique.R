@@ -8,14 +8,14 @@ filter <- lpp_properties(horizon = 6, degree = 3, kernel= "Henderson", endpoints
 round(timeliness(filter,lowerbound = 0,
                  penalty = function(x,y)x^2*sin(y)^2),3)
 # filter[,-7][filter[,-7]==0] <- NA # Pas obligatoire d'enlever les 0
-musgrave <- apply(filter$filters.coef,2,function(x) fst(rev(na.omit(x)), lb = -6)$criteria)
+musgrave <- apply(filter$filters.coef,2,function(x) fst(rev(na.omit(x)), lags = -6)$criteria)
 musgrave <- round(musgrave, 3)
 musgrave #timeliness musgrave pas ok
 a_coef <- filter$filters.coef[,sprintf("q=%i",0)]
 a_coef <- rjdfilters:::trailingZeroAsNa(a_coef)
 mse(sweights = filter$filters.coef[,"q=6"], na.omit(a_coef))
-round(apply(test2,2,function(x) fst(na.omit(x), lb = -6)$criteria),3) - musgrave
-round(apply(test,2,function(x) fst(na.omit(x), lb = -6)$criteria),3)- musgrave
+round(apply(test2,2,function(x) fst(na.omit(x), lags = -6)$criteria),3) - musgrave
+round(apply(test,2,function(x) fst(na.omit(x), lags = -6)$criteria),3)- musgrave
 
 
 timeliness <- function(x, lowerbound = 2*pi/120,
@@ -67,7 +67,7 @@ no_phase_shift <- round(no_phase_shift, 3)
 no_phase_shift
 #verif : 
 no_phase_shift - round(sapply(0:5,function(i){
-  fst(no_phase_shift_coef[,i+1], lb = -(12-i))$criteria
+  fst(no_phase_shift_coef[,i+1], lags = -(12-i))$criteria
 }),3)
 
 
@@ -96,12 +96,12 @@ nps_dom <- structure(c(0.059577014, 0.011598164, -0.098280553, -0.117664149,
 
 round(sapply(0:5,function(i){
   x <- nps_dom[,i+1]
-  fst(x, lb = -(12-i))$criteria
+  fst(x, lags = -(12-i))$criteria
 }),3)
 sum(no_phase_shift[,1]*c(0,1,1000))
 sum(sapply(0:5,function(i){
   x <- nps_dom[,i+1]
-  fst(x, lb = -(12-i))$criteria
+  fst(x, lags = -(12-i))$criteria
 })*c(0,1,1000))
 no_phase_shift2 <- sapply(0:5,function(i){
   f <- fstfilter(lags = 12-i, leads = i, pdegree=3, 
@@ -117,7 +117,7 @@ test2 <- apply(test,2,function(x){
 })
 
 pen <- function(x){
-  sum(fst(x, lb = -12)$criteria*c(0, 1, 1000))
+  sum(fst(x, lags = -12)$criteria*c(0, 1, 1000))
 }
 const <- function(x){
   f = rbind(sum(x)-1,
@@ -130,8 +130,8 @@ const(no_phase_shift_coef[,1])
 nps_dom[,1] - no_phase_shift_coef[,1]
 x0=nps_dom[,1]
 res$par 
-sum(fst(nps_dom[,1], lb = -12)$criteria*c(0,1,1000))
-sum(fst(no_phase_shift_coef[,1], lb = -12)$criteria*c(0,1,1000))
+sum(fst(nps_dom[,1], lags = -12)$criteria*c(0,1,1000))
+sum(fst(no_phase_shift_coef[,1], lags = -12)$criteria*c(0,1,1000))
 fstfilter(lags = 12, leads = 12-i, pdegree=3, 
           smoothness.weight=1/1001, timeliness.weight = 1000/1001)
 

@@ -82,13 +82,13 @@ h13 <- lpp_properties(horizon = 6, kernel = "Henderson",
 result_lc <- lapply(alpha_t,function(x){
   henderson_f <- lpp_properties(horizon = 6, kernel = "Henderson",
                                   tweight = x,endpoints =  "LC")
-  apply(henderson_f$filters.coef, 2, diagnostics_matrix,
+  apply(henderson_f$filters.coef, 2, diagnostic_matrix,
         lb = -6, passband = pi/6, sweight = h13)
 })
 result_ql <- lapply(alpha_t,function(x){
   henderson_f <- lpp_properties(horizon = 6, kernel = "Henderson",
                                   tweight = x,endpoints =  "QL")
-  apply(henderson_f$filters.coef, 2, diagnostics_matrix,
+  apply(henderson_f$filters.coef, 2, diagnostic_matrix,
         lb = -6, passband = pi/6, sweight = h13)
 })
 res_by_q_lc <- lapply(c("q=0", "q=1", "q=2", "q=3", "q=4", "q=5", "q=6"),

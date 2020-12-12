@@ -21,9 +21,9 @@ compare_filter <- function(x,
   #                  x, (1-x)/2)
   title <- sprintf("timeliness.weight = %i, smoothness.weight = fidelity.weight= 1",
                    x)
-  data_matrix <- cbind(diagnostics_matrix(small_h$filters.coef[,sprintf("q=%i",hend_horizon)],
+  data_matrix <- cbind(diagnostic_matrix(small_h$filters.coef[,sprintf("q=%i",hend_horizon)],
                                           lb = hend_horizon),
-                       diagnostics_matrix(f$filter, lb = fst_lag))
+                       diagnostic_matrix(f$filter, lb = fst_lag))
   data_matrix[nrow(data_matrix),] <- data_matrix[nrow(data_matrix),]*100
   data_matrix <- round(data_matrix,3)
   colnames(data_matrix) <- c(sprintf("H%ix%i",hend_horizon, hend_horizon),

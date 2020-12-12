@@ -232,7 +232,7 @@ rkhs <- list(frf = formatage_poids(webiwfrf, Hbandfrf),
              gain = formatage_poids(webiwgain, Hbandgain),
              # phase = formatage_poids(webiwphase, Hbandphase),
              phase = formatage_poids(webiwphase2, Hbandphase2))
-diagnostics_matrix(rkhs$frf$weight[,1], lb = -6)
+diagnostic_matrix(rkhs$frf$weight[,1], lb = -6)
 saveRDS(rkhs, file = "RKHS/rkhs.RDS")
 saveRDS(rkhs, file = "FST/rkhs.RDS")
 
@@ -245,7 +245,7 @@ rkhs_diagnostics <- do.call(rbind,lapply(names(rkhs),
                                        function(method){
   f <- lpp_properties(horizon = 6, kernel = "Henderson", ic = 3.5)
   a_coeff <- rkhs[[method]]$weight[,sprintf("q=%i",all_q)]
-  data <- apply(a_coeff,2,diagnostics_matrix, lb = 6,sweight = f$filters.coef[,"q=6"])
+  data <- apply(a_coeff,2,diagnostic_matrix, lb = 6,sweight = f$filters.coef[,"q=6"])
   data <- t(data)
   data<- data.frame(q = rownames(data),
                     Method = factor(method, levels = names(rkhs), ordered = TRUE),

@@ -264,7 +264,7 @@ all_q <- c(0,1,2)
 lp_diagnostics <- do.call(rbind,lapply(list_endpoints, function(endpoints){
   f <- lpp_properties(horizon = 6, kernel = kernel, endpoints = endpoints, ic = 3.5)
   a_coeff <- f$filters.coef[,sprintf("q=%i",all_q)]
-  data <- apply(a_coeff,2,diagnostics_matrix, lb = 6,sweight = f$filters.coef[,"q=6"])
+  data <- apply(a_coeff,2,diagnostic_matrix, lb = 6,sweight = f$filters.coef[,"q=6"])
   data <- data[-(1:6),]
   data <- colSums(data)
   data <- data.frame(q = all_q,

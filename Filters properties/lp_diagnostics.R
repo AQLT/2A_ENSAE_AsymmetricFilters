@@ -7,7 +7,7 @@ list_endpoints <- c("LC", "QL", "CQ", "DAF")
 lp_diagnostics <- do.call(rbind,lapply(list_endpoints, function(endpoints){
   data <- sapply(kernels, function(kernel){
     f <- lpp_properties(horizon = 6, kernel = kernel, endpoints = endpoints, ic = 3.5)
-    result <- diagnostics_matrix(f$filters.coef[1:7,"q=0"], lb = 6)
+    result <- diagnostic_matrix(f$filters.coef[1:7,"q=0"], lb = 6)
     remove_row <- switch (endpoints,
       LC = -1,
       QL = -c(1,2),
@@ -79,7 +79,7 @@ all_q <- c(0,1,2)
 lp_diagnostics <- do.call(rbind,lapply(list_endpoints, function(endpoints){
   f <- lpp_properties(horizon = 6, kernel = kernel, endpoints = endpoints, ic = 3.5)
   a_coeff <- f$filters.coef[,sprintf("q=%i",all_q)]
-  data <- apply(a_coeff,2,diagnostics_matrix, lb = 6,sweight = f$filters.coef[,"q=6"])
+  data <- apply(a_coeff,2,diagnostic_matrix, lb = 6,sweight = f$filters.coef[,"q=6"])
   data <- t(data)
   data<- data.frame(q = rownames(data),
                     Method = factor(endpoints, levels = list_endpoints, ordered = TRUE),
@@ -131,7 +131,7 @@ tableau <- function(R = 3.5, horizon = 6,
   lp_diagnostics <- do.call(rbind,lapply(list_endpoints, function(endpoints){
     f <- lpp_properties(horizon = horizon, kernel = kernel, endpoints = endpoints, ic = R)
     a_coeff <- f$filters.coef[,sprintf("q=%i",all_q)]
-    data <- apply(a_coeff,2,diagnostics_matrix, lb = horizon,sweight = f$filters.coef[,sprintf("q=%i",horizon)])
+    data <- apply(a_coeff,2,diagnostic_matrix, lb = horizon,sweight = f$filters.coef[,sprintf("q=%i",horizon)])
     data <- t(data)
     data<- data.frame(q = rownames(data),
                       Method = factor(endpoints, levels = list_endpoints, ordered = TRUE),

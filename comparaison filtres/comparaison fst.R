@@ -29,11 +29,11 @@ all_fst_res <- function(lags=6, leads=0, pdegree=2, smoothness.weight=1, smoothn
 }
 rkhs <- readRDS("FST/rkhs.RDS")
 res_rkhs <- lapply(rkhs,function(x){
-  t(apply(x$weight,2, diagnostics_matrix, lb = 6, sweight = sym_filter)[-(1:3),-7])
+  t(apply(x$weight,2, diagnostic_matrix, lb = 6, sweight = sym_filter)[-(1:3),-7])
 })
 lpp_stats <- lapply(c("LC","QL","CQ","DAF"), function(endpoints){
   a_coef <- lpp_properties(6, kernel = "Henderson", endpoints = endpoints)$filters.coef
-  t(apply(a_coef,2, diagnostics_matrix, lb = 6, sweight = sym_filter)[-(1:3),-7])
+  t(apply(a_coef,2, diagnostic_matrix, lb = 6, sweight = sym_filter)[-(1:3),-7])
 })
 names(lpp_stats) <- c("LC","QL","CQ","DAF")
 
