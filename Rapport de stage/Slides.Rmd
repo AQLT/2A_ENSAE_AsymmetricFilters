@@ -1,0 +1,456 @@
+---
+title: "Real-time detection of turning points with linear filters"
+subtitle: "Stage d'application (2A)"
+author: "Alain Quartier-la-Tente"
+departement: "Ensae --- 2019-2020 "
+division: |
+    | Maître de stage : \textsc{Jean PALATE} (NBB)
+    | 07/01/2021
+logo: "img/logobeamer.png"
+automaticcontents: false
+output:
+    beamer_presentation:
+        template: template2.tex
+        keep_tex: yes
+        theme: TorinoTh
+        slide_level: 3
+        includes:
+          in_header: preamble_beamer.tex
+themeoptions: "coding=utf8,language=french"
+classoption: 'usepdftitle=false,french'
+fontsize: 10pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      cache = FALSE)
+library(knitr)
+library(kableExtra)
+```
+
+# Introduction
+
+###  Contexte
+
+- Stage de 10 semaines effectué dans la cellule Recherche et Développement de la Banque Nationale de Belgique auprès de Jean PALATE (NBB)
+
+\bigskip
+
+- Stage co-dirigé par Dominique LADIRAY (Insee)
+
+\bigskip
+
+- **Objectif** : préparer une thèse sur l'utilisation des filtres asymétriques pour la détection des points de retournement
+
+    * Première revue de la bibliographie
+    
+    * Prise en main de quelques programmes \faIcon{r-project} (`rjdfilters`, https://github.com/palatej/rjdfilters)
+
+### Introduction (1/2)
+
+- Dans l'analyse de la conjoncture, la détection rapide des points de retournement est très importante
+
+\bigskip
+\pause
+
+- Une série $X_t$ se décompose en plusieurs composantes inobservées :
+$$
+X_t=T_t+C_t+S_t+I_t
+$$
+
+\pause
+\faArrowCircleRight{} Méthodes d'extraction de **tendance**/**cycle** ($C_t$ ou $T_t+C_t$) liées aux méthodes de désaisonnalisation
+
+\begin{figure}[!ht]
+\pgfplotsset{width=\textwidth,height=3cm,every axis legend/.append style={font=\footnotesize,
+  at={(0.5,-0.1)},
+  anchor=north}
+    }
+	\begin{animateinline}[loop,controls]{2}
+		\multiframe{19}{rangle=0.1+0.1}{
+\begin{tikzpicture}
+\begin{axis}[
+xtick={0,3.14159,...,15.70795},
+xticklabels={0,$10$,$20$,$30$,$40$,$50$}
+]
+\addplot[domain=0:3*pi,smooth]    plot (\x,{sin(\x r)});
+\addplot[domain=(0.314):(\rangle*pi),smooth, color = red, samples = 100]    plot (\x,{sin(\x r)});
+\draw[<->, color = red] (axis cs: \rangle*pi-pi/10, {sin((\rangle*pi-pi/10) r)})--(axis cs: \rangle*pi, {sin(\rangle*pi r)});
+\draw[<->, color = red] (axis cs: \rangle*pi, {sin(\rangle*pi r)})--(axis cs: \rangle*pi+pi/10, {sin((\rangle*pi+pi/10) r)});
+\end{axis}
+\end{tikzpicture}
+		}
+	\end{animateinline}
+\end{figure}
+
+### Introduction (2/2)
+
+*Moyennes mobiles* (ou *filtres linéaires*) omniprésentes dans ces méthodes (ex : X-12ARIMA)  
+Mathématiquement, à la date $t$ on calcule :
+$$
+M_\theta(X_t)=\sum_{k=-p}^{+f}\theta_kX_{t+k}
+$$
+
+
+\pause \bigskip
+
+\faArrowCircleRight{} Généralement utilisation de moyennes *symétriques* ($p=f$ et $\theta_{-i}=\theta_i$) 
+
+\bigskip
+
+\faArrowCircleRight{} En fin de période, utilisation de méthodes *asymétriques* : révisions
+
+\pause
+
+\bigskip
+
+\faArrowCircleRight{} Étude des méthodes non-paramétriques qui peuvent s'intégrer dans X-12-ARIMA et dans le logiciel de désaisonnalisation JDemetra+ (maintenu par la NBB).
+
+
+# Propriétés générales des moyennes mobiles
+
+### Sommaire {.noframenumbering}
+\tableofcontents[currentsection, hideothersubsections]
+
+## Gain et déphasage
+
+### Gain et déphasage
+
+En prenant $X_t=\e^{-i\omega t}$, la moyenne mobile $M_\theta$ transforme $X_t$ en:
+$$
+Y_t = M_{\theta}X_t = \sum_{k=-p}^{+f} \theta_k \e^{-i \omega (t+k)}
+= \underbrace{\left(\sum_{k=-p}^{+f} \theta_k \e^{-i \omega k}\right)}_{=\Gamma_\theta(\omega) = G_\theta(\omega)\e^{-i\Phi_\theta(\omega)}}\cdot X_t.
+$$
+\pause
+
+:::: {.columns align=center}
+::: {.column width="40%"}
+$M_\theta$ va avoir deux effets : 
+
+1. Multiplier le niveau par $G_{\theta}\left(\omega\right)$ (*gain*)  
+2. Créer un *déphasage* $\Phi_\theta(\omega)/\omega$ : affecte détection des points de retournement
+
+\onslide<4->{
+\faArrowCircleRight{} Déphasage nul pour MM symétriques}
+
+:::
+::: {.column width="60%"}
+\pause
+$X_t=\sin(\omega t),\,M_{\theta_0}X_t=\frac{1}{2}X_{t-1}+\frac{1}{2}X_{t},\,\omega=\pi/2$
+\begin{figure}[!ht]
+\pgfplotsset{width=\textwidth,height=4cm,every axis legend/.append style={font=\footnotesize,
+  at={(0.5,-0.1)},
+  anchor=north}
+    }
+\begin{tikzpicture}
+\begin{axis}[
+xtick={0,3.14159,...,15.70795},
+xticklabels={0,$\pi$,$2\pi$,$3\pi$,$4\pi$,$5\pi$} 
+]
+\addplot[domain=0:5*pi,smooth]    plot (\x,{sin(\x * (pi/2) r)});
+\addplot[domain=0:5*pi,smooth, dashed]    
+  plot (\x,{1/2*sin(\x* pi/2 r )+1/2*sin((\x -1) * pi/2 r)});
+\draw[<->](axis cs: 1.5,1)--(axis cs: 1.5,0.7071068)
+  node[pos=0.5, right]{\scriptsize $G_{\theta_0}(\pi/2)$};
+\draw[<->] (axis cs: 3, -0.70710680-0.05)--(axis cs: 3.5,-0.7071068-0.05) 
+  node[pos=0.5, below right]{\scriptsize $\Phi_{\theta_0}(\pi/2)$};
+\end{axis}
+\end{tikzpicture}
+\end{figure}
+:::
+::::
+
+## Conservation des tendances polynomiales
+
+### Conservation des tendances polynomiales
+
+
+$$
+X_t=TC_t+\varepsilon_t\implies M_\theta X_t =M_\theta TC_t+M_\theta \varepsilon_t
+$$
+
+Généralement tendance approchée par une tendance polynomiale
+
+\faArrowCircleRight{} Contraintes supplémentaires pour les conserver.  
+\pause Exemple :
+
+- $M_\theta$ conserve les constantes si :
+$$
+M_\theta(a)=a\implies \sum_{k=-p}^{+f}\theta_k = 1
+$$
+
+- $M_\theta$ conserve les tendances linéaires :
+$$
+M_\theta(at+b)=at+b \implies \sum_{k=-p}^{+f}\theta_k=1
+\quad\text{et}\quad
+\sum_{k=-p}^{+f}k\theta_k=0
+$$
+
+
+## Autres indicateurs
+
+### Autres indicateurs
+
+1. Réduction de la variance (*Fidelity*) :
+$$
+\V{M_\theta\varepsilon_t}=
+\V{\varepsilon_t}\underbrace{\sum_{k=-p}^{+f} \theta_k^2}_{=F_g}
+$$  
+2. Lissage (*Smoothness*) défini par Henderson :
+$$
+S_G=\sum_{j}(\nabla^{3}\theta_{j})^{2}
+$$ 
+3. Temporalité (*Timeliness*) qui mesure le déphasage dans les fréquences liées au cycle :
+$$
+ T_{g} =\int_{0}^{2\pi/12}\rho_{\theta}(\omega)\sin(\varphi_{\theta}(\omega))^{2}\ud\omega
+$$ 
+4. D'autres critères définis par Wildi et McElroy (2019) en décomposant l'erreur quadratique moyenne des révisions : $A_w$, $T_w$, $S_w$, $R_w$.
+
+# Méthodes de construction des filtres asymétriques
+
+### Sommaire {.noframenumbering}
+\tableofcontents[currentsection, hideothersubsections]
+
+## Polynômes Locaux
+
+### Approche générale, Proietti and Luati (2008)
+
+On suppose que l'on peut décomposer notre série $y_t=\mu_t+\varepsilon_t$ avec $\varepsilon_t\overset{i.i.d}{\sim}\mathcal N(0,\sigma^2)$
+
+$\mu_t$ est localement approché par un polynôme de degré $d$ :
+$$
+\forall j\in\left\llbracket -h,h\right\rrbracket \::\: y_{t+j}=m_{t+j}+\varepsilon_{t+j},\quad m_{t+j}=\sum_{i=0}^{d}\beta_{i}j^{i}
+$$
+\pause
+Estimation par moindres carrés pondérés (WLS) en minimisant:
+$$
+S(\hat{\beta}_{0},\dots,\hat{\beta}_{d})=\sum_{j=-h}^{h}\kappa_{j}(y_{t+j}-\hat{\beta}_{0}-\hat{\beta}_{1}j-\dots-\hat{\beta}_{d}j^{d})^{2}
+$$
+$\kappa_j$ sont les *noyaux*.
+
+\pause
+L'estimateur est $\hat{\beta}=(X'KX)^{1}X'Ky$ et :
+$$
+\hat{m}_{t}=\hat\beta_0=w'y=\sum_{j=-h}^{h}w_{j}y_{t-j}
+\text{ \faArrowCircleRight{} estimation par filtre symétrique.}
+$$
+
+### Construction des filtres asymétriques
+
+Plusieurs solutions :
+
+1. Même méthode avec moins de points (DAF) : **sans biais** mais beaucoup de variance
+
+\pause
+
+2. Compromis biais-variance : minimisation des révisions sous contraintes plus faibles  
+Filtres $v$ dépend d'un paramètre à définir par l'utilisateur
+
+    1. *Linear-Constant* (LC) : $y_t$ linéaire et $v$ conserve constante
+    
+    2. *Quadratic-Linear* (QL) : $y_t$ degré $2$ et $v$ conserve polynôme degré $1$
+    
+    3. *Cubic-Quadratic* (CQ) : $y_t$ degré $3$ et $v$ conserve polynôme degré $2$ 
+
+\pause
+
+\faDesktop{} Pour visualiser les différentes méthodes :
+
+https://aqlt.shinyapps.io/FiltersProperties/
+
+### Premières analyses
+
+::: {.summary data-latex=""}
+
+- \bcsmbh{} Méthode **simple** qui permet de retrouver les principales moyennes mobiles (Henderson, Musgrave, Loess, etc.).
+
+\pause
+
+- \bcsmmh{} **Déphasage non contrôlé** avec parfois des résultats étonnants   
+\onslide<3->{$\rightarrow$ possibilité de changer le programme pour le contrôler}
+
+:::
+
+
+\onslide<4->{
+\begin{itemize}
+\item Privilégier LC ou QL qui réduisent les révisions avec un ajout limité du déphasage.
+\onslide<5->{\faArrowCircleRight{} se concentrer sur les filtres asymétriques qui preservent les polynômes de degré au plus 1}
+\end{itemize}
+}
+
+## Minimisation sous contrainte : approche FST
+
+### L'approche FST, Grun-Rehomme et al (2018)
+
+Minimisation sous contrainte d'une somme pondérée de 3 critères :
+
+$$
+\begin{cases}
+\underset{\theta}{\min} & J(\theta)=
+\alpha F_g(\theta)+\beta S_g(\theta)+\gamma T_g(\theta)\\
+s.c. & C\theta=a
+\end{cases}
+$$
+\pause
+
+::: {.summary data-latex=""}
+- \bcsmbh Avantages :
+
+  * Solution unique connue analytiquement
+  
+  * Filtres asymétriques indépendants des données et du filtre symétrique
+  
+  * Outil utile pour évaluer les autres méthodes
+  
+- \bcsmmh Inconvénient :
+
+  * Poids non normalisés
+:::
+
+## Filtres et Reproducing Kernel Hilbert Space (RKHS)
+
+### Filtres RKHS : Dagum and Bianconcini (2008)
+
+- Utilisation de la théorie des RKHS pour approximer le filtre de Henderson
+
+- $\boldsymbol{P_p}$ = espace de Hilbert des polynômes de degrés au plus $p$ en utilisant une densité de probabilité $f_0$ pour pondérer les observations dans le temps 
+$$
+\left\langle U(t),V(t)\right\rangle =\E{U(t)V(t)}=\int_{\R}U(t)V(t)f_{0}(t)\ud t
+$$
+
+\pause
+
+- Tendance $\mu_t$ vue comme la projection de $y_t$ sur $\boldsymbol{P_p}$ et poids dérivés de la fonction de noyau
+$$
+K_{p}(t)=\sum_{i=0}^{p-1}P_{i}(t)P_{i}(0)f_{0}(t)
+$$
+Pour le filtre symétrique :
+$$
+\forall j\in\left\llbracket -h,h\right\rrbracket\::\: w_{j}=\frac{K_p(j/b)}{\sum_{i=-h}^{^h}K_p(i/b)}
+$$
+Avec $b=h+1$ on retrouve les filtres polynomiaux locaux
+
+### Filtres asymétriques
+Pour les filtres asymétriques :
+$$
+\forall j\in\left\llbracket -h,q\right\rrbracket\::\: w_{a,j}=\frac{K_p(j/b)}{\sum_{i=-h}^{^q}K_p(i/b)}
+$$
+\pause
+
+$b$ déterminé par optimisation en minimisant :
+
+- les révisions : 
+$b_{q,\gamma}=\underset{b_q\in]h;2 h+1]}{\min}
+\sqrt{2\int_{0}^{\pi}
+\lvert \Gamma_s(\omega)-\Gamma_\theta(\omega)\rvert^2\ud \omega
+}$
+
+- les révisions liées à la fonction de gain 
+$b_{q,G}=\underset{b_q\in]h;2 h+1]}{\min}
+\sqrt{2\int_{0}^{\pi}
+\left(\rho_s(\omega)-\rho_\theta(\omega)\right)^{2}\ud \omega
+}$
+
+- les révisions liées au déphasage $b_{q,\varphi}=\underset{b_q\in]h;2 h+1]}{\min}
+8\int_{0}^{2\pi/12}
+\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)\ud \omega$
+
+
+### Avantages et inconvénients
+
+::: {.summary data-latex=""}
+
+- \bcsmbh Avantages :
+
+  * Méthode généralisable à des filtres avec fréquences irrégulières
+  
+- \bcsmmh Inconvénients :
+
+  * MM ne conservent que les constantes
+  
+  * Il peut y avoir des problèmes d'optimisation (plusieurs minimums, etc.)
+
+:::
+
+# Comparaison des méthodes
+
+### Sommaire {.noframenumbering}
+\tableofcontents[currentsection, hideothersubsections]
+
+## Comparaison théorique
+
+### Comparaison à partir de la méthode FST
+
+On regarde si on peut faire **mieux sur les trois critères** avec la méthode FST et **mêmes contraintes polynomiales** :  
+\faDesktop{} https://aqlt.shinyapps.io/FSTfilters/
+
+\pause 
+
+- Meilleurs résultats avec FST qu'avec RKHS avec **mêmes contraintes polynomiales**
+
+- Meilleurs résultats avec FST qu'avec LC, sauf lorsque l'on contrôle le déphasage pour $q=0,1$
+
+- Pas de meilleur résultat avec FST qu'avec QL pour $q=0,1$
+
+## Comparaison sur un exemple
+
+### Un exemple d'application : IPI-FR CL1 (1/2)
+
+
+\animategraphics[controls, height = 0.8\paperheight]{2}{img/illustrationBeamer/illustration_}{1}{5}
+
+
+# Conclusion
+### Sommaire {.noframenumbering}
+\tableofcontents[currentsection, hideothersubsections]
+
+### Conclusion
+
+- DAF (utilisé dans STL) donne les moins bons résultats sur détection des points de retournement et révisions
+
+\bigskip 
+- Minimiser timeliness n'implique pas une détection plus rapide de tous les points de retournement
+
+\bigskip
+
+- Introduire du biais dans la préservation des tendances polynomiales permet d'améliorer la détection rapide des points de retournement
+
+\bigskip \pause
+
+- À partir de $q=2$ les méthodes donnent des résultats similaires
+
+### Ouverture
+
+
+- Filtres FST permettent de construire des filtres "meilleurs" que les autres
+
+\bigskip \pause
+- Beaucoup de paramètres : lesquels sont pertinents ?
+
+\bigskip \pause
+- Quid de la longueur des filtres et des séries avec d'autres fréquences ?
+
+\bigskip \pause
+- Quid de l'impact des points atypiques : étude des méthodes robustes
+
+
+
+  
+### Merci pour votre attention {.noframenumbering}
+
+\href{https://github.com/AQLT/AsymmetricFilters}{\faGithub{} AQLT/AsymmetricFilters}  
+
+\href{https://aqlt.github.io/AsymmetricFilters/Rapport\%20de\%20stage/Rapport.pdf}{\faEdit{} Rapport du projet}  
+
+\href{https://aqlt.github.io/AsymmetricFilters/Rapport\%20de\%20stage/Rapport.pdf}{\faFilePowerpoint{} Slides}  
+
+\href{https://github.com/palatej/rjdfilters}{\faRProject \faCube{} palatej/rjdfilters}  
+
+
+
+### Annexe 1  {.noframenumbering}
+
+\animategraphics[controls, width = \textwidth]{2}{img/illustration/est_tr_}{1}{7}
+
+
