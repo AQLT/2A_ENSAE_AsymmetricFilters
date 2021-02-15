@@ -116,27 +116,14 @@ $$
 
 ### Gain et déphasage
 
-En prenant $X_t=\e^{-i\omega t}$, la moyenne mobile $M_\theta$ transforme $X_t$ en:
-$$
-Y_t = M_{\theta}X_t = \sum_{k=-p}^{+f} \theta_k \e^{-i \omega (t+k)}
-= \underbrace{\left(\sum_{k=-p}^{+f} \theta_k \e^{-i \omega k}\right)}_{=\Gamma_\theta(\omega) = G_\theta(\omega)\e^{-i\Phi_\theta(\omega)}}\cdot X_t.
-$$
-\pause
-
-:::: {.columns align=center}
-::: {.column width="40%"}
-$M_\theta$ va avoir deux effets : 
+Appliquer $M_\theta$ sur $X_t=\sin(\omega t)$ va avoir deux effets : 
 
 1. Multiplier le niveau par $G_{\theta}\left(\omega\right)$ (*gain*)  
 2. Créer un *déphasage* $\Phi_\theta(\omega)/\omega$ : affecte détection des points de retournement
 
-\onslide<4->{
-\faArrowCircleRight{} Déphasage nul pour MM symétriques}
+Exemple :
 
-:::
-::: {.column width="60%"}
-\pause
-$X_t=\sin(\omega t),\,M_{\theta_0}X_t=\frac{1}{2}X_{t-1}+\frac{1}{2}X_{t},\,\omega=\pi/2$
+$\,M_{\theta_0}X_t=\frac{1}{2}X_{t-1}+\frac{1}{2}X_{t},\,\omega=\pi/2$
 \begin{figure}[!ht]
 \pgfplotsset{width=\textwidth,height=4cm,every axis legend/.append style={font=\footnotesize,
   at={(0.5,-0.1)},
@@ -157,8 +144,10 @@ xticklabels={0,$\pi$,$2\pi$,$3\pi$,$4\pi$,$5\pi$}
 \end{axis}
 \end{tikzpicture}
 \end{figure}
-:::
-::::
+
+\pause
+
+\faArrowCircleRight{} Déphasage nul pour MM symétriques
 
 ## Conservation des tendances polynomiales
 
@@ -178,14 +167,6 @@ Généralement tendance approchée par une tendance polynomiale
 $$
 M_\theta(a)=a\implies \sum_{k=-p}^{+f}\theta_k = 1
 $$
-
-- $M_\theta$ conserve les tendances linéaires :
-$$
-M_\theta(at+b)=at+b \implies \sum_{k=-p}^{+f}\theta_k=1
-\quad\text{et}\quad
-\sum_{k=-p}^{+f}k\theta_k=0
-$$
-
 
 ## Autres indicateurs
 
@@ -314,29 +295,31 @@ $$
 
 - Utilisation de la théorie des RKHS pour approximer le filtre de Henderson
 
-- $\boldsymbol{P_p}$ = espace de Hilbert des polynômes de degrés au plus $p$ en utilisant une densité de probabilité $f_0$ pour pondérer les observations dans le temps 
-$$
-\left\langle U(t),V(t)\right\rangle =\E{U(t)V(t)}=\int_{\R}U(t)V(t)f_{0}(t)\ud t
-$$
+<!-- - $\boldsymbol{P_p}$ = espace de Hilbert des polynômes de degrés au plus $p$ en utilisant une densité de probabilité $f_0$ pour pondérer les observations dans le temps  -->
+<!-- $$ -->
+<!-- \left\langle U(t),V(t)\right\rangle =\E{U(t)V(t)}=\int_{\R}U(t)V(t)f_{0}(t)\ud t -->
+<!-- $$ -->
 
-\pause
+<!-- \pause -->
 
-- Tendance $\mu_t$ vue comme la projection de $y_t$ sur $\boldsymbol{P_p}$ et poids dérivés de la fonction de noyau
-$$
-K_{p}(t)=\sum_{i=0}^{p-1}P_{i}(t)P_{i}(0)f_{0}(t)
-$$
-Pour le filtre symétrique :
+<!-- - Tendance $\mu_t$ vue comme la projection de $y_t$ sur $\boldsymbol{P_p}$ et poids dérivés de la fonction de noyau -->
+<!-- $$ -->
+<!-- K_{p}(t)=\sum_{i=0}^{p-1}P_{i}(t)P_{i}(0)f_{0}(t) -->
+<!-- $$ -->
+ - Avec $K_p$ la **fonction de noyau**, le filtre symétrique :
 $$
 \forall j\in\left\llbracket -h,h\right\rrbracket\::\: w_{j}=\frac{K_p(j/b)}{\sum_{i=-h}^{^h}K_p(i/b)}
 $$
 Avec $b=h+1$ on retrouve les filtres polynomiaux locaux
 
-### Filtres asymétriques
-Pour les filtres asymétriques :
+\pause
+
+- Pour les filtres asymétriques :
 $$
 \forall j\in\left\llbracket -h,q\right\rrbracket\::\: w_{a,j}=\frac{K_p(j/b)}{\sum_{i=-h}^{^q}K_p(i/b)}
 $$
-\pause
+
+### Filtres asymétriques
 
 $b$ déterminé par optimisation en minimisant :
 
