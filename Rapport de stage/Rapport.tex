@@ -8,12 +8,13 @@
   ,
   a4paper]{article}
 \usepackage{lmodern}
-\usepackage{amssymb,amsmath}
+\usepackage{amsmath}
 \usepackage{ifxetex,ifluatex}
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
+  \usepackage{amssymb}
 \else % if luatex or xetex
   \usepackage{unicode-math}
   \defaultfontfeatures{Scale=MatchLowercase}
@@ -51,6 +52,7 @@
 \urlstyle{same} % disable monospaced font for URLs
 \usepackage[margin=1in]{geometry}
 \usepackage{longtable,booktabs}
+\usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
 \makeatletter
@@ -59,7 +61,7 @@
 % Allow footnotes in longtable head/foot
 \IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
 \makesavenoteenv{longtable}
-\usepackage{graphicx,grffile}
+\usepackage{graphicx}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
 \def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
@@ -225,10 +227,12 @@ frametitle={%
 
 \usepackage{amsthm}
 %\theoremstyle{remark}
-\newtheorem*{remark}{Remark}
+\newtheorem*{remarque}{Remark}
 
 \usepackage{mathrsfs}
 \usepackage{fontawesome5}
+
+
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
@@ -242,12 +246,16 @@ frametitle={%
 \usepackage{threeparttablex}
 \usepackage[normalem]{ulem}
 \usepackage{makecell}
+\usepackage{xcolor}
 \ifxetex
   % Load polyglossia as late as possible: uses bidi with RTL langages (e.g. Hebrew, Arabic)
   \usepackage{polyglossia}
   \setmainlanguage[]{}
 \else
   \usepackage[shorthands=off,main=]{babel}
+\fi
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
 \fi
 \usepackage[style=authoryear,]{biblatex}
 \addbibresource{biblio.bib}
@@ -313,7 +321,8 @@ Enfin, l'approche FST semble l'emporter sur les autres méthodes.
 With the COVID-19 crisis, one of the major questions on the economy was when it will recover.
 It illustrates that business cycle analysis, and in particular the early detection of turning points in a series, is a major topic in the analysis of economic outlook.
 
-Moving averages, or linear filters, are ubiquitous in business cycle extraction and seasonal adjustment methods\footnote{A moving average is a statistical method that consists in applying a rolling weighted mean to a times series: for each date it computes a weighted mean of \(p\) past points and \(q\) future points where \(p,q\geq0\) depends on the moving average.}.
+Moving averages, or linear filters, are ubiquitous in business cycle extraction and seasonal adjustment methods\footnote{
+  A moving average is a statistical method that consists in applying a rolling weighted mean to a times series: for each date it computes a weighted mean of \(p\) past points and \(q\) future points where \(p,q\geq0\) depends on the moving average.}.
 For example, the X-12ARIMA seasonal adjustment method uses Henderson moving averages and composite moving averages to estimate the main components of a time series, while TRAMO-SEATS uses Wiener-Kolmogorov filters.
 Symmetric filters are applied to the center of the series, but when it comes to estimate the most recent points, all of these methods must rely on asymmetric filters.
 For example, even if X-12ARIMA or TRAMO-SEATS apply symmetrical averages to the forecasts obtained from an ARIMA model of the series, in reality it consists in applying asymmetric filters at the end of the series, because the predicted values are linear combinations of past values.
@@ -401,12 +410,14 @@ Let \(X_t=\e^{-i\omega t}\). The result of the moving average \(M_\theta\) in \(
 Y_t = M_{\theta}X_t = \sum_{k=-p}^{+f} \theta_k \e^{-i \omega (t+k)}
 = \left(\sum_{k=-p}^{+f} \theta_k \e^{-i \omega k}\right)\cdot X_t.
 \]
-The function \(\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{-i \omega k}\) is called the \emph{transfer function} or \emph{frequency response function}\footnote{The frequency response function can equivalently be defined as \(\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{i \omega k}\) or \(\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{2\pi i \omega k}\).}.
+The function \(\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{-i \omega k}\) is called the \emph{transfer function} or \emph{frequency response function}\footnote{
+  The frequency response function can equivalently be defined as \(\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{i \omega k}\) or \(\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{2\pi i \omega k}\).}.
 It can be rewritten as:
 \[
 \Gamma_\theta(\omega) = G_\theta(\omega)\e^{-i\Phi_\theta(\omega)}
 \]
-where \(G_\theta(\omega)=\lvert\Gamma_\theta(\omega)\rvert\) is the \emph{gain} or \emph{amplitude} function and \(\Phi_\theta(\omega)\) is the \emph{phase shift} or \emph{time shift} function\footnote{This function is sometimes represented as \(\phi_\theta(\omega)=\frac{\Phi_\theta(\omega)}{\omega}\) to mesure the phase shift in number of periods.}.
+where \(G_\theta(\omega)=\lvert\Gamma_\theta(\omega)\rvert\) is the \emph{gain} or \emph{amplitude} function and \(\Phi_\theta(\omega)\) is the \emph{phase shift} or \emph{time shift} function\footnote{
+  This function is sometimes represented as \(\phi_\theta(\omega)=\frac{\Phi_\theta(\omega)}{\omega}\) to mesure the phase shift in number of periods.}.
 For all symmetric moving average we have \(\Phi_\theta(\omega)\equiv 0 \pmod{\pi}\).
 
 To sum up, applying a moving average to a harmonic times series affects it in in two different ways:
@@ -415,7 +426,8 @@ To sum up, applying a moving average to a harmonic times series affects it in in
 \item
   by multiplying it by an amplitude coefficient \(G_{\theta}\left(\omega\right)\);
 \item
-  by ``shifting'' it in time by \(\Phi_\theta(\omega)/\omega\), which directly affects the detection of turning points\footnote{When \(\Phi_\theta(\omega)/\omega>0\) the time shift is positive: a turning point is detected with delay.}.
+  by ``shifting'' it in time by \(\Phi_\theta(\omega)/\omega\), which directly affects the detection of turning points\footnote{
+    When \(\Phi_\theta(\omega)/\omega>0\) the time shift is positive: a turning point is detected with delay.}.
 \end{itemize}
 
 Example: with \(M_{\theta_0}X_t=\frac{1}{2}X_{t-1}+\frac{1}{2}X_{t}\) we have:
@@ -627,7 +639,8 @@ With \(e_{1}=\begin{pmatrix}1&0&\cdots&0\end{pmatrix}'\), the estimate of the tr
 \[
 \hat{m}_{t}=e_{1}\hat{\beta}=w'y=\sum_{j=-h}^{h}w_{j}y_{t-j}\text{ with }w=KX(X'KX)^{-1}e_{1}
 \]
-To conclude, the estimate of the trend \(\hat{m}_{t}\) can be obtained applying the symmetric filter \(w\) to \(y_t\)\footnote{\(w\) is symmetric due to the symmetry of the kernel weights \(\kappa_j\).}.
+To conclude, the estimate of the trend \(\hat{m}_{t}\) can be obtained applying the symmetric filter \(w\) to \(y_t\)\footnote{
+  \(w\) is symmetric due to the symmetry of the kernel weights \(\kappa_j\).}.
 Moreover, \(X'w=e_{1}\) so:
 \[
 \sum_{j=-h}^{h}w_{j}=1,\quad\forall r\in\left\llbracket 1,d\right\rrbracket :\sum_{j=-h}^{h}j^{r}w_{j}=0
@@ -969,7 +982,8 @@ When \(U=X\) this is equivalent to the constraint to preserve polynomial of degr
 When \(U=\begin{pmatrix}1&\cdots&1\end{pmatrix}'\), \(Z=\begin{pmatrix}-h&\cdots&+h\end{pmatrix}'\), \(\delta=\delta_1\), \(D=\sigma^2I\) and when the symmetric filter is the Henderson filter we obtain the Musgrave asymmetric filters.
 With this filter we assume that the data is generated by a linear process and that the asymmetric filters preserve constant signals (\(\sum v_i=\sum w_i=1\)).
 The asymmetric filters depends on the ratio \(\delta_1/\sigma\), which is related to the ``I-C'' ratio \(R=\frac{\bar{I}}{\bar{C}}=\frac{\sum\lvert I_t-I_{t-1}\rvert}{\sum\lvert C_t-C_{t-1}\rvert}\) (\(\delta_1/\sigma=2/(R\sqrt{\pi})\)), the ratio between the expected absolute difference of the irregular and of the trend-cycle.
-In the seasonal adjustment method, the I-C ratio\footnote{To compute the I-C ratio, a first decomposition of the seasonally adjusted series is computed using a 13-term Henderson moving average.} is used to determine the bandwidth to use for the Henderson filter. For monthly data:
+In the seasonal adjustment method, the I-C ratio\footnote{
+  To compute the I-C ratio, a first decomposition of the seasonally adjusted series is computed using a 13-term Henderson moving average.} is used to determine the bandwidth to use for the Henderson filter. For monthly data:
 
 \begin{itemize}
 \item
@@ -1286,7 +1300,7 @@ Smoothness =S_w&= 2\int_{\omega_1}^\pi\left(\rho_s(\omega)^{2}-\rho_\theta(\omeg
 Residual =R_w&= 8\int_{\omega_1}^\pi\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h(\omega)\ud\omega\\
 \end{align*}
 
-\begin{remark}
+\begin{remarque}
 
 To have coherent definitions between all sections, the formulas of the four criteria slightly differ from the ones defined in \textcite{trilemmaWMR2019}:
 
@@ -1297,7 +1311,7 @@ To have coherent definitions between all sections, the formulas of the four crit
   the pass-band interval is defined as the frequency interval that contains the target signals whereas in \textcite{trilemmaWMR2019} it depends on the gain function of the symmetric filer (pass-band\(=\{\omega |\rho_s(\omega)\geq 0.5\}\)).
 \end{itemize}
 
-\end{remark}
+\end{remarque}
 
 In general, the residual \(R_w\) is small since \(\rho_s(\omega)\rho_\theta(\omega)\) is close to 0 in the stop-band.
 Moreover, user priorities are rarely concerned about the time-shift properties of components in the stop-band.
@@ -1349,7 +1363,8 @@ It allows them to develop to derive linear filters and associated asymmetric fil
 A RKHS is a Hilbert space characterized by a kernel that reproduces, via an inner product defined by a density function \(f_0(t)\), every function of the space.
 Therefore, a kernel estimator \(K_p\) of order \(p\) (i.e.: that reproduce without distortion a polynomial trend of degree \(p-1\)) can be decomposed into the product of a reproducing kernel \(R_{p-1}\), belonging to the space of polynomials of degree \(p-1\), and a probability density function \(f_0\).
 
-For any sequence \(\left(P_{i}\right)_{0\leq i\leq p-1}\) of orthonormal polynomials in \(\mathbb{L}^{2}(f_{0})\)\footnote{\(\mathbb{L}^{2}(f_{0})\) is the Hilbert space defined by the inner product:
+For any sequence \(\left(P_{i}\right)_{0\leq i\leq p-1}\) of orthonormal polynomials in \(\mathbb{L}^{2}(f_{0})\)\footnote{
+  \(\mathbb{L}^{2}(f_{0})\) is the Hilbert space defined by the inner product:
   \[
   \left\langle U(t),V(t)\right\rangle =\E{U(t)V(t)}=\int_{\R}U(t)V(t)f_{0}(t)\ud t
   \]}, the kernel estimator \(K_p\) is defined by:
@@ -1395,7 +1410,7 @@ b_{q,\varphi}&=\underset{b_q\in]h;2 h+1]}{\min}
 
 One of the drawbacks of the optimal bandwidth selection is that there is no guarantee that there is a unique solution.
 
-\begin{remark}
+\begin{remarque}
 
 To have coherent definitions between all sections, the formulas of \(b_{q,G}\), \(b_{q,\gamma}\) and \(b_{q,\varphi}\) slightly differ from the ones defined in \textcite{dagumbianconcini2015} where:
 
@@ -1418,7 +1433,7 @@ With \(\Omega_S=[0,2\pi/36]\) the frequency domain associated to cycles of 16 mo
   a different formula is used for the frequency response function (\(\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{2\pi i \omega k}\)): it only changes the interval integration.
 \end{itemize}
 
-\end{remark}
+\end{remarque}
 
 The table \ref{tab:criteriarkhs} shows the quality criteria of the RKHS filters.
 Even if the symmetric filter preserves quadratic trends, this is not the case of the asymmetric filters: they only preserve constant trends.
@@ -1526,18 +1541,19 @@ The figure \ref{fig:cl2all} shows the results around a turning point (the econom
 Otherwise you will only be able to see the results for the DAF filter.}
 \end{figure}
 
-For this example, in terms of time lag to detect the turning point of February 2009\footnote{A turning point (upturn) is defined to occur at time \(t\) if \(y_{t-k}\geq\cdots\geq y_{t-1}<y_t\leq y_{t+1}\leq\cdots y_{t+m}\).
+For this example, in terms of time lag to detect the turning point of February 2009\footnote{
+  A turning point (upturn) is defined to occur at time \(t\) if \(y_{t-k}\geq\cdots\geq y_{t-1}<y_t\leq y_{t+1}\leq\cdots y_{t+m}\).
   A downturn would be equivalently defined as a date \(t\) \(y_{t-k}\leq\cdots\leq y_{t-1}>y_t\geq y_{t+1}\geq\cdots y_{t+m}\).
-  Following \textcite{Zellner1991}, \(k=3\) and \(m=1\) are chosen given the smoothness of the trend-cycle data. }, the DAF is the worst filter since it introduces a delay of one month until \(q=3\).
+  Following \textcite{Zellner1991}, \(k=3\) and \(m=1\) are chosen given the smoothness of the trend-cycle data.}, the DAF is the worst filter since it introduces a delay of one month until \(q=3\).
 LC, QL, \(b_{q,\gamma}\) filters introduce a delay only for real-time filter (\(q=0\)) of two months for QL filter and one month for the others.
 Surprisingly, the FST filter that minimize the phase shift introduce a time lag for \(q=0\) and \(q=1\) (the upturn is detected earlier), whereas \(b_{q,\phi}\) doesn't introduce any time lag.
 
-\begin{remark}
+\begin{remarque}
 
 Those results differ from the one obtained in the real-time during the economic crisis.
 Indeed, here we take the time series already seasonally adjusted in the overall period, whereas during the real-time estimates, the seasonal adjustment process also introduce a time lag.
 
-\end{remark}
+\end{remarque}
 
 In terms of revision error, the DAF filters also give the worst results.
 For real-time estimates (\(q=0\)), the LC and RKHS filters minimize the revision between 2000 and 2008 but when more data are available all the methods (except the DAF filters) give similar results.
