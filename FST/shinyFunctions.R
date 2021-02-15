@@ -18,7 +18,7 @@ tlpp <- lapply(names(tlpp_lc), function(q){
 })
 names(tlpp) <- names(tlpp_lc)
 
-all_fst_res <- function(lags=6, leads=0, pdegree=2, smoothness.weight=1, smoothness.degree=3, 
+all_fst_res <- function(lags=6, leads=0, pdegree=1, smoothness.weight=1, smoothness.degree=3, 
                         timeliness.weight=0, timeliness.passband=pi/6, timeliness.antiphase=T,
                         resolution=100){
   data <- expand.grid(smoothness.weight = c(seq(0,1,length.out = resolution),1-1/1000,1-1/2000,1-1/3000,1-1/4000,1-1/5000),

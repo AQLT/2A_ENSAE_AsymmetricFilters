@@ -2,7 +2,7 @@ library(rjdfilters)
 library(ggplot2)
 
 all_filters <- function(horizon = 6, degree = 3, ic = 3.5){
-  t <- lapply(c("LC", "QL", "CQ", "CC", "DAF"), function(endpoints){
+  t <- lapply(c("LC", "QL", "CQ", "DAF"), function(endpoints){
     t <- lapply(c("Henderson", "Uniform", "Biweight", "Trapezoidal", "Triweight", "Tricube", "Gaussian", "Triangular", "Parabolic"),function(kernel){
       
       tryCatch(lpp_properties(horizon = horizon, degree = degree,
@@ -15,7 +15,7 @@ all_filters <- function(horizon = 6, degree = 3, ic = 3.5){
     names(t) <- c("Henderson", "Uniform", "Biweight", "Trapezoidal", "Triweight", "Tricube", "Gaussian", "Triangular", "Parabolic")
     t
   })
-  names(t) <- c("LC", "QL", "CQ", "CC", "DAF")
+  names(t) <- c("LC", "QL", "CQ", "DAF")
   t
 }
 
@@ -66,7 +66,7 @@ diagnostic_table<- function(x,
   sweight <- x[[1]][["Henderson"]]$filters.coef[,sprintf("q=%i", horizon)]
   res <- do.call(rbind, lapply(names(x),function(endpoints){
     do.call(rbind, lapply(names(x[[endpoints]]),function(kernel){
-      data <- apply(x[[endpoints]][[kernel]]$filters.coef,2,diagnostic_matrix, lb = horizon,
+      data <- apply(x[[endpoints]][[kernel]]$filters.coef,2,diagnostic_matrix, lags = horizon,
                     sweight = sweight)
       data <- data[,-ncol(data)]
       data <- t(data)
@@ -111,6 +111,7 @@ gain_phase_plot_comp <- function(filters_properties, endpoints, kernel, q,
                  x = seq(0, pi, length.out = nrow(data)),
                  stringsAsFactors = F,row.names = NULL)
     }))
+    d$by <- factor(d$by, ordered = TRUE, levels = c("LC", "QL", "CQ", "CC", "DAF"))
   }
   
   colnames(d) <- gsub(".", "=", colnames(d), fixed = TRUE)

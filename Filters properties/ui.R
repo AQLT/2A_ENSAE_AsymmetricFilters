@@ -23,7 +23,7 @@ shinyUI(fluidPage(
             ),
             selectInput(inputId = "endpoints",
                         label = "Select endpoint method",
-                        choices = c("LC", "QL", "CQ", "CC", "DAF"),
+                        choices = c("LC", "QL", "CQ", "DAF"),
                         selected = "LC"
             ),
             fluidRow(

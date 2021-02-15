@@ -24,7 +24,7 @@ shinyUI(fluidPage(
             fluidRow(
                 column(4, numericInput("lags", "lags", value = 6, step=1,  min = 1, max = 30)),
                 column(4, numericInput("leads", "leads", value = 0, step=1,  min = 1, max = 30)),
-                column(4, numericInput("pdegree", "pdegree", value = 2, step=1, min = 0, max = 5))
+                column(4, numericInput("pdegree", "pdegree", value = 1, step=1, min = 0, max = 5))
             ),
             fluidRow(
                 column(6, numericInput("smoothness.degree", "smoothness.degree", value = 3, step=1,  min = 1, max = 20)),
