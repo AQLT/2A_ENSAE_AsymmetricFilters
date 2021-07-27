@@ -37,3 +37,5 @@ L’objectif du stage est de faire une comparaison théorique de ces filtres et 
   + [IPI manuf FR](https://aqlt.github.io/AsymmetricFilters/Examples/ipi_manuf_fr.pdf)
 
   + [IPI manuf FR jusqu'en 2009](https://aqlt.github.io/AsymmetricFilters/Examples/ipi_manuf_fr_2008.pdf) 
+  
+Rapport de stage final : https://aqlt.github.io/AsymmetricFilters/Stage_2A/_book/
