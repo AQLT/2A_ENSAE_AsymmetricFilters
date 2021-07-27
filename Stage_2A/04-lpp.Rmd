@@ -1,0 +1,496 @@
+
+# Local polynomial filters {#sec:lppfilters}
+
+In this section we detail the filters that arise from fitting a local polynomial to our time series, as described by @proietti2008. 
+Local polynomial filters encompass classical filters like Henderson and Musgrave filters (see sections \@ref(sec:sympolyfilter) and \@ref(subsec:lppasymf)).
+
+We assume that our time series $y_t$ can be decomposed as 
+$$
+y_t=\mu_t+\varepsilon_t
+$$
+where $\mu_t$ is the signal (trend) and $\varepsilon_{t}\overset{i.i.d}{\sim}\mathcal{N}(0,\sigma^{2})$ is the noise^[The time series is therefore seasonally adjusted.]. 
+We assume that $\mu_t$ can be locally approximated by a polynomial of degree $d$ of the time $t$ between $y_t$ and the neighboring observations $\left(y_{t+j}\right)_{j\in\left\llbracket -h,h\right\rrbracket}$. 
+Then $\mu_t\simeq m_{t}$ with:
+$$
+\forall j\in\left\llbracket -h,h\right\rrbracket :\:
+y_{t+j}=m_{t+j}+\varepsilon_{t+j},\quad m_{t+j}=\sum_{i=0}^{d}\beta_{i}j^{i}
+$$
+This signal extraction problem is then equivalent to the estimation of $m_t=\beta_0$. In matrix notation we can write:
+$$
+\underbrace{\begin{pmatrix}y_{t-h}\\
+y_{t-(h-1)}\\
+\vdots\\
+y_{t}\\
+\vdots\\
+y_{t+(h-1)}\\
+y_{t+h}
+\end{pmatrix}}_{y}=\underbrace{\begin{pmatrix}1 & -h & h^{2} & \cdots & (-h)^{d}\\
+1 & -(h-1) & (h-1)^{2} & \cdots & (-(h-1))^{d}\\
+\vdots & \vdots & \vdots & \cdots & \vdots\\
+1 & 0 & 0 & \cdots & 0\\
+\vdots & \vdots & \vdots & \cdots & \vdots\\
+1 & h-1 & (h-1)^{2} & \cdots & (h-1)^{d}\\
+1 & h & h^{2} & \cdots & h^{d}
+\end{pmatrix}}_{X}\underbrace{\begin{pmatrix}\beta_{0}\\
+\beta_{1}\\
+\vdots\\
+\vdots\\
+\vdots\\
+\vdots\\
+\beta_{d}
+\end{pmatrix}}_{\beta}+\underbrace{\begin{pmatrix}\varepsilon_{t-h}\\
+\varepsilon_{t-(h-1)}\\
+\vdots\\
+\varepsilon_{t}\\
+\vdots\\
+\varepsilon_{t+(h-1)}\\
+\varepsilon_{t+h}
+\end{pmatrix}}_{\varepsilon}
+$$
+Two parameters are crucial in determining the accuracy of the approximation:
+
+- the degree $d$ of the polynomial;
+
+- the number of neighbors $H=2h+1$ (or the *bandwidth* $h$).
+
+In order to estimate $\beta$ we need $H\geq d+1$ and the estimation is done by the weighted least squares (WLS), which consists of minimizing the following objective function:
+$$
+S(\hat{\beta}_{0},\dots,\hat{\beta}_{d})=\sum_{j=-h}^{h}\kappa_{j}(y_{t+j}-\hat{\beta}_{0}-\hat{\beta}_{1}j-\dots-\hat{\beta}_{d}j^{d})^{2}
+$$
+where $\kappa_j$ is a set of weights called *kernel*. We have $\kappa_j\geq 0:\kappa_{-j}=\kappa_j$, and with $K=diag(\kappa_{-h},\dots,\kappa_{h})$, the estimate of $\beta$ can be written as $\hat{\beta}=(X'KX)^{1}X'Ky$. 
+With $e_{1}=\begin{pmatrix}1&0&\cdots&0\end{pmatrix}'$, the estimate of the trend is:
+$$
+\hat{m}_{t}=e_{1}\hat{\beta}=w'y=\sum_{j=-h}^{h}w_{j}y_{t-j}\text{ with }w=KX(X'KX)^{-1}e_{1}
+$$
+To conclude, the estimate of the trend $\hat{m}_{t}$ can be obtained applying the symmetric filter $w$ to $y_t$^[
+$w$ is symmetric due to the symmetry of the kernel weights $\kappa_j$.
+].
+Moreover, $X'w=e_{1}$ so:
+$$
+\sum_{j=-h}^{h}w_{j}=1,\quad\forall r\in\left\llbracket 1,d\right\rrbracket :\sum_{j=-h}^{h}j^{r}w_{j}=0
+$$
+Hence, the filter $w$ preserve deterministic polynomial of order $d$.
+
+## Different kernels {#sec:kernels}
+
+In signal extraction, observations are generally weighted according to their distance from time $t$: this is the role of the kernel function.
+In the discrete case, a kernel function is a set of weights $\kappa_j$, $j=0,\pm1,\dots,\pm h$ with $\kappa_j \geq0$ and $\kappa_j=\kappa_{-j}$.
+An important class of kernels is the Beta kernels. In the discrete case, up to a proportional factor (so that $\sum_{j=-h}^h\kappa_j=1$):
+$$
+\kappa_j = \left(
+  1-
+  \left\lvert
+  \frac j {h+1}
+  \right\lvert^r
+\right)^s
+$$
+with $r>0$, $s\geq 0$. 
+It encompasses all kernels used in this report, except Henderson, trapezoidal and gaussian kernel.The following kernels are considered in this report:
+
+
+\begin{multicols}{2}
+\begin{itemize}
+\item $r=1,s=0$ uniform kernel: 
+$$\kappa_j^U=1$$
+\item $r=s=1$ triangle kernel:
+$$\kappa_j^T=\left(
+  1-
+  \left\lvert
+  \frac j {h+1}
+  \right\lvert
+\right)$$
+
+\item $r=2,s=1$  Epanechnikov (or Parabolic) kernel:
+$$\kappa_j^E=\left(
+  1-
+  \left\lvert
+  \frac j {h+1}
+  \right\lvert^2
+\right)$$
+
+\item $r=s=2$ biweight kernel:
+$$\kappa_j^{BW}=\left(
+  1-
+  \left\lvert
+  \frac j {h+1}
+  \right\lvert^2
+\right)^2$$
+
+\item $r = 2, s = 3$ triweight kernel:
+$$\kappa_j^{TW}=\left(
+  1-
+  \left\lvert
+  \frac j {h+1}
+  \right\lvert^2
+\right)^3$$
+
+\item $r = s = 3$ tricube kernel:
+$$\kappa_j^{TC}=\left(
+  1-
+  \left\lvert
+  \frac j {h+1}
+  \right\lvert^3
+\right)^3$$
+
+\item Henderson kernel (see section \ref{sec:sympolyfilter} for more details):
+$$
+\kappa_{j}=\left[1-\frac{j^2}{(h+1)^2}\right]
+\left[1-\frac{j^2}{(h+2)^2}\right]
+\left[1-\frac{j^2}{(h+3)^2}\right]
+$$
+\item Trapezoidal kernel:
+$$
+\kappa_j^{TP}=
+\begin{cases}
+  \frac{1}{3(2h-1)} & \text{ if }j=\pm h 
+  \\
+  \frac{2}{3(2h-1)} & \text{ if }j=\pm (h-1)\\
+  \frac{1}{2h-1}& \text{ otherwise}
+\end{cases}
+$$
+\item Gaussian kernel\footnote{
+In this report we arbirarily take $\sigma^2=0.25$.
+}
+$$
+\kappa_j^G=\exp\left(
+-\frac{
+  j^2
+}{
+  2\sigma^2h^2
+}\right)
+$$
+\end{itemize}
+\end{multicols}
+
+<!-- Let $x\in ]0,1[$ and $f_x(a,b)=\left(1-x^{a}\right)^{b}$. We have: -->
+<!-- \begin{align*} -->
+<!-- \frac{\partial}{\partial a}f(a,b) &=-a\ln (x)x^a(1-x^{a})^{b}>0 \\ -->
+<!-- \frac{\partial}{\partial b}f(a,b)&=\ln(1-x^{a})(1-x^{a})^{b} <0 -->
+<!-- \end{align*} -->
+<!-- So: -->
+
+Henderson, trapezoidal and gaussian kernel are very specific:
+
+- The Henderson and trapezoidal kernel functions change with the bandwidth (the other kernel only depend on the ratio $j/h+1$).
+
+- Other definitions of the trapezoidal and gaussian kernel can be used. 
+The trapezoidal kernel is here considered because it corresponds to the filter used to extract the seasonal component in the X-12ARIMA algorithm. 
+Therefore it is never used to extract trend-cycle component.
+
+\begin{figure}[!ht]
+\animategraphics[autoplay,loop,width=\textwidth,controls]{2}{img/kernels/}{2}{30} 
+\caption{Coefficients of the different kernels for $h$ from 2 to 30.}\label{fig:kernels}\footnotesize
+\emph{Note: to see the animation, the PDF must be open with Acrobat Reader, KDE Okular, PDF-XChange or Foxit Reader. 
+Otherwise you will only be able to see the results for $h=2$.}
+\end{figure}
+
+The figure \@ref(fig:kernels) summarizes the coefficients of the different kernels.
+Analyzing the coefficients we can already anticipate some properties of the associated filters:
+
+- The triweight kernel has the narrowest distribution.
+The narrowest a distribution is, the smallest the weights of furthest neighbors are: the associated filter should have a high weight in the current observation ($t$).
+
+- For $h$ high the Henderson kernel is equivalent to the triweight kernel (since $h+1\sim h+2 \sim h+3$, $\kappa_j^H\sim\kappa_j^{TW}$), the associated filter should also be equivalent.
+However, for $h$ small ($h\leq10$) the Henderson kernel is closer to the biweight kernel than to the triweight kernel.
+
+
+
+### Specific symmetric filters {#sec:sympolyfilter}
+
+When $p=0$ (local adjustment by a constant) we obtain the **Nadaraya-Watson**'s estimator.
+
+With the uniform kernel we obtain the **Macaulay filter**. 
+When $p=0,1$, this is the arithmetic moving average: $w_j=w=\frac{1}{2h+1}$.
+
+The **Epanechnikov** kernel is often recommended as the optimal kernel that minimizes the mean square error of the estimation by local polynomial.
+
+**Loess** is a locally weighted polynomial regression that uses tricube kernel.
+
+The **Henderson filter** is a specific case of a local cubic fit ($p=3$), widely used for trend estimation (for example it's the filter used in the seasonal adjustment software X-12ARIMA). For a fixed bandwidth, Henderson found the kernel that gave the smoothest estimates of the trend. 
+He showed that the three following problems were equivalent:
+
+1. minimize the variance of third difference of the series by the application of the moving average;  
+2. minimize the sum of squares of third difference of the coefficients of the filter, it's the *smoothness criterion*: $S=\sum_j(\nabla^{3}\theta_{j})^{2}$;  
+3. fit a local cubic polynomial by weighted least squares, where the weights are chose to minimize the sum of squares of the resulting filter.
+
+Resolving the last problem leads to the kernel presented in section \@ref(sec:kernels).
+
+
+### Analysis of symmetric filters
+
+In this section, all the filters are computed by local polynomial of degree $d=3$. 
+The figure \@ref(fig:filterscoefs) plots the coefficients of the filters for the different kernels presented in different kernels presented in section \@ref(sec:kernels) and for different bandwidths $h$. 
+The table \@ref(tab:varianceReductionSymmetricFilters) shows the variance reduction of the different filters.
+We find the similar results than in section \@ref(fig:kernels):
+
+- The triweight kernel gives the filter with the narrowest distribution.
+The narrowest a distribution is, the higher the variance reduction should be.
+Indeed, the distribution of the coefficients of the filter can be interpreted as the output signal of an additive outlier.
+As a result, with a wide distribution, an additive outlier will be more persistent than with a narrow distribution.
+Therefore, it's the triweight that has the higher variance reduction for all $h\leq30$.
+
+- For $h$ small, the trapezoidal filter seems to produce similar results than the Epanechnikov one.
+
+- For $h$ small the Henderson filter is closed to the biweight kernel, for $h$ high it is equivalent to the triweight kernel.
+
+\begin{figure}[!ht]
+\animategraphics[autoplay,loop,width=\textwidth,controls]{2}{img/symmetricFilters/}{2}{30}
+\caption{Coefficients of symmetric filters computed by local polynomial of degree $3$, according to the differents kernels and for $h$ from 2 to 30.}\label{fig:filterscoefs}\footnotesize
+\emph{Note: to see the animation, the PDF must be open with Acrobat Reader, KDE Okular, PDF-XChange or Foxit Reader.
+Otherwise you will only be able to see the results for $h=2$.}
+\end{figure}
+
+```{r varianceReductionSymmetricFilters, echo = FALSE}
+dataVRSF <- readRDS("data/var_red_sym_filters.RDS")
+colnames(dataVRSF)[1] <- "$h$"
+title <- "Variance reduction ratio ($\\sum\\theta_i^2$) of symmetric filters computed by local polynomial of degree $3$."
+round(dataVRSF[dataVRSF[,1]%in%c(2:10,20,30),],2) %>% 
+  kable(format.args = list(digits = 2), align = "c", booktabs = T, row.names = FALSE,
+        escape = FALSE,caption = title) %>% 
+  kable_styling(latex_options=c("striped", "scale_down", "hold_position")) %>%
+  add_header_above(c(" " = 1, "Kernel" = ncol(dataVRSF)-1))
+```
+
+Moreover, we find that for all the filters, the coefficients decrease, when the distance to the central observation increases, until a negative value and then increase towards 0 (except for the uniform kernel).
+Negative coefficients might be disturbing but they arise from the cubic polynomial constraints.
+Indeed to preserve polynomial of degree 2 (and so 3) we need $\sum_{j=-h}^hj^2\theta_i=0$, which constraint some coefficients to be negative.
+However, those negative coefficients are negligible compare to the central coefficients (they are more 80% smaller than the central coefficient for all kernels, except for uniform and trapezoidal with high bandwidth).
+
+
+### Gain functions 
+
+Figure \@ref(fig:filtersSymgains) plots the gain functions of the different filters. 
+Gain functions are usually plotted between 0 and $\pi$. 
+However, locally weighted polynomial regression are low-pass filters: they leave almost unchanged low frequency components (such as the trend) and attenuate high frequency fluctuations (noise). 
+For a monthly data, a cycle of 3 years corresponds to the frequency $2\pi/36$ and a cycle of 7 years to the frequency  $2\pi/84$.
+Therefore, an ideal pass-band filter will have a gain function equal to 1 for low frequency ($\leq 2\pi/36$) and equal to 0 for other frequencies.
+
+When the bandwidth $h$ increases, the gain function decreases for low frequencies: short business cycles will then be attenuated.
+For a fixed value of $h$, gaussian, Henderson and triweight filters will preserve more short business cycles than the other filters (especially uniform, trapezoidal and Epanechnikov). 
+Moreover, the gain function of those filters decreases faster to zero with less fluctuations: it enhances the higher variance reduction ratio shown in table \@ref(tab:varianceReductionSymmetricFilters).
+
+ 
+\begin{figure}[!ht]
+\animategraphics[autoplay,loop,width=\textwidth,controls]{2}{img/symmetricFilters/gain}{2}{30}
+\caption{Gain functions from 0 to $2\pi/12$ of symmetric filters computed by local polynomial of degree $3$, according to the differents kernels and for $h$ from 2 to 30.}\label{fig:filtersSymgains}\footnotesize
+\emph{Note: the two horizontal lines corresponds to the frequencies $2\pi/84$ (cycle of 7 years) and $2\pi/36$ (cycle of 3 years).}
+
+\emph{to see the animation, the PDF must be open with Acrobat Reader, KDE Okular, PDF-XChange or Foxit Reader.
+Otherwise you will only be able to see the results for $h=2$.}
+\end{figure}
+
+Just analyzing the symmetric filters properties, there is no doubt that Henderson, triweight and biweight filters have similar properties and will perform better than the other kernel for trend-cycle extraction. 
+The same results are found with asymmetric filters. 
+Thus, in order to simplify the presentation analysis, in the next sections we will only show the results with the Henderson filter.
+
+
+## Asymmetric filters
+
+### Direct asymmetric filters (DAF)
+
+As mentioned in section \@ref(defAsymProb), symmetric filters cannot be used in boundary points. For real-time estimation, three different approaches can be used:
+
+1. Build an asymmetric filter fitting local polynomial to the available observations $y_{t}$ for $t\in\left\llbracket n-h,n\right\rrbracket$.
+
+2. Apply the symmetric filter to the series extended by forecast (or backcast) $\hat{y}_{n+l\mid n},l\in\left\llbracket 1,h\right\rrbracket$.
+
+3. Build an asymmetric filter which minimize the mean square revision error subject to polynomial reproducing constraints.
+
+@proietti2008 show that the first two approaches are equivalent when the forecast is done by a polynomial extrapolation of order $d$ (forecasts generated with the same polynomial model than the symmetric filter). 
+This is called the *direct asymmetric filter* (DAF).
+Let $q$ be the number of available observations in the future: $q$ varies from 0 (real time filter) to $h$ (symmetric filter).
+
+Rewriting the matrix $X$, $K$ $y$ in the following way:
+$$
+X=\begin{pmatrix}X_{p}\\
+X_{f}
+\end{pmatrix},\quad y=\begin{pmatrix}y_{p}\\
+y_{f}
+\end{pmatrix},\quad K=\begin{pmatrix}K_{p} & 0\\
+0 & K_{f}
+\end{pmatrix}
+$$
+where $y_{p}$ correspond to the available data and $y_{f}$ the missing data. 
+The DAF $w_a$ and the forecast $\hat{y}_{f}$ can be written as:
+$$
+w_{a}=K_{p}X_{p}(X'_{p}K_{p}X_{p})^{-1}e_{1},
+\quad
+\hat{y}_{f}=X_{f}(X'_{p}K_{p}X_{p})^{-1}X_{p}'K_{p}y_{p}
+$$
+Moreover, we have the following results with the DAF $w_a$:
+
+- it satisfies the same polynomial reproduction constraints as the symmetric filter (conserve polynomial of degree $d$). 
+Thus, the bias in estimating an unknown function of time has the same order of magnitude as in the interior of time support.
+
+- $w_a$ minimize the weighted distance (by the kernel function) between the asymmetric filter coefficients and the symmetric ones. 
+Therefore, for the DAF it is equivalent to fit a local polynomial and to minimize the revisions
+
+However, the weights $w_{a,0}$ of the DAF are highly concentrated in the current observation $t$ with an important change between $q=0$ (real-time filter) and $q=h$ (see figure \@ref(fig:filtersdafcoefs)). 
+Moreover the real-time filter doesn't have a satisfying gain functions: it is closer to one for all the frequencies (it thus has a low noise reduction power).
+Therefore, even if the real-time filter is unbiased (if the series is generated by a polynomial of degree $d$) it is at the expenses of a high variance. 
+
+\begin{figure}[!ht]
+\includegraphics[width=\textwidth]{img/daf/coef_gain_1}
+\caption{Coefficients and gain function of direct asymmetric filters (DAF) computed by local polynomial of degree $3$ with the Henderson kernel for $h=6$.}\label{fig:filtersdafcoefs}\footnotesize
+\end{figure}
+
+<!-- \begin{figure}[!ht] -->
+<!-- \animategraphics[autoplay,loop,width=\textwidth,controls]{2}{img/daf/coef_gain_}{1}{9} -->
+<!-- \caption{Coefficients and gain function of direct asymmetric filters (DAF) computed by local polynomial of degree $3$ with the Henderson kerne for $h=6$.}\label{fig:filtersdafcoefs}\footnotesize -->
+<!-- \emph{Note: to see the animation, the PDF must be open with Acrobat Reader, KDE Okular, PDF-XChange or Foxit Reader. -->
+<!-- Otherwise you will only be able to see the results for the Henderson kernel.} -->
+<!-- \end{figure} -->
+
+For all the kernels, we find the same results as in @proietti2008:
+
+- For a fixed value of $d$, the more the data is available ($q$ increases), the more the weight associated to the current observation $w_{a,0}$ decreases.
+
+- For a fixed value of $h$ and $q$, $w_{a,0}$ increases exponentially with the polynomial degree $d$ (in particular, for $d=h$, $w_{a,0}=1$).
+
+
+### General class of asymmetric filters {#subsec:lppasymf}
+
+To deal with the problem of the variance of the estimates of the real-time filters, @proietti2008 suggest a general of asymmetric filters to make a tradeoff between bias and variance.
+It is a generalisation of Musgrave asymmetric filters (used in the seasonal adjustment algorithm X-12ARIMA, see @musgrave1964set).
+
+Here we consider that the data is generated by the model:
+$$
+y=U\gamma+Z\delta+\varepsilon,\quad
+\varepsilon\sim\mathcal{N}(0,D)
+$$
+The goal is to find a filter $v$ which minimize the mean square revision error (with the symmetric filter $w$) subject to some constraints. 
+The constraints are summarized by the matrix $U=\begin{pmatrix}U_{p}'&U_{f}'\end{pmatrix}'$ (with $U_p$ the available observations of the matrix $U$ for the asymmetric filter): $U_p'v=U'w$. 
+The problem is equivalent to find $v$ that minimize:
+\begin{equation}
+\varphi(v)=
+\underbrace{
+  \underbrace{(v-w_{p})'D_{p}(v-w_{p})+
+  w_{f}'D_{f}w_{f}}_\text{revision error variance}+
+  \underbrace{[\delta'(Z_{p}'v-Z'w)]^{2}}_{biais^2}
+}_\text{Mean square revision error}+
+\underbrace{2l'(U_{p}'v-U'w)}_{\text{constraints}}
+(\#eq:lppasym)
+\end{equation}
+with $l$ a vector of Lagrange multipliers.
+
+When $U=X$ this is equivalent to the constraint to preserve polynomial of degree $d$: we find the direct asymmetric filters $w_a$ with $D=K^{-1}$.
+
+When $U=\begin{pmatrix}1&\cdots&1\end{pmatrix}'$, $Z=\begin{pmatrix}-h&\cdots&+h\end{pmatrix}'$, $\delta=\delta_1$, $D=\sigma^2I$ and when the symmetric filter is the Henderson filter we obtain the Musgrave asymmetric filters. 
+With this filter we assume that the data is generated by a linear process and that the asymmetric filters preserve constant signals ($\sum v_i=\sum w_i=1$). 
+The asymmetric filters depends on the ratio $\delta_1/\sigma$, which is related to the "I-C" ratio $R=\frac{\bar{I}}{\bar{C}}=\frac{\sum\lvert I_t-I_{t-1}\rvert}{\sum\lvert C_t-C_{t-1}\rvert}$ ($\delta_1/\sigma=2/(R\sqrt{\pi})$), the ratio between the expected absolute difference of the irregular and of the trend-cycle.
+In the seasonal adjustment method, the I-C ratio^[
+To compute the I-C ratio, a first decomposition of the seasonally adjusted series is computed using a 13-term Henderson moving average.
+] is used to determine the bandwidth to use for the Henderson filter. For monthly data:
+
+- if $R<1$ a 9-term Henderson is used ($h=4$);
+
+- if $1\leq R\leq3.5$ a 13-term Henderson is used ($h=6$);
+
+- if $3.5< R$ a 23-term Henderson is used ($h=12$).
+
+In this report, for simplicity we only consider 13-term symmetric filters: the ratio  $\delta^2/\sigma^2$ is fixed to $3.5$.
+
+When $U$ corresponds to the first $d^*+1$ first the columns of $X$, $d^*<d$, the constraint is that the asymmetric filter should reproduce polynomial of degree $d^*$, the potential bias depends on the value of $\delta$.
+This will reduce the variance at the expense of a bias: it is the idea followed by @proietti2008 to propose three class of asymmetric filters:
+
+1. *Linear-Constant* (LC): $y_t$ linear ($d=1$) and $v$ preserves constant signals ($d^*=0$). 
+We obtain Musgrave filters when the Henderson kernel is used.
+
+2. *Quadratic-Linear* (QL): $y_t$ quadratic ($d=2$) and $v$ preserves linear signals ($d^*=1$).
+
+3. *Cubic-Quadratic* (CQ): $y_t$ cubic ($d=3$) and $v$ preserves quadratic signals ($d^*=2$).
+
+
+<!-- ```{r criteriaLp, echo = FALSE} -->
+<!-- lp_diagnostics <- readRDS("data/lp_diagnostics.RDS") -->
+<!-- title <- "Quality criteria of real-time filters ($q=0$) computed by local polynomial." -->
+<!-- groupement <- table(factor(lp_diagnostics[,1],levels = unique(lp_diagnostics[,1]), ordered = TRUE)) -->
+<!-- lp_diagnostics[,-1] %>%  -->
+<!--   kable(format.args = list(digits = 3), align = "c", booktabs = T, row.names = FALSE, -->
+<!--         escape = FALSE,caption = title) %>%  -->
+<!--   kable_styling(latex_options=c(#"striped",  -->
+<!--                                 "scale_down", "hold_position")) %>% -->
+<!--   add_header_above(c(" " = 1, "Kernel" = ncol(lp_diagnostics)-2)) %>% -->
+<!--   pack_rows(index = groupement) -->
+<!-- ``` -->
+
+The table \@ref(tab:criteriaLp) shows the quality criteria of the different methods with the Henderson kernel and $h=6$. 
+For real-time filters ($q=0$), the more complex the filter is (in terms of polynomial preservation), the less the timeliness is and the more the fidelity/smoothness is: the reduction of the time-delay is at the expense of an increased variance. 
+This change when $q$ increases: for $q=2$ the QL filter has a greater timeliness that the LC filter. 
+This unexpected result underlines the fact that in the approach of @proietti2008, the timeliness is never set as a goal to minimize.
+
+
+```{r criteriaLp, echo = FALSE}
+lp_diagnostics <- readRDS("data/lp_diagnostics_henderson.RDS")
+title <- "Quality criteria of asymmetric filters ($q=0,1,2$) computed by local polynomial with Henderson kernel for $h=6$ and $R=3.5$."
+groupement <- table(lp_diagnostics[,1])
+lp_diagnostics[,-1] %>% 
+  kable(format.args = list(digits = 3), align = "c", booktabs = T, row.names = FALSE,
+        escape = FALSE,caption = title) %>% 
+  kable_styling(latex_options=c(#"striped", 
+                                "scale_down", "hold_position")) %>%
+  pack_rows(index = groupement, escape = FALSE)
+```
+
+Regarding the mean square revision error ($A_w+S_w+T_w+R_w$), LC and QL filters always gives better results than CQ and DAF filters. 
+This "theorical" mean square revision error can be compared to the "empirical" one computed applying the filters to real data.
+The table \@ref(tab:mseIPI) shows the average mean square revision error of the different filters applied to the Industrial production indices of the European Union between 2003 and 2019. 
+The mean square revision errors are different in level but give same results comparing the different filters: this validate the formula used for the criteria $A_w,S_w,T_w,\text{ and }R_w$ (see section \@ref(sec:WildiMcLeroy)). 
+
+Taking for the value $R$ the "I-C" ratio computed with the raw data gives the same summary results.
+
+\begin{table}[!htb]
+\caption{\label{tab:mseIPI}Mean square revision error of asymmetric filters ($q=0,1,2$) computed by local polynomial on the Industrial production indices of the European Union.}
+\centering
+\begin{tabular}[t]{cccc}
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{2}{c}{Mean squared revision error} & \multicolumn{1}{c}{ } \\
+\cmidrule(l{3pt}r{3pt}){2-3}
+Method & 2007-2010 & 2003-2019 & $A_w+S_w+T_w+R_w$\\
+\midrule
+\addlinespace[0.3em]
+\multicolumn{4}{l}{$q=0$}\\
+\hspace{1em}LC & 1.54 & 0.855 & 1.543\\
+\hspace{1em}QL & 2.04 & 1.560 & 2.068\\
+\hspace{1em}CQ & 2.88 & 2.363 & 2.349\\
+\hspace{1em}DAF & 3.03 & 2.489 & 2.290\\
+\addlinespace[0.3em]
+\multicolumn{4}{l}{$q=1$}\\
+\hspace{1em}LC & 2.96 & 1.315 & 0.304\\
+\hspace{1em}QL & 2.31 & 1.074 & 0.247\\
+\hspace{1em}CQ & 2.62 & 1.342 & 0.660\\
+\hspace{1em}DAF & 2.72 & 1.437 & 0.840\\
+\addlinespace[0.3em]
+\multicolumn{4}{l}{$q=2$}\\
+\hspace{1em}LC & 6.78 & 2.774 & 0.040\\
+\hspace{1em}QL & 7.45 & 3.074 & 0.101\\
+\hspace{1em}CQ & 7.99 & 3.620 & 0.635\\
+\hspace{1em}DAF & 7.94 & 3.618 & 0.742\\
+\bottomrule
+\end{tabular}
+
+\emph{Note: the filters are computed with $h=6$ (13-terms symmetric filter) and $R=3.5$.}
+\end{table}
+
+\faArrowCircleRight{} All those results suggest focusing on LC and QL filters and to focus on asymmetric linear filters that preserve polynomial trends of degree equal or less than one.
+
+The results for the different kernels can also be visualized in an online application available at https://aqlt.shinyapps.io/FiltersProperties/.
+
+:::: {.summary_box data-latex="{Local polynomial filters}"}
+`r if (knitr::is_html_output()) '
+:::{#title}
+Summary — Local polynomial filters
+:::
+'`
+**Advantages**:
+
+- Simple models with an easy interpretation.
+
+- The asymmetric linear filter is independent of the date of estimation. 
+However, it depends on the data if we calibrate the filter with the "I-C" ratio.
+
+
+**Drawbacks**:
+
+- Timeliness is not controlled.
+::::

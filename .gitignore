@@ -4,3 +4,7 @@
 .Ruserdata
 .DS_Store
 *rsconnect
+comparison_filters/data_x11
+comparison_filters/lp
+comparison_filters/rkhs
+comparison_filters/train

@@ -1,0 +1,84 @@
+
+# Data-dependent filter {#sec:WildiMcLeroy}
+
+In @trilemmaWMR2019, the authors proposed a data-dependent approach to derive linear filters. They decompose the mean square revision error in a trilemma between three quantities: *accuracy*, *timeliness* and *smoothness*. 
+Contrary to @ch12HBSA, this decomposition implies that the values of the three criteria are comparable.
+
+Let:
+
+- $\left\{ x_{t}\right\}$ be our input time series;
+
+- $\left\{y_{t}\right\}$ the target signal, i.e. the result of a symmetric filter, and $\Gamma_s$, $\rho_s$ and $\varphi_s$ the associated frequency response, gain and phase shift functions.
+
+- $\left\{\hat y_{t}\right\}$ an estimation of $\left\{y_{t}\right\}$, i.e. the result of an asymmetric filter (when not all observations are available), and $\Gamma_\theta$, $\rho_\theta$ and $\varphi_\theta$ the associated frequency response, gain and phase shift functions.
+
+If we assume that $\left\{ x_{t}\right\}$ is weakly stationary with a continuous spectral density $h$, the mean square revision error, $\E{(y_{t}-\hat{y}_{t})^{2}}$, can be written as:
+\begin{equation}
+\E{(y_{t}-\hat{y}_{t})^{2}}=\frac{1}{2\pi}\int_{-\pi}^{\pi}\left|\Gamma_s(\omega)-{\Gamma_\theta}(\omega)\right|^{2}h(\omega)\ud\omega=\frac{1}{2\pi}\times2\times\int_{0}^{\pi}\left|\Gamma_s(\omega)-{\Gamma_\theta}(\omega)\right|^{2}h(\omega)\ud\omega
+(\#eq:msedef)
+\end{equation}
+This equality can also be generalized to non-stationary integrated process (for example imposing cointegration between both signals and using pseudo-spectral density, see @optimrtfWMR2013).
+
+We have:
+\begin{align}
+\left|\Gamma_s(\omega)-\Gamma_\theta(\omega)\right|^{2} & =\rho_s(\omega)^{2}+\rho_\theta(\omega)^{2}+2\rho_s(\lambda)\rho_\theta(\lambda)\left(1-\cos(\varphi_s(\omega)-\varphi_\theta(\omega)\right) \nonumber\\
+ & =\left(\rho_s(\omega)-\rho_\theta(\omega)\right)^{2}+4\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_s(\omega)-\varphi_\theta(\omega)}{2}\right)
+ (\#eq:msedecomp)
+\end{align}
+
+The interval $[0,\pi]$ is then splitted in two: the pass-band $[0,\omega_1]$ (the frequency interval that contains the target signal) and the stop-band  $[\omega_1,\pi]$.
+
+The mean squared error defined in equation \@ref(eq:msedef) can then be decomposed additively into four quantities:
+\begin{align*}
+Accuracy =A_w&= 2\int_0^{\omega_1}\left(\rho_s(\omega)-\rho_\theta(\omega)\right)^{2}h(\omega)\ud\omega\\
+Timeliness =T_w&= 8\int_0^{\omega_1}\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h(\omega)\ud\omega\\
+Smoothness =S_w&= 2\int_{\omega_1}^\pi\left(\rho_s(\omega)^{2}-\rho_\theta(\omega)\right)^{2}h(\omega)\ud\omega\\
+Residual =R_w&= 8\int_{\omega_1}^\pi\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h(\omega)\ud\omega\\
+\end{align*}
+
+:::: {.remarque data-latex=""}
+To have coherent definitions between all sections, the formulas of the four criteria slightly differ from the ones defined in @trilemmaWMR2019:
+
+- in this paper the interval integrations is $[0,\pi]$ rather than $[-\pi;\pi]$ (the integrals are then only multiplied by 2 because all the functions are even);
+
+- the pass-band interval is defined as the frequency interval that contains the target signals whereas in @trilemmaWMR2019 it depends on the gain function of the symmetric filer (pass-band$=\{\omega |\rho_s(\omega)\geq 0.5\}$).
+:::: 
+
+
+In general, the residual $R_w$ is small since $\rho_s(\omega)\rho_\theta(\omega)$ is close to 0 in the stop-band. 
+Moreover, user priorities are rarely concerned about the time-shift properties of components in the stop-band. 
+That's why, to derive linear filters the residual is not taken into account; and that's why the authors suggest minimizing a weighted sum of the first three indicators:
+$$
+\mathcal{M}(\vartheta_{1},\vartheta_{2})=\vartheta_{1}T_w(\theta)+\vartheta_{2}S_w(\theta)+(1-\vartheta_{1}-\vartheta_{2})A_w(\theta)
+$$
+One of the drawbacks of this method is that there is no guarantee that there is a unique solution. 
+
+
+In this paper we focus in non-parametric approaches to derive linear filters. 
+That's why this approach is not considered.
+However, the decomposition of the mean squared error gave useful indicators to compare linear filters because, in contrary the one presented in section \@ref(sec:GuggemosEtAl), their values can be easily interpreted and compared to each other.
+
+To have criteria that don't depend on the data (and the one defined in table \@ref(tab:QC)), we take for the symmetric filter the Henderson filter and we fix the spectral density to the one of a random walk:
+$$
+h_{RW}(x)=\frac{1}{2(1-\cos(x))}
+$$
+
+:::: {.summary_box data-latex="{Data-dependent filters}"}
+`r if (knitr::is_html_output()) '
+:::{#title}
+Summary — Data-dependent filters
+:::
+'`
+**Advantages**:
+
+- The values of the different criteria can be compared: the weights can be easily interpreted.
+
+**Drawbacks**:
+
+- Data-dependent filter: it depends on the symmetric filter, the data and the date of estimation.
+
+- Some optimization problems might occur (several minimum, etc.).
+::::
+
+We could also use a non-parametric approach to build asymmetric using $h_{RW}$ for the spectral density of the series. 
+However, due to a lack of time, this option is not considered in this study.

@@ -1,0 +1,155 @@
+%début contraintes ensae
+\usepackage{pdfpages, setspace, mathptmx} %times roman
+\usepackage{textpos}%pour textblock
+\onehalfspacing 
+\definecolor{rougeENSAE}{RGB}{188, 24, 39}
+
+\makeatletter
+%CREDITS : @antuki
+\def\@maketitle{%
+  \clearpage
+ \thispagestyle{empty}
+
+\begin{textblock*}{\textwidth}(-7cm,-3.cm)
+\begin{center}
+\includegraphics[height=3cm]{img/900px-LOGO-ENSAE.png}
+\end{center}
+\end{textblock*}
+
+\begin{minipage}{0.4\textwidth}
+  \begin{flushleft} \large
+    \textbf{Alain \textsc{Quartier-la-Tente} \vspace{8.75mm} }
+  \end{flushleft}
+\end{minipage}
+\begin{minipage}{0.6\textwidth}
+  \begin{flushright} 
+  \large{
+    \textbf{ENSAE 2\textsuperscript{ème} année\\}
+  }     
+  \small
+    \textbf{ 
+        \textit{Stage d'application\\
+        Année scolaire 2019 - 2020}
+    }
+  \end{flushright}
+\end{minipage}
+
+\vspace*{5cm}
+
+\begin{center}
+    \fbox{\parbox{0.9\textwidth}{
+        \begin{huge}\begin{center}
+        \textbf{Real-time detection of turning points with linear filters}\\
+        
+        %\textbf{Détection en temps réel des points de retournement}\\
+        \end{center}\end{huge}}}
+\end{center}
+
+\vfill
+    
+\begin{minipage}{0.5\textwidth}
+    \begin{flushleft} \large 
+    \textbf{Banque Nationale de Belgique\\
+        Cellule Recherche et Développement
+    }
+  \end{flushleft}
+\end{minipage} 
+\begin{minipage}{0.5\textwidth}
+  \begin{flushright} \large
+    \textbf{
+        Maître de stage : Jean \textsc{Palate}\\
+        08/06/2020 - 14/08/2020
+    }
+  \end{flushright}
+\end{minipage}    
+
+\vspace*{1cm}
+
+
+\textcolor{rougeENSAE}{\rule{10mm}{1.5mm}}
+
+\scriptsize
+\textbf{ENSAE Paris}\newline TSA 26644
+\rightline{\href{www.ensae.fr}{\textcolor{rougeENSAE}{\textbf{www.ensae.fr}}}$\quad \qquad \qquad$}
+
+Service des relations entreprises et des stages\newline
+5, avenue Henry Le Chatelier -- 91764 PALAISEAU CEDEX -- FRANCE -- Tél : +33 (0)1 70 26 67 39 -- Courriel : stage\symbol{64}ensae.fr
+
+\normalsize
+
+\clearpage
+\setcounter{page}{0}
+}
+
+\makeatother% cinsérer page de garde
+
+\usepackage{stmaryrd}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{animate, dsfont, here, xspace}
+%\usepackage{tikz}       
+\usepackage{tikz,pgfplots}
+ \pgfplotsset{compat=1.17}
+%\includepdf[fitpaper=true, pages=-]{img/pdg.pdf}
+
+
+\DeclareMathOperator{\e}{e}
+\renewcommand{\P}{\mathds{P}} %Apparement \P existe déjà ?
+\newcommand\N{\mathds{N}}
+\newcommand\R{\mathds{R}}
+%\newcommand\C{\mathds{C}}
+%\newcommand\Z{\mathds{Z}}
+
+
+\newcommand\1{\mathds{1}}
+\newcommand{\E}[2][]{{\mathds{E}}_{#1}
+  \def\temp{#2}\ifx\temp\empty
+  \else
+    \left[#2\right]
+  \fi
+}
+\newcommand{\V}[2][]{{\mathds{V}}_{#1}
+  \def\temp{#2}\ifx\temp\empty
+  \else
+    \left[#2\right]
+  \fi
+}
+\newcommand\ud{\,\mathrm{d}}
+
+% blocks
+\usepackage{environ}
+\usepackage[tikz]{bclogo}
+
+\tikzstyle{titlestyle} =[draw=black!80,fill=black!20, text=black,
+ right=10pt, rounded corners]
+\mdfdefinestyle{symmaryboxstyle}{
+	linecolor=black!80, backgroundcolor = black!5,
+	skipabove=\baselineskip, innertopmargin=\baselineskip,
+	innerbottommargin=\baselineskip,
+	userdefinedwidth=\textwidth,
+	middlelinewidth=1.2pt, roundcorner=5pt,
+	skipabove={\dimexpr0.5\baselineskip+\topskip\relax},
+	frametitleaboveskip=\dimexpr-\ht\strutbox\relax,
+	innerlinewidth=0pt,
+}
+\NewEnviron{summary_box}[2][true]{%
+\begin{mdframed}[style=symmaryboxstyle,
+nobreak=#1,
+frametitle={%
+      \tikz[baseline=(current bounding box.east),outer sep=0pt]
+      \node[titlestyle,anchor=east]
+    {Summary --- #2};}
+]
+\vspace{-0.5em}
+\BODY
+\end{mdframed}
+}
+
+\usepackage{amsthm}
+%\theoremstyle{remark}
+\newtheorem*{remarque}{Remark}
+
+\usepackage{mathrsfs}
+\usepackage{fontawesome5}
+
+

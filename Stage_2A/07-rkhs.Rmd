@@ -1,0 +1,108 @@
+
+# Asymmetric filters and Reproducing Kernel Hilbert Space {#sec:Dagum}
+
+Classical non-parametric filters (Henderson, LOESS, Hodrick-Prescott) can be characterized using the Reproducing Kernel Hilbert Space (RKHS) methodology, as described by @dagumbianconcini2008.
+It allows them to develop to derive linear filters and associated asymmetric filters.
+
+
+A RKHS is a Hilbert space characterized by a kernel that reproduces, via an inner product defined by a density function $f_0(t)$, every function of the space. 
+Therefore, a kernel estimator $K_p$ of order $p$ (i.e.: that reproduce without distortion a polynomial trend of degree $p-1$) can be decomposed into the product of a reproducing kernel $R_{p-1}$, belonging to the space of polynomials of degree $p-1$, and a probability density function $f_0$.
+
+For any sequence $\left(P_{i}\right)_{0\leq i\leq p-1}$ of orthonormal polynomials in $\mathbb{L}^{2}(f_{0})$^[
+$\mathbb{L}^{2}(f_{0})$ is the Hilbert space defined by the inner product:
+$$
+\left\langle U(t),V(t)\right\rangle =\E{U(t)V(t)}=\int_{\R}U(t)V(t)f_{0}(t)\ud t
+$$
+], the kernel estimator $K_p$ is defined by:
+$$
+K_{p}(t)=\sum_{i=0}^{p-1}P_{i}(t)P_{i}(0)f_{0}(t)
+$$
+The weights of a symmetric filter are then derived with:
+$$
+\forall j\in\left\llbracket -h,h\right\rrbracket\::\: w_{j}=\frac{K_p(j/b)}{\sum_{i=-h}^{^h}K_p(i/b)}
+$$
+where $b$ is a time-invariant global bandwidth parameter.
+
+The density $f_0$ corresponds to the continuous versions of the kernel defined in \@ref(sec:kernels). 
+For example, the biweight function is $f_{0B}(t)=(15/16)(1-t^2)^2,t\in [-1,1]$.
+The local polynomial filter obtained with the biweight kernel is then obtained using the bandwidth $b=h+1$.
+
+The goal of @dagumbianconcini2008 is to derive asymmetric filters from the Henderson symmetric filter, therefore the ideal kernel function would be the Henderson one. 
+However, as shown in section \@ref(sec:kernels), the Henderson density is a function of the bandwidth and needs to be calculated any time $m$ changes (as its corresponding orthonormal polynomial). 
+That's why the authors use the biweight kernel to approximate the Henderson kernel (for $h\geq 24$ they suggest to consider the triweight kernel).
+
+The asymmetric weighted are obtained adapting the kernels to the length of the asymmetric filters:
+$$
+\forall j\in\left\llbracket -h,q\right\rrbracket\::\: w_{a,j}=\frac{K_p(j/b)}{\sum_{i=-h}^{^q}K_p(i/b)}
+$$
+With $b=h+1$, @proietti2008 show that we obtain the direct asymmetric filters (DAF).
+
+In @dagumbianconcini2015, the authors suggest performing an optimal bandwidth selection (parameter $b$), decomposing the mean squared revision error as in equation \@ref(eq:msedecomp) but with a uniform spectral density ($h(\omega)=1$).
+The bandwidth can then be chosen to minimize the mean squared revision error, the phase shift, etc. 
+The following bandwidth selection are studied:
+\begin{align*}
+b_{q,G}&=\underset{b_q\in]h;2 h+1]}{\min}
+\sqrt{2\int_{0}^{\pi}
+\left(\rho_s(\omega)-\rho_\theta(\omega)\right)^{2}\ud \omega
+}\\
+b_{q,\gamma}&=\underset{b_q\in]h;2 h+1]}{\min}
+\sqrt{2\int_{0}^{\pi}
+\lvert \Gamma_s(\omega)-\Gamma_\theta(\omega)\rvert^2\ud \omega
+} \\
+b_{q,\varphi}&=\underset{b_q\in]h;2 h+1]}{\min}
+8\int_{0}^{2\pi/12}
+\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)\ud \omega
+\end{align*}
+
+One of the drawbacks of the optimal bandwidth selection is that there is no guarantee that there is a unique solution. 
+
+:::: {.remarque data-latex=""}
+To have coherent definitions between all sections, the formulas of $b_{q,G}$, $b_{q,\gamma}$ and $b_{q,\varphi}$ slightly differ from the ones defined in @dagumbianconcini2015 where:
+
+- $b_{q,\varphi}$ is defined as 
+$$
+b_{q,\varphi}=\underset{b_q\in]h;2 h+1]}{\min}
+\sqrt{2\int_{\Omega_S}
+\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)\ud \omega}
+$$
+
+With $\Omega_S=[0,2\pi/36]$ the frequency domain associated to cycles of 16 months or longer.
+
+- a different formula is used for the frequency response function ($\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{2\pi i \omega k}$): it only changes the interval integration.
+::::
+
+
+The table \@ref(tab:criteriarkhs) shows the quality criteria of the RKHS filters.
+Even if the symmetric filter preserves quadratic trends, this is not the case of the asymmetric filters: they only preserve constant trends.
+The more data is available (i.e.: $q$ increases), the less the asymmetric filters distort polynomial trends (for example, for $q=2$, $b_l\simeq0$ for $b_{q,G}$).
+
+```{r criteriarkhs, echo = FALSE}
+rkhs_diagnostics <- readRDS("data/rkhs_diagnostics.RDS")
+title <- "Quality criteria of asymmetric filters ($q=0,1,2$) computed by the RKHS methodology $h=6$."
+groupement <- table(rkhs_diagnostics[,1])
+rkhs_diagnostics[,-1] %>% 
+  kable(format.args = list(digits = 3), align = "c", booktabs = T, row.names = FALSE,
+        escape = FALSE,caption = title) %>% 
+  kable_styling(latex_options=c(#"striped", 
+                                "scale_down", "hold_position")) %>%
+  pack_rows(index = groupement, escape = FALSE)
+```
+
+:::: {.summary_box data-latex="{RKHS filters}"}
+`r if (knitr::is_html_output()) '
+:::{#title}
+Summary — RKHS filters
+:::
+'`
+**Advantages**:
+
+- The asymmetric linear filter is independent of the data and of the date of estimation.
+
+- Filters to apply to irregular frequency series (for example with a lot of missing values) can easily be computed.
+
+**Drawbacks**:
+
+- The linear filters don't preserve polynomial trends of degree 1 or more.
+
+- Some optimization problems might occur (several minimum, etc.).
+::::

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="english" xml:lang="english">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Introduction | Real-time detection of turning points with linear filters</title>
+  <meta name="description" content="Stage 2A de l’Ensae d’Alain Quartier-la-Tente" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Introduction | Real-time detection of turning points with linear filters" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Stage 2A de l’Ensae d’Alain Quartier-la-Tente" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Introduction | Real-time detection of turning points with linear filters" />
+  
+  <meta name="twitter:description" content="Stage 2A de l’Ensae d’Alain Quartier-la-Tente" />
+  
+
+<meta name="author" content="Alain Quartier-la-Tente" />
+
+
+<meta name="date" content="2021-07-27" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="sec-SAtoTCE.html"/>
+<script src="libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Stage 2A Ensae AQLT</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Abstracts</a></li>
+<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="chapter" data-level="1" data-path="sec-SAtoTCE.html"><a href="sec-SAtoTCE.html"><i class="fa fa-check"></i><b>1</b> From seasonal adjustment to trend-cycle estimation</a></li>
+<li class="chapter" data-level="2" data-path="sec-propMM.html"><a href="sec-propMM.html"><i class="fa fa-check"></i><b>2</b> Moving average and filters</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="sec-propMM.html"><a href="sec-propMM.html#gain-and-phase-shift-functions"><i class="fa fa-check"></i><b>2.1</b> Gain and phase shift functions</a></li>
+<li class="chapter" data-level="2.2" data-path="sec-propMM.html"><a href="sec-propMM.html#desirable-properties-of-a-moving-average"><i class="fa fa-check"></i><b>2.2</b> Desirable properties of a moving average</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="sec-propMM.html"><a href="sec-propMM.html#trend-preservation"><i class="fa fa-check"></i><b>2.2.1</b> Trend preservation</a></li>
+<li class="chapter" data-level="2.2.2" data-path="sec-propMM.html"><a href="sec-propMM.html#variance-reduction"><i class="fa fa-check"></i><b>2.2.2</b> Variance reduction</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="sec-propMM.html"><a href="sec-propMM.html#defAsymProb"><i class="fa fa-check"></i><b>2.3</b> Real-time estimation and asymmetric moving average</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html"><i class="fa fa-check"></i><b>3</b> Local polynomial filters</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#sec:kernels"><i class="fa fa-check"></i><b>3.1</b> Different kernels</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#sec:sympolyfilter"><i class="fa fa-check"></i><b>3.1.1</b> Specific symmetric filters</a></li>
+<li class="chapter" data-level="3.1.2" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#analysis-of-symmetric-filters"><i class="fa fa-check"></i><b>3.1.2</b> Analysis of symmetric filters</a></li>
+<li class="chapter" data-level="3.1.3" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#gain-functions"><i class="fa fa-check"></i><b>3.1.3</b> Gain functions</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#asymmetric-filters"><i class="fa fa-check"></i><b>3.2</b> Asymmetric filters</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#direct-asymmetric-filters-daf"><i class="fa fa-check"></i><b>3.2.1</b> Direct asymmetric filters (DAF)</a></li>
+<li class="chapter" data-level="3.2.2" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#subsec:lppasymf"><i class="fa fa-check"></i><b>3.2.2</b> General class of asymmetric filters</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="sec-GuggemosEtAl.html"><a href="sec-GuggemosEtAl.html"><i class="fa fa-check"></i><b>4</b> General optimization problem: FST filters</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="sec-GuggemosEtAl.html"><a href="sec-GuggemosEtAl.html#description-of-the-approach"><i class="fa fa-check"></i><b>4.1</b> Description of the approach</a></li>
+<li class="chapter" data-level="4.2" data-path="sec-GuggemosEtAl.html"><a href="sec-GuggemosEtAl.html#extension-with-the-revision-criterion"><i class="fa fa-check"></i><b>4.2</b> Extension with the revision criterion</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="sec-WildiMcLeroy.html"><a href="sec-WildiMcLeroy.html"><i class="fa fa-check"></i><b>5</b> Data-dependent filter</a></li>
+<li class="chapter" data-level="6" data-path="sec-Dagum.html"><a href="sec-Dagum.html"><i class="fa fa-check"></i><b>6</b> Asymmetric filters and Reproducing Kernel Hilbert Space</a></li>
+<li class="chapter" data-level="7" data-path="sec-comparison.html"><a href="sec-comparison.html"><i class="fa fa-check"></i><b>7</b> Comparison of the different filters</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="sec-comparison.html"><a href="sec-comparison.html#comparison-with-the-fst-approach"><i class="fa fa-check"></i><b>7.1</b> Comparison with the FST approach</a></li>
+<li class="chapter" data-level="7.2" data-path="sec-comparison.html"><a href="sec-comparison.html#illustration-with-an-example"><i class="fa fa-check"></i><b>7.2</b> Illustration with an example</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i>Conclusion</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Real-time detection of turning points with linear filters</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<!-- <script type="text/x-mathjax-config"> -->
+    <!-- MathJax.Hub.Config({ -->
+            <!--   TeX: { -->
+                    <!--     Macros: { -->
+                            <!--       NN: "{\\mathbb{N}}", -->
+                            <!--       ZZ: "{\\mathbb{Z}}", -->
+                            <!--       QQ: "{\\mathbb{Q}}", -->
+                            <!--       RR: "{\\mathbb{R}}", -->
+                            <!--       shiftset: "{\\mathcal{D}}", -->
+                            <!--       dx: ["{\\mathrm{d}^{#1}\\mspace{-1mu}\\mathord{#2}}", 2, ""], -->
+                            <!--       indic: "{\\unicode{x1D7D9}}", -->
+                            <!--       prob: "\\mathop{\\mathbb{P}}", -->
+                            <!--       esp: "\\mathop{\\mathbb{E}}", -->
+                            <!--       var: "\\mathop{\\mathbb{V}\\text{ar}}", -->
+                            <!--       cov: "\\mathop{\\mathbb{C}\\text{ov}}", -->
+                            <!--       PP: ["{\\prob\\left({#1}\\right)}", 1], -->
+                            <!--       EE: ["{\\esp\\left[{#1}\\right]}", 1], -->
+                            <!--       VV: ["{\\var\\left[{#1}\\right]}", 1], -->
+                            <!--       CC: ["{\\cov\\left[{#1}\\right]}", 1], -->
+                            <!--       normal: ["{\\mathcal{N}\\left({#1},{#2}\\right)}", 2], -->
+                            <!--       ou: ["{#1}_{\\text{ou}}", 1], -->
+                            <!--       oui: ["{#1}_{\\text{ou},#2}", 2], -->
+                            <!--       pv: "{\\mathfrak{p}}", -->
+                            <!--       qv: "{\\mathfrak{q}}", -->
+                            <!--       zs: "{\\mathfrak{z}}", -->
+                            <!--       ts: "{\\mathfrak{t}}", -->
+                            <!--       sign: "{\\mathfrak{s}}", -->
+                            <!--       shifts: "{\\delta}", -->
+                            <!--       optim: "{\\beta}", -->
+                            <!--       param: "{\\theta}", -->
+                            <!--       unif: ["{\\mathcal{U}\\left({#1}\\right)}", 1], -->
+                            <!--       argmin: "\\mathop{\\mathrm{argmin}}", -->
+                            <!--       diag: "\\mathop{\\mathrm{Diag}}", -->
+                            <!--       rang: "\\mathop{\\mathrm{rang}}", -->
+                            <!--       pa: "\\mathop{\\mathrm{pa}}", -->
+                            <!--       mrca: "\\mathop{\\mathrm{mrca}}", -->
+                            <!--       desc: "\\mathop{\\mathrm{desc}}", -->
+                            <!--       warning: ["\\color{red}{{#1}}", 1] -->
+                            <!--     } -->
+                    <!--   } -->
+            <!-- }); -->
+    <!-- </script> -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    TeX: {Macros: {
+            E: "{\\mathbb{E}}"
+        },
+        Augment: {
+        Definitions: {
+          delimiter: {
+            "\\llbracket": '\u27E6',
+            '\\rrbracket': '\u27E7'
+          }}
+        }}
+    });
+</script>
+    <body>
+    <div style="display:none" aria-hidden="true">
+    \(
+        \newcommand\R{\mathbb{R}}
+        \newcommand\Z{\mathbb{Z}}
+        \newcommand\LL{\mathbb{L}}
+        \newcommand{\E}[1]{\mathbb{E}\left[#1\right]}
+        \newcommand{\V}[1]{\mathbb{V}\left[#1\right]}
+        \newcommand\1{\mathbb{1}}
+        \newcommand\N{\mathcal{N}}
+        \newcommand{\transp}[1]{{}^t\!#1}
+        \newcommand\ud{\,\mathrm{d}}
+        \DeclareMathOperator*{\argmax}{argmax}
+        \DeclareMathOperator*{\argmin}{argmin}
+        \DeclareMathOperator{\e}{e}
+        \DeclareMathOperator{\Cov}{Cov}
+    \)
+    </div>
+    </body>
+            
+<div id="introduction" class="section level1 unnumbered">
+<h1>Introduction</h1>
+<p>With the COVID-19 crisis, one of the major questions on the economy was when it will recover.
+It illustrates that business cycle analysis, and in particular the early detection of turning points in a series, is a major topic in the analysis of economic outlook.</p>
+<p>Moving averages, or linear filters, are ubiquitous in business cycle extraction and seasonal adjustment methods<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.
+For example, the X-12ARIMA seasonal adjustment method uses Henderson moving averages and composite moving averages to estimate the main components of a time series, while TRAMO-SEATS uses Wiener-Kolmogorov filters.
+Symmetric filters are applied to the center of the series, but when it comes to estimate the most recent points, all of these methods must rely on asymmetric filters.
+For example, even if X-12ARIMA or TRAMO-SEATS apply symmetrical averages to the forecasts obtained from an ARIMA model of the series, in reality it consists in applying asymmetric filters at the end of the series, because the predicted values are linear combinations of past values.</p>
+<p>If the classic asymmetric moving averages have good properties regarding the future revisions induced by the process<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>, they create phase shifts that impact the real-time estimation of turning points, introducing time delay in the detection.</p>
+<p>This report aims to describe and compare the recent approaches around trend-cycle extraction and asymmetric filters: local polynomial filters, methods based on an optimization of filters properties and filters based on Reproducing Kernel Hilbert Space.
+Due to the link between seasonal adjustment and trend-cycle extraction (section <a href="sec-SAtoTCE.html#sec:SAtoTCE">1</a>), we focus on non-parametric methods that could be included in X-12ARIMA.
+After a description of the general properties of a linear filter (section <a href="sec-propMM.html#sec:propMM">2</a>), we describe the linear filters methods developed by <span class="citation"><a href="#ref-proietti2008" role="doc-biblioref">Proietti and Luati</a> (<a href="#ref-proietti2008" role="doc-biblioref">2008</a>)</span>, <span class="citation"><a href="#ref-ch15HBSA" role="doc-biblioref">Grun-Rehomme, Guggemos, and Ladiray</a> (<a href="#ref-ch15HBSA" role="doc-biblioref">2018</a>)</span>, <span class="citation"><a href="#ref-trilemmaWMR2019" role="doc-biblioref">Wildi and McElroy</a> (<a href="#ref-trilemmaWMR2019" role="doc-biblioref">2019</a>)</span> and <span class="citation"><a href="#ref-dagumbianconcini2008" role="doc-biblioref">Dagum and Bianconcini</a> (<a href="#ref-dagumbianconcini2008" role="doc-biblioref">2008</a>)</span> (sections <a href="sec-lppfilters.html#sec:lppfilters">3</a> to <a href="sec-Dagum.html#sec:Dagum">6</a>).
+Finally, in section <a href="sec-comparison.html#sec:comparison">7</a>, we compare the different methods, first theoretically and then applying them to a real time series.</p>
+<div style="page-break-after: always;"></div>
+
+</div>
+<h3>References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-dagumbianconcini2008" class="csl-entry">
+Dagum, Estela Bee, and Silvia Bianconcini. 2008. <span>“<span class="nocase">The Henderson Smoother in Reproducing Kernel Hilbert Space</span>.”</span> <em>Journal of Business &amp; Economic Statistics</em> 26: 536–45. <a href="https://ideas.repec.org/a/bes/jnlbes/v26y2008p536-545.html">https://ideas.repec.org/a/bes/jnlbes/v26y2008p536-545.html</a>.
+</div>
+<div id="ref-ch15HBSA" class="csl-entry">
+Grun-Rehomme, Michel, Fabien Guggemos, and Dominique Ladiray. 2018. <span>“Asymmetric Moving Averages Minimizing Phase Shift.”</span> <em>Handbook on Seasonal Adjustment</em>. <a href="https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-001">ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-001</a>.
+</div>
+<div id="ref-pierce1980SA" class="csl-entry">
+Pierce, David A. 1980. <span>“<span class="nocase">Data revisions with moving average seasonal adjustment procedures</span>.”</span> <em>Journal of Econometrics</em> 14 (1): 95–114. <a href="https://ideas.repec.org/a/eee/econom/v14y1980i1p95-114.html">https://ideas.repec.org/a/eee/econom/v14y1980i1p95-114.html</a>.
+</div>
+<div id="ref-proietti2008" class="csl-entry">
+Proietti, Tommaso, and Alessandra Luati. 2008. <span>“Real Time Estimation in Local Polynomial Regression, with Application to Trend-Cycle Analysis.”</span> <em>Ann. Appl. Stat.</em> 2 (4): 1523–53. <a href="https://doi.org/10.1214/08-AOAS195">https://doi.org/10.1214/08-AOAS195</a>.
+</div>
+<div id="ref-trilemmaWMR2019" class="csl-entry">
+Wildi, Marc, and Tucker McElroy. 2019. <span>“The Trilemma Between Accuracy, Timeliness and Smoothness in Real-Time Signal Extraction.”</span> <em>International Journal of Forecasting</em> 35 (3): 1072–84. <a href="https://EconPapers.repec.org/RePEc:eee:intfor:v:35:y:2019:i:3:p:1072-1084">https://EconPapers.repec.org/RePEc:eee:intfor:v:35:y:2019:i:3:p:1072-1084</a>.
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="1">
+<li id="fn1"><p>
+A moving average is a statistical method that consists in applying a rolling weighted mean to a times series: for each date it computes a weighted mean of <span class="math inline">\(p\)</span> past points and <span class="math inline">\(q\)</span> future points where <span class="math inline">\(p,q\geq0\)</span> depends on the moving average.<a href="introduction.html#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>See for example <span class="citation"><a href="#ref-pierce1980SA" role="doc-biblioref">Pierce</a> (<a href="#ref-pierce1980SA" role="doc-biblioref">1980</a>)</span>.<a href="introduction.html#fnref2" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="sec-SAtoTCE.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["Stage_2A.pdf", "Stage_2A.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

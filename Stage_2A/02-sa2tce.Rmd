@@ -1,0 +1,42 @@
+# From seasonal adjustment to trend-cycle estimation {#sec:SAtoTCE}
+
+More and more infra-annual statistics are produced, especially by national institutes, to analyze the short-term evolution of economies. 
+It is for example the case of the gross domestic product (GDP), unemployment rate, household consumption of goods and industrial production indices.
+However, most of those time series are affected by seasonal and trading days effects. 
+A seasonal effect is an effect that occurs in the same calendar month with similar magnitude and direction from year to year. 
+For instance, automobile production is usually lower during summer, due to holidays, and chocolate sales are usually higher in December, due to Christmas. 
+Trading days effect appears when a time series is affected by calendar month’s weekday composition. 
+For example, retail sales are usually higher on Saturday, thus it is likely that they will be higher in months with a surplus of weekend days.
+
+Seasonal and trading days effects can hamper the analysis of infra-annual movements of a time series or the spatial comparison. 
+This is why time series are often seasonally and trading days adjusted, where seasonal adjustment is the process of removing the effects of seasonal and trading day fluctuations.
+
+To perform seasonal adjustment, most of the algorithm decompose the data in several unknown components: trend-cycle, seasonal and irregular component.
+In X-12ARIMA and TRAMO-SEATS (the most popular seasonal adjustment methods), prior to the decomposition, the initial series is pre-adjustment from deterministic effects (outliers, calendar effects).
+Thus, the estimation of trend-cycle component is technically linked to the seasonal component.
+
+Moreover, since the trend-cycle extraction methods are applied to seasonally adjusted data, both problems cannot be separated.
+This link also explains that in this paper, all the methods used are implemented in the core libraries of JDemetra+ ^[See https://github.com/jdemetra/jdemetra-core.], the seasonal adjustment software recommended by Eurostat. 
+An \faIcon{r-project} interface is implemented in the package `rjdfilters`^[Available at https://github.com/palatej/rjdfilters.] and was developed during this internship.
+
+In the literature, different approaches where considered for trend-cycle extraction^[See for example @alexandrov2012TEreview for a review of some modern approaches to trend extraction.]. 
+Among the most popular, we can cite the Model-Based Approach and the non-parametric extraction methods:
+
+- The Model-Based Approach assumes the specification of a stochastic time series model for the trend (ARIMA model, state space model, etc.) and the estimates is obtained by minimizing a penalty function, generally the mean squared error.
+This is for example the case of the Kalman filter, the Wiener-Kolmogorov filter (used in TRAMO-SEATS) and the Direct Filter Approach of @trilemmaWMR2019 (section \@ref(sec:WildiMcLeroy)).
+
+- The non-parametric extraction methods do not assume that the structure of a model is fixed and can be easily applied to any time series. 
+This is for example the case of the Henderson and Musgrave filters (used in X-12ARIMA).
+Classical methods can be seen as local polynomial regression, approach generalized by @proietti2008 (section \@ref(sec:lppfilters)).  
+Non-parametric estimators can also be reproduced by exploiting Reproducing Kernel Hilbert Space (RKHS) methodology, like it is done by 
+@dagumbianconcini2008 (section \@ref(sec:Dagum)). 
+
+@ch15HBSA (section \@ref(sec:GuggemosEtAl)) drawn a general unifying approach that allows a theoretical link between Musgrave non-parametric filter and the Direct Filter Approach.
+They also proposed a global procedure to build asymmetric moving averages, that allows to minimize the phase shift effects and which is described in this report.
+
+
+In this paper we focus methods that could be implemented in X-12ARIMA. 
+To maintain consistency with the non-parametric approach of X-12ARIMA, we focus on non-parametric extraction methods. 
+That's why neither the filters of the approach of  @trilemmaWMR2019 (section \@ref(sec:WildiMcLeroy)), nor other model based approaches  are used in this report.
+
+Furthermore, for simplicity the data used is seasonally adjusted: the study should be extended to see the impact on the overall seasonal adjustment process.

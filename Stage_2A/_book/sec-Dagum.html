@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="english" xml:lang="english">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Section 6 Asymmetric filters and Reproducing Kernel Hilbert Space | Real-time detection of turning points with linear filters</title>
+  <meta name="description" content="Stage 2A de l’Ensae d’Alain Quartier-la-Tente" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Section 6 Asymmetric filters and Reproducing Kernel Hilbert Space | Real-time detection of turning points with linear filters" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Stage 2A de l’Ensae d’Alain Quartier-la-Tente" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Section 6 Asymmetric filters and Reproducing Kernel Hilbert Space | Real-time detection of turning points with linear filters" />
+  
+  <meta name="twitter:description" content="Stage 2A de l’Ensae d’Alain Quartier-la-Tente" />
+  
+
+<meta name="author" content="Alain Quartier-la-Tente" />
+
+
+<meta name="date" content="2021-07-27" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="sec-WildiMcLeroy.html"/>
+<link rel="next" href="sec-comparison.html"/>
+<script src="libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Stage 2A Ensae AQLT</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Abstracts</a></li>
+<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="chapter" data-level="1" data-path="sec-SAtoTCE.html"><a href="sec-SAtoTCE.html"><i class="fa fa-check"></i><b>1</b> From seasonal adjustment to trend-cycle estimation</a></li>
+<li class="chapter" data-level="2" data-path="sec-propMM.html"><a href="sec-propMM.html"><i class="fa fa-check"></i><b>2</b> Moving average and filters</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="sec-propMM.html"><a href="sec-propMM.html#gain-and-phase-shift-functions"><i class="fa fa-check"></i><b>2.1</b> Gain and phase shift functions</a></li>
+<li class="chapter" data-level="2.2" data-path="sec-propMM.html"><a href="sec-propMM.html#desirable-properties-of-a-moving-average"><i class="fa fa-check"></i><b>2.2</b> Desirable properties of a moving average</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="sec-propMM.html"><a href="sec-propMM.html#trend-preservation"><i class="fa fa-check"></i><b>2.2.1</b> Trend preservation</a></li>
+<li class="chapter" data-level="2.2.2" data-path="sec-propMM.html"><a href="sec-propMM.html#variance-reduction"><i class="fa fa-check"></i><b>2.2.2</b> Variance reduction</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="sec-propMM.html"><a href="sec-propMM.html#defAsymProb"><i class="fa fa-check"></i><b>2.3</b> Real-time estimation and asymmetric moving average</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html"><i class="fa fa-check"></i><b>3</b> Local polynomial filters</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#sec:kernels"><i class="fa fa-check"></i><b>3.1</b> Different kernels</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#sec:sympolyfilter"><i class="fa fa-check"></i><b>3.1.1</b> Specific symmetric filters</a></li>
+<li class="chapter" data-level="3.1.2" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#analysis-of-symmetric-filters"><i class="fa fa-check"></i><b>3.1.2</b> Analysis of symmetric filters</a></li>
+<li class="chapter" data-level="3.1.3" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#gain-functions"><i class="fa fa-check"></i><b>3.1.3</b> Gain functions</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#asymmetric-filters"><i class="fa fa-check"></i><b>3.2</b> Asymmetric filters</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#direct-asymmetric-filters-daf"><i class="fa fa-check"></i><b>3.2.1</b> Direct asymmetric filters (DAF)</a></li>
+<li class="chapter" data-level="3.2.2" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#subsec:lppasymf"><i class="fa fa-check"></i><b>3.2.2</b> General class of asymmetric filters</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="sec-GuggemosEtAl.html"><a href="sec-GuggemosEtAl.html"><i class="fa fa-check"></i><b>4</b> General optimization problem: FST filters</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="sec-GuggemosEtAl.html"><a href="sec-GuggemosEtAl.html#description-of-the-approach"><i class="fa fa-check"></i><b>4.1</b> Description of the approach</a></li>
+<li class="chapter" data-level="4.2" data-path="sec-GuggemosEtAl.html"><a href="sec-GuggemosEtAl.html#extension-with-the-revision-criterion"><i class="fa fa-check"></i><b>4.2</b> Extension with the revision criterion</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="sec-WildiMcLeroy.html"><a href="sec-WildiMcLeroy.html"><i class="fa fa-check"></i><b>5</b> Data-dependent filter</a></li>
+<li class="chapter" data-level="6" data-path="sec-Dagum.html"><a href="sec-Dagum.html"><i class="fa fa-check"></i><b>6</b> Asymmetric filters and Reproducing Kernel Hilbert Space</a></li>
+<li class="chapter" data-level="7" data-path="sec-comparison.html"><a href="sec-comparison.html"><i class="fa fa-check"></i><b>7</b> Comparison of the different filters</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="sec-comparison.html"><a href="sec-comparison.html#comparison-with-the-fst-approach"><i class="fa fa-check"></i><b>7.1</b> Comparison with the FST approach</a></li>
+<li class="chapter" data-level="7.2" data-path="sec-comparison.html"><a href="sec-comparison.html#illustration-with-an-example"><i class="fa fa-check"></i><b>7.2</b> Illustration with an example</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i>Conclusion</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Real-time detection of turning points with linear filters</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<!-- <script type="text/x-mathjax-config"> -->
+    <!-- MathJax.Hub.Config({ -->
+            <!--   TeX: { -->
+                    <!--     Macros: { -->
+                            <!--       NN: "{\\mathbb{N}}", -->
+                            <!--       ZZ: "{\\mathbb{Z}}", -->
+                            <!--       QQ: "{\\mathbb{Q}}", -->
+                            <!--       RR: "{\\mathbb{R}}", -->
+                            <!--       shiftset: "{\\mathcal{D}}", -->
+                            <!--       dx: ["{\\mathrm{d}^{#1}\\mspace{-1mu}\\mathord{#2}}", 2, ""], -->
+                            <!--       indic: "{\\unicode{x1D7D9}}", -->
+                            <!--       prob: "\\mathop{\\mathbb{P}}", -->
+                            <!--       esp: "\\mathop{\\mathbb{E}}", -->
+                            <!--       var: "\\mathop{\\mathbb{V}\\text{ar}}", -->
+                            <!--       cov: "\\mathop{\\mathbb{C}\\text{ov}}", -->
+                            <!--       PP: ["{\\prob\\left({#1}\\right)}", 1], -->
+                            <!--       EE: ["{\\esp\\left[{#1}\\right]}", 1], -->
+                            <!--       VV: ["{\\var\\left[{#1}\\right]}", 1], -->
+                            <!--       CC: ["{\\cov\\left[{#1}\\right]}", 1], -->
+                            <!--       normal: ["{\\mathcal{N}\\left({#1},{#2}\\right)}", 2], -->
+                            <!--       ou: ["{#1}_{\\text{ou}}", 1], -->
+                            <!--       oui: ["{#1}_{\\text{ou},#2}", 2], -->
+                            <!--       pv: "{\\mathfrak{p}}", -->
+                            <!--       qv: "{\\mathfrak{q}}", -->
+                            <!--       zs: "{\\mathfrak{z}}", -->
+                            <!--       ts: "{\\mathfrak{t}}", -->
+                            <!--       sign: "{\\mathfrak{s}}", -->
+                            <!--       shifts: "{\\delta}", -->
+                            <!--       optim: "{\\beta}", -->
+                            <!--       param: "{\\theta}", -->
+                            <!--       unif: ["{\\mathcal{U}\\left({#1}\\right)}", 1], -->
+                            <!--       argmin: "\\mathop{\\mathrm{argmin}}", -->
+                            <!--       diag: "\\mathop{\\mathrm{Diag}}", -->
+                            <!--       rang: "\\mathop{\\mathrm{rang}}", -->
+                            <!--       pa: "\\mathop{\\mathrm{pa}}", -->
+                            <!--       mrca: "\\mathop{\\mathrm{mrca}}", -->
+                            <!--       desc: "\\mathop{\\mathrm{desc}}", -->
+                            <!--       warning: ["\\color{red}{{#1}}", 1] -->
+                            <!--     } -->
+                    <!--   } -->
+            <!-- }); -->
+    <!-- </script> -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    TeX: {Macros: {
+            E: "{\\mathbb{E}}"
+        },
+        Augment: {
+        Definitions: {
+          delimiter: {
+            "\\llbracket": '\u27E6',
+            '\\rrbracket': '\u27E7'
+          }}
+        }}
+    });
+</script>
+    <body>
+    <div style="display:none" aria-hidden="true">
+    \(
+        \newcommand\R{\mathbb{R}}
+        \newcommand\Z{\mathbb{Z}}
+        \newcommand\LL{\mathbb{L}}
+        \newcommand{\E}[1]{\mathbb{E}\left[#1\right]}
+        \newcommand{\V}[1]{\mathbb{V}\left[#1\right]}
+        \newcommand\1{\mathbb{1}}
+        \newcommand\N{\mathcal{N}}
+        \newcommand{\transp}[1]{{}^t\!#1}
+        \newcommand\ud{\,\mathrm{d}}
+        \DeclareMathOperator*{\argmax}{argmax}
+        \DeclareMathOperator*{\argmin}{argmin}
+        \DeclareMathOperator{\e}{e}
+        \DeclareMathOperator{\Cov}{Cov}
+    \)
+    </div>
+    </body>
+            
+<div id="sec:Dagum" class="section level1" number="6">
+<h1><span class="header-section-number">Section 6</span> Asymmetric filters and Reproducing Kernel Hilbert Space</h1>
+<p>Classical non-parametric filters (Henderson, LOESS, Hodrick-Prescott) can be characterized using the Reproducing Kernel Hilbert Space (RKHS) methodology, as described by <span class="citation"><a href="#ref-dagumbianconcini2008" role="doc-biblioref">Dagum and Bianconcini</a> (<a href="#ref-dagumbianconcini2008" role="doc-biblioref">2008</a>)</span>.
+It allows them to develop to derive linear filters and associated asymmetric filters.</p>
+<p>A RKHS is a Hilbert space characterized by a kernel that reproduces, via an inner product defined by a density function <span class="math inline">\(f_0(t)\)</span>, every function of the space.
+Therefore, a kernel estimator <span class="math inline">\(K_p\)</span> of order <span class="math inline">\(p\)</span> (i.e.: that reproduce without distortion a polynomial trend of degree <span class="math inline">\(p-1\)</span>) can be decomposed into the product of a reproducing kernel <span class="math inline">\(R_{p-1}\)</span>, belonging to the space of polynomials of degree <span class="math inline">\(p-1\)</span>, and a probability density function <span class="math inline">\(f_0\)</span>.</p>
+<p>For any sequence <span class="math inline">\(\left(P_{i}\right)_{0\leq i\leq p-1}\)</span> of orthonormal polynomials in <span class="math inline">\(\mathbb{L}^{2}(f_{0})\)</span><a href="#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a>, the kernel estimator <span class="math inline">\(K_p\)</span> is defined by:
+<span class="math display">\[
+K_{p}(t)=\sum_{i=0}^{p-1}P_{i}(t)P_{i}(0)f_{0}(t)
+\]</span>
+The weights of a symmetric filter are then derived with:
+<span class="math display">\[
+\forall j\in\left\llbracket -h,h\right\rrbracket\::\: w_{j}=\frac{K_p(j/b)}{\sum_{i=-h}^{^h}K_p(i/b)}
+\]</span>
+where <span class="math inline">\(b\)</span> is a time-invariant global bandwidth parameter.</p>
+<p>The density <span class="math inline">\(f_0\)</span> corresponds to the continuous versions of the kernel defined in <a href="sec-lppfilters.html#sec:kernels">3.1</a>.
+For example, the biweight function is <span class="math inline">\(f_{0B}(t)=(15/16)(1-t^2)^2,t\in [-1,1]\)</span>.
+The local polynomial filter obtained with the biweight kernel is then obtained using the bandwidth <span class="math inline">\(b=h+1\)</span>.</p>
+<p>The goal of <span class="citation"><a href="#ref-dagumbianconcini2008" role="doc-biblioref">Dagum and Bianconcini</a> (<a href="#ref-dagumbianconcini2008" role="doc-biblioref">2008</a>)</span> is to derive asymmetric filters from the Henderson symmetric filter, therefore the ideal kernel function would be the Henderson one.
+However, as shown in section <a href="sec-lppfilters.html#sec:kernels">3.1</a>, the Henderson density is a function of the bandwidth and needs to be calculated any time <span class="math inline">\(m\)</span> changes (as its corresponding orthonormal polynomial).
+That’s why the authors use the biweight kernel to approximate the Henderson kernel (for <span class="math inline">\(h\geq 24\)</span> they suggest to consider the triweight kernel).</p>
+<p>The asymmetric weighted are obtained adapting the kernels to the length of the asymmetric filters:
+<span class="math display">\[
+\forall j\in\left\llbracket -h,q\right\rrbracket\::\: w_{a,j}=\frac{K_p(j/b)}{\sum_{i=-h}^{^q}K_p(i/b)}
+\]</span>
+With <span class="math inline">\(b=h+1\)</span>, <span class="citation"><a href="#ref-proietti2008" role="doc-biblioref">Proietti and Luati</a> (<a href="#ref-proietti2008" role="doc-biblioref">2008</a>)</span> show that we obtain the direct asymmetric filters (DAF).</p>
+<p>In <span class="citation"><a href="#ref-dagumbianconcini2015" role="doc-biblioref">Bee Dagum and Bianconcini</a> (<a href="#ref-dagumbianconcini2015" role="doc-biblioref">2015</a>)</span>, the authors suggest performing an optimal bandwidth selection (parameter <span class="math inline">\(b\)</span>), decomposing the mean squared revision error as in equation <a href="sec-WildiMcLeroy.html#eq:msedecomp">(5.2)</a> but with a uniform spectral density (<span class="math inline">\(h(\omega)=1\)</span>).
+The bandwidth can then be chosen to minimize the mean squared revision error, the phase shift, etc.
+The following bandwidth selection are studied:
+<span class="math display">\[\begin{align*}
+b_{q,G}&amp;=\underset{b_q\in]h;2 h+1]}{\min}
+\sqrt{2\int_{0}^{\pi}
+\left(\rho_s(\omega)-\rho_\theta(\omega)\right)^{2}\ud \omega
+}\\
+b_{q,\gamma}&amp;=\underset{b_q\in]h;2 h+1]}{\min}
+\sqrt{2\int_{0}^{\pi}
+\lvert \Gamma_s(\omega)-\Gamma_\theta(\omega)\rvert^2\ud \omega
+} \\
+b_{q,\varphi}&amp;=\underset{b_q\in]h;2 h+1]}{\min}
+8\int_{0}^{2\pi/12}
+\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)\ud \omega
+\end{align*}\]</span></p>
+<p>One of the drawbacks of the optimal bandwidth selection is that there is no guarantee that there is a unique solution.</p>
+<div class="remarque">
+<p>To have coherent definitions between all sections, the formulas of <span class="math inline">\(b_{q,G}\)</span>, <span class="math inline">\(b_{q,\gamma}\)</span> and <span class="math inline">\(b_{q,\varphi}\)</span> slightly differ from the ones defined in <span class="citation"><a href="#ref-dagumbianconcini2015" role="doc-biblioref">Bee Dagum and Bianconcini</a> (<a href="#ref-dagumbianconcini2015" role="doc-biblioref">2015</a>)</span> where:</p>
+<ul>
+<li><span class="math inline">\(b_{q,\varphi}\)</span> is defined as
+<span class="math display">\[
+b_{q,\varphi}=\underset{b_q\in]h;2 h+1]}{\min}
+\sqrt{2\int_{\Omega_S}
+\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)\ud \omega}
+\]</span></li>
+</ul>
+<p>With <span class="math inline">\(\Omega_S=[0,2\pi/36]\)</span> the frequency domain associated to cycles of 16 months or longer.</p>
+<ul>
+<li>a different formula is used for the frequency response function (<span class="math inline">\(\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{2\pi i \omega k}\)</span>): it only changes the interval integration.</li>
+</ul>
+</div>
+<p>The table <a href="sec-Dagum.html#tab:criteriarkhs">6.1</a> shows the quality criteria of the RKHS filters.
+Even if the symmetric filter preserves quadratic trends, this is not the case of the asymmetric filters: they only preserve constant trends.
+The more data is available (i.e.: <span class="math inline">\(q\)</span> increases), the less the asymmetric filters distort polynomial trends (for example, for <span class="math inline">\(q=2\)</span>, <span class="math inline">\(b_l\simeq0\)</span> for <span class="math inline">\(b_{q,G}\)</span>).</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:criteriarkhs">Table 6.1: </span>Quality criteria of asymmetric filters (<span class="math inline">\(q=0,1,2\)</span>) computed by the RKHS methodology <span class="math inline">\(h=6\)</span>.
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;">
+Method
+</th>
+<th style="text-align:center;">
+$ b_c $
+</th>
+<th style="text-align:center;">
+$ b_l $
+</th>
+<th style="text-align:center;">
+$ b_q $
+</th>
+<th style="text-align:center;">
+$ F_g $
+</th>
+<th style="text-align:center;">
+$ S_g $
+</th>
+<th style="text-align:center;">
+$ T_g ^{-3} $
+</th>
+<th style="text-align:center;">
+$ A_w $
+</th>
+<th style="text-align:center;">
+$ S_w $
+</th>
+<th style="text-align:center;">
+$ T_w $
+</th>
+<th style="text-align:center;">
+$ R_w $
+</th>
+</tr>
+</thead>
+<tbody>
+<tr grouplength="3">
+<td colspan="11" style="border-bottom: 1px solid;">
+<strong>$ q=0 $</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:center;padding-left: 2em;" indentlevel="1">
+<span class="math inline">\(b_{q,\gamma}\)</span>
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+-1.526
+</td>
+<td style="text-align:center;">
+3.893
+</td>
+<td style="text-align:center;">
+0.222
+</td>
+<td style="text-align:center;">
+0.469
+</td>
+<td style="text-align:center;">
+74.991
+</td>
+<td style="text-align:center;">
+0.017
+</td>
+<td style="text-align:center;">
+0.069
+</td>
+<td style="text-align:center;">
+2.164
+</td>
+<td style="text-align:center;">
+0.671
+</td>
+</tr>
+<tr>
+<td style="text-align:center;padding-left: 2em;" indentlevel="1">
+<span class="math inline">\(b_{q,G}\)</span>
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+-2.039
+</td>
+<td style="text-align:center;">
+6.937
+</td>
+<td style="text-align:center;">
+0.177
+</td>
+<td style="text-align:center;">
+0.305
+</td>
+<td style="text-align:center;">
+98.650
+</td>
+<td style="text-align:center;">
+0.082
+</td>
+<td style="text-align:center;">
+0.066
+</td>
+<td style="text-align:center;">
+3.547
+</td>
+<td style="text-align:center;">
+0.715
+</td>
+</tr>
+<tr>
+<td style="text-align:center;padding-left: 2em;" indentlevel="1">
+<span class="math inline">\(b_{q,\varphi}\)</span>
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+-0.614
+</td>
+<td style="text-align:center;">
+0.033
+</td>
+<td style="text-align:center;">
+0.381
+</td>
+<td style="text-align:center;">
+1.204
+</td>
+<td style="text-align:center;">
+23.323
+</td>
+<td style="text-align:center;">
+0.019
+</td>
+<td style="text-align:center;">
+0.549
+</td>
+<td style="text-align:center;">
+0.451
+</td>
+<td style="text-align:center;">
+0.356
+</td>
+</tr>
+<tr grouplength="3">
+<td colspan="11" style="border-bottom: 1px solid;">
+<strong>$ q=1 $</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:center;padding-left: 2em;" indentlevel="1">
+<span class="math inline">\(b_{q,\gamma}\)</span>
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+-0.516
+</td>
+<td style="text-align:center;">
+0.992
+</td>
+<td style="text-align:center;">
+0.226
+</td>
+<td style="text-align:center;">
+0.303
+</td>
+<td style="text-align:center;">
+14.386
+</td>
+<td style="text-align:center;">
+0.002
+</td>
+<td style="text-align:center;">
+0.047
+</td>
+<td style="text-align:center;">
+0.313
+</td>
+<td style="text-align:center;">
+0.170
+</td>
+</tr>
+<tr>
+<td style="text-align:center;padding-left: 2em;" indentlevel="1">
+<span class="math inline">\(b_{q,G}\)</span>
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+-0.923
+</td>
+<td style="text-align:center;">
+2.880
+</td>
+<td style="text-align:center;">
+0.189
+</td>
+<td style="text-align:center;">
+0.248
+</td>
+<td style="text-align:center;">
+27.386
+</td>
+<td style="text-align:center;">
+0.039
+</td>
+<td style="text-align:center;">
+0.036
+</td>
+<td style="text-align:center;">
+0.786
+</td>
+<td style="text-align:center;">
+0.213
+</td>
+</tr>
+<tr>
+<td style="text-align:center;padding-left: 2em;" indentlevel="1">
+<span class="math inline">\(b_{q,\varphi}\)</span>
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+-0.176
+</td>
+<td style="text-align:center;">
+0.295
+</td>
+<td style="text-align:center;">
+0.276
+</td>
+<td style="text-align:center;">
+0.359
+</td>
+<td style="text-align:center;">
+2.901
+</td>
+<td style="text-align:center;">
+0.003
+</td>
+<td style="text-align:center;">
+0.182
+</td>
+<td style="text-align:center;">
+0.050
+</td>
+<td style="text-align:center;">
+0.071
+</td>
+</tr>
+<tr grouplength="3">
+<td colspan="11" style="border-bottom: 1px solid;">
+<strong>$ q=2 $</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:center;padding-left: 2em;" indentlevel="1">
+<span class="math inline">\(b_{q,\gamma}\)</span>
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+0.041
+</td>
+<td style="text-align:center;">
+0.863
+</td>
+<td style="text-align:center;">
+0.202
+</td>
+<td style="text-align:center;">
+0.090
+</td>
+<td style="text-align:center;">
+0.328
+</td>
+<td style="text-align:center;">
+0.006
+</td>
+<td style="text-align:center;">
+0.010
+</td>
+<td style="text-align:center;">
+0.004
+</td>
+<td style="text-align:center;">
+0.018
+</td>
+</tr>
+<tr>
+<td style="text-align:center;padding-left: 2em;" indentlevel="1">
+<span class="math inline">\(b_{q,G}\)</span>
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+-0.007
+</td>
+<td style="text-align:center;">
+1.001
+</td>
+<td style="text-align:center;">
+0.197
+</td>
+<td style="text-align:center;">
+0.096
+</td>
+<td style="text-align:center;">
+0.637
+</td>
+<td style="text-align:center;">
+0.009
+</td>
+<td style="text-align:center;">
+0.010
+</td>
+<td style="text-align:center;">
+0.008
+</td>
+<td style="text-align:center;">
+0.021
+</td>
+</tr>
+<tr>
+<td style="text-align:center;padding-left: 2em;" indentlevel="1">
+<span class="math inline">\(b_{q,\varphi}\)</span>
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+0.105
+</td>
+<td style="text-align:center;">
+0.820
+</td>
+<td style="text-align:center;">
+0.215
+</td>
+<td style="text-align:center;">
+0.077
+</td>
+<td style="text-align:center;">
+0.064
+</td>
+<td style="text-align:center;">
+0.003
+</td>
+<td style="text-align:center;">
+0.025
+</td>
+<td style="text-align:center;">
+0.005
+</td>
+<td style="text-align:center;">
+0.010
+</td>
+</tr>
+</tbody>
+</table>
+<div class="summary_box">
+<div id="title">
+<p>Summary — RKHS filters</p>
+</div>
+<p><strong>Advantages</strong>:</p>
+<ul>
+<li><p>The asymmetric linear filter is independent of the data and of the date of estimation.</p></li>
+<li><p>Filters to apply to irregular frequency series (for example with a lot of missing values) can easily be computed.</p></li>
+</ul>
+<p><strong>Drawbacks</strong>:</p>
+<ul>
+<li><p>The linear filters don’t preserve polynomial trends of degree 1 or more.</p></li>
+<li><p>Some optimization problems might occur (several minimum, etc.).</p></li>
+</ul>
+</div>
+
+</div>
+<h3>References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-dagumbianconcini2015" class="csl-entry">
+Bee Dagum, Estela, and Silvia Bianconcini. 2015. <span>“A New Set of Asymmetric Filters for Tracking the Short-Term Trend in Real-Time.”</span> <em>Ann. Appl. Stat.</em> 9 (3): 1433–58. <a href="https://doi.org/10.1214/15-AOAS856">https://doi.org/10.1214/15-AOAS856</a>.
+</div>
+<div id="ref-dagumbianconcini2008" class="csl-entry">
+Dagum, Estela Bee, and Silvia Bianconcini. 2008. <span>“<span class="nocase">The Henderson Smoother in Reproducing Kernel Hilbert Space</span>.”</span> <em>Journal of Business &amp; Economic Statistics</em> 26: 536–45. <a href="https://ideas.repec.org/a/bes/jnlbes/v26y2008p536-545.html">https://ideas.repec.org/a/bes/jnlbes/v26y2008p536-545.html</a>.
+</div>
+<div id="ref-proietti2008" class="csl-entry">
+Proietti, Tommaso, and Alessandra Luati. 2008. <span>“Real Time Estimation in Local Polynomial Regression, with Application to Trend-Cycle Analysis.”</span> <em>Ann. Appl. Stat.</em> 2 (4): 1523–53. <a href="https://doi.org/10.1214/08-AOAS195">https://doi.org/10.1214/08-AOAS195</a>.
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="13">
+<li id="fn13"><p>
+<span class="math inline">\(\mathbb{L}^{2}(f_{0})\)</span> is the Hilbert space defined by the inner product:
+<span class="math display">\[
+\left\langle U(t),V(t)\right\rangle =\E{U(t)V(t)}=\int_{\R}U(t)V(t)f_{0}(t)\ud t
+\]</span><a href="sec-Dagum.html#fnref13" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="sec-WildiMcLeroy.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="sec-comparison.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["Stage_2A.pdf", "Stage_2A.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

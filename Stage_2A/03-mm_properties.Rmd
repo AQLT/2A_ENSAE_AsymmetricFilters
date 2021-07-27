@@ -1,0 +1,175 @@
+
+# Moving average and filters {#sec:propMM}
+
+Lots of papers describe the definition and the properties of moving average and linear filters (see for example @ch12HBSA). 
+In this section we summarize some of the main results.
+
+Let $p$ et $f$ two integers, a moving average $M_\theta$ or $M$ is defined by a set of coefficients $\theta=(\theta_{-p},\dots,\theta_{f})'$ such as for all time series $X_t$:
+$$
+M_\theta(X_t)=\sum_{k=-p}^{+f}\theta_kX_{t+k}
+$$
+
+- $p+f+1$ is called the *moving average order*.
+
+- When $p=f$ the moving average is said to be *centered*. 
+If we also have $\forall k:\:\theta_{-k} = \theta_k$, the moving average $M_\theta$ is said to be *symmetric*. 
+In this case, the quantity $h=p=f$ is called the *bandwidth*.
+
+
+## Gain and phase shift functions
+
+Let $X_t=\e^{-i\omega t}$. The result of the moving average $M_\theta$ in $X_t$ is:
+$$
+Y_t = M_{\theta}X_t = \sum_{k=-p}^{+f} \theta_k \e^{-i \omega (t+k)}
+= \left(\sum_{k=-p}^{+f} \theta_k \e^{-i \omega k}\right)\cdot X_t.
+$$
+The function $\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{-i \omega k}$ is called the *transfer function* or *frequency response function*^[
+The frequency response function can equivalently be defined as $\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{i \omega k}$ or $\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{2\pi i \omega k}$.
+].
+It can be rewritten as:
+$$
+\Gamma_\theta(\omega) = G_\theta(\omega)\e^{-i\Phi_\theta(\omega)}
+$$
+where $G_\theta(\omega)=\lvert\Gamma_\theta(\omega)\rvert$ is the *gain* or *amplitude* function and $\Phi_\theta(\omega)$ is the *phase shift* or *time shift* function^[
+This function is sometimes represented as $\phi_\theta(\omega)=\frac{\Phi_\theta(\omega)}{\omega}$ to mesure the phase shift in number of periods.
+]. 
+For all symmetric moving average we have $\Phi_\theta(\omega)\equiv 0 \pmod{\pi}$.
+
+To sum up, applying a moving average to a harmonic times series affects it in in two different ways:
+
+- by multiplying it by an amplitude coefficient $G_{\theta}\left(\omega\right)$;
+
+- by "shifting" it in time by $\Phi_\theta(\omega)/\omega$, which directly affects the detection of turning points^[
+When $\Phi_\theta(\omega)/\omega>0$ the time shift is positive: a turning point is detected with delay.
+].
+
+Example: with $M_{\theta_0}X_t=\frac{1}{2}X_{t-1}+\frac{1}{2}X_{t}$ we have:
+$$
+\Gamma_{\theta_0}(\omega)=\frac{1}{2}+\frac{1}{2}\e^{-i\omega}
+=\lvert\cos(\omega/2)\rvert\e^{-i\frac{\omega}{2}}
+$$
+The figure \@ref(fig:exgainPhase) illustrates the gain and the phase shift for $\omega=\pi/2$ and $X_t=\sin(\omega t)$.
+
+\begin{figure}[!ht]
+\pgfplotsset{width=\textwidth,height=6cm,every axis legend/.append style={font=\footnotesize,
+  at={(0.5,-0.1)},
+  anchor=north}
+    }
+\begin{tikzpicture}
+\begin{axis}[
+legend columns=2,
+legend style = {fill=none , fill opacity=0, draw opacity=1,text opacity=1},
+xtick={0,3.14159,...,15.70795},
+xticklabels={0,$\pi$,$2\pi$,$3\pi$,$4\pi$,$5\pi$} 
+]
+\addplot[domain=0:5*pi,smooth,samples=300]    plot (\x,{sin(\x * (pi/2) r)});
+\addlegendentry{$X_t(\pi/2)$}
+\addplot[domain=0:5*pi,smooth,samples=300, dashed]    
+  plot (\x,{1/2*sin(\x* pi/2 r )+1/2*sin((\x -1) * pi/2 r)});
+\addlegendentry{$M_{\theta_0}X_t(\pi/2)$}
+\draw[<->](axis cs: 1.5,1)--(axis cs: 1.5,0.7071068)
+  node[pos=0.5, right]{\scriptsize $G_{\theta_0}(\pi/2)$};
+\draw[<->] (axis cs: 3, -0.70710680-0.05)--(axis cs: 3.5,-0.7071068-0.05) 
+  node[pos=0.5, below right]{\scriptsize $\Phi_{\theta_0}(\pi/2)$};
+\end{axis}
+\end{tikzpicture}
+\caption{Smoothing of the time series $X_t=\sin(\omega t)$ by the moving average $M_{\theta_0}X_t=\frac{1}{2}X_{t-1}+\frac{1}{2}X_{t}$ for $\omega=\pi/2$.}\label{fig:exgainPhase}
+\end{figure}
+
+
+## Desirable properties of a moving average
+
+The moving average are often constructed under some specific constraints. 
+In the report we will focus on two constraints:
+
+- the preservation of certain kind of trends;
+
+- the variance reduction.
+
+### Trend preservation
+
+It is often desirable for a moving average to conserve certain kind of trends.
+A moving average $M_\theta$ conserve a function of the time $f(t)$ if $\forall t:\:M_\theta f(t)=f(t)$.
+
+We have the following properties for the moving average $M_\theta$:
+
+- To conserve a constant series $X_t=a$ we need
+$$
+\forall t:M_\theta(X_t)=\sum_{k=-p}^{+f}\theta_kX_{t+k}=\sum_{k=-p}^{+f}\theta_ka=a\sum_{k=-p}^{+f}\theta_k=a
+$$
+the sum of the coefficients of the moving average $\sum_{k=-p}^{+f}\theta_k$ must then be equal to $1$.
+
+- To conserve a linear trend $X_t=at+b$ we need:
+$$
+\forall t:\:M_\theta(X_t)=\sum_{k=-p}^{+f}\theta_kX_{t+k}=\sum_{k=-p}^{+f}\theta_k[a(t+k)+b]=at\sum_{k=-p}^{+f}k\theta_k+b\sum_{k=-p}^{+f}\theta_k=at+b
+$$
+which is equivalent to:
+$$
+\sum_{k=-p}^{+f}\theta_k=1
+\quad\text{and}\quad
+\sum_{k=-p}^{+f}k\theta_k=0
+$$
+- In general, it can be shown that $M_\theta$ conserves a polynomial of degree $d$ if and only if:
+$$
+\sum_{k=-p}^{+f}\theta_k=1 
+ \text{ and } 
+\forall j \in \left\llbracket 1,d\right\rrbracket:\:
+\sum_{k=-p}^{+f}k^j\theta_k=0
+$$
+- If $M_\theta$ is symmetric ($p=f$ and $\theta_{-k} = \theta_k$) and conserves polynomial of degree $2d$ then it also conserves polynomial of degree $2d+1$.
+
+### Variance reduction
+
+All time series are affected by noise that can blur the signal extraction.
+Hence, we seek to reduce the variance of the noise.
+The sum of the squares of the coefficients $\sum_{k=-p}^{+f}\theta_k^2$ is the *variance reduction* ratio.
+
+Indeed, let $\{\varepsilon_t\}$ a sequence of independent random variables with $\E{\varepsilon_t}=0$, $\V{\varepsilon_t}=\sigma^2$.
+$$
+\V{M_\theta\varepsilon_t}=\V{\sum_{k=-p}^{+f} \theta_k \varepsilon_{t+k}}
+= \sum_{k=-p}^{+f} \theta_k^2 \V{\varepsilon_{t+k}}=
+\sigma^2\sum_{k=-p}^{+f} \theta_k^2
+$$
+
+## Real-time estimation and asymmetric moving average {#defAsymProb}
+
+For symmetric filters, the phase shift function is equal to zero (modulo $\pi$).
+Therefore, there is no delay in any frequency: that's why they are preferred to the asymmetric ones. 
+However, they cannot be used in the beginning and in the end of the time series because no past/future value can be used. 
+Thus, for real-time estimation, it is needed to build asymmetric moving average that approximate the symmetric moving average.
+
+The approximation is summarized by quality indicators. 
+In this paper we focus on the ones defined by @ch15HBSA and @trilemmaWMR2019 to build the asymmetric filters.
+
+@ch15HBSA propose a general approach to derive linear filters, based on an optimization problem of three criteria: *Fidelity* ($F_g$, noise reduction), *Smoothness* ($S_g$) and *Timeliness* ($T_g$, phase shift between input and ouput signals). 
+See section \@ref(sec:GuggemosEtAl) for more details.
+
+@trilemmaWMR2019 propose an approach based on the decomposition of the mean squared error between the symmetric and the asymmetric filter in four quantities: *Accuracy* ($A_w$), *Timeliness* ($T_w$), *Smoothness* ($S_w$) and *Residual* ($R_w$).
+See section \@ref(sec:WildiMcLeroy) for more details.
+
+All the indicators are summarized in table \@ref(tab:QC).
+
+\begin{table}[!ht]
+$$\begin{array}{ccc}
+\hline \text{Sigle} & \text{Description} & \text{Formula}\\
+\hline b_{c} & \text{Constant bias} & \sum_{k=-p}^{+f}\theta_{k}-1\\
+\hline b_{l} & \text{Linear bias} & \sum_{k=-p}^{+f}k\theta_{k}\\
+\hline b_{q} & \text{Quadratic bias} & \sum_{k=-p}^{+f}k^{2}\theta_{k}\\
+\hline F_{g} & \text{Variance reduction / Fidelity (Guggemos)} & \sum_{k=-p}^{+f}\theta_{k}^{2}\\
+\hline S_{g} & \text{Smoothness (Guggemos)} & \sum_{j}(\nabla^{3}\theta_{j})^{2}\\
+\hline T_{g} & \text{Timeliness (Guggemos)} & \int_{0}^{2\pi/12}\rho_{\theta}(\omega)\sin(\varphi_{\theta}(\omega))^{2}\ud\omega\\
+\hline A_{w} & \text{Accuracy (Wildi)} & 2\int_0^{2\pi/12}\left(\rho_{s}(\omega)-\rho_{\theta}(\omega)\right)^{2}h_{RW}(\omega)\ud\omega\\
+\hline T_{w} & \text{Timeliness (Wildi)} & 8\int_0^{2\pi/12} \rho_{s}(\omega)\rho_{\theta}(\omega)\sin^{2}\left(\frac{\varphi_s(\omega)-\varphi_\theta(\omega)}{2}\right)h_{RW}(\omega)\ud\omega\\
+\hline S_{w} & \text{Smoothness (Wildi)} & 2\int_{2\pi/12}^{\pi}\left(\rho_{s}(\omega)-\rho_{\theta}(\omega)\right)^{2}h_{RW}(\omega)\ud\omega\\
+\hline R_{w} & \text{Residual (Wildi)} & 8\int_{2\pi/12}^{\pi} \rho_{s}(\omega)\rho_{\theta}(\omega)\sin^{2}\left(\frac{\varphi_s(\omega)-\varphi_\theta(\omega)}{2}\right)h_{RW}(\omega)\ud\omega\\
+\hline \\
+\end{array} $$
+\caption{Criteria used to check the quality of a linear filter defined by its coefficients $\theta=(\theta_k)_{-p\leq k\leq f}$ and its gain and phase shift function, $\rho_{\theta}$ and $\varphi_\theta$.} 
+\label{tab:QC}
+\footnotesize
+\emph{Note: $X_g$ criteria are derived from \textcite{ch15HBSA} and $X_w$ criteria from \textcite{trilemmaWMR2019}.}
+
+\emph{$\rho_s$ and $\varphi_s$ represent the gain and phase shift function of the Henderson symmetric filter.}
+
+\emph{$h_{RW}$ is the spectral density of a random walk: $h_{RW}(\omega)=\frac{1}{2(1-\cos(\omega))}$.}
+\end{table}

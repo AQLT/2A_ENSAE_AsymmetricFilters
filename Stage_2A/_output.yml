@@ -1,0 +1,23 @@
+bookdown::gitbook:
+  css: style.css
+  config:
+    toc:
+      before: |
+        <li><a href="./">Stage 2A Ensae AQLT</a></li>
+    download: ["pdf", "epub"]
+  includes:
+    before_body: preamble.html
+bookdown::pdf_document2:
+  toc: true
+  toc_depth: 3
+  number_sections: true
+  fig_width: 7
+  fig_height: 6
+  fig_caption: true
+  highlight: default
+  keep_tex: yes
+  includes:
+    in_header: preamble.tex
+    after_header: \thispagestyle{empty}
+  citation_package: biblatex
+bookdown::epub_book: default

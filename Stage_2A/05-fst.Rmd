@@ -1,0 +1,136 @@
+
+# General optimization problem: FST filters {#sec:GuggemosEtAl}
+
+## Description of the approach
+
+@ch15HBSA defined a general approach to derive linear filters, based on an optimization problem of three criteria. 
+Contrary to the local polynomial approach of @proietti2008, this method enables to control the size of the timeliness in order to minimize the phase-shift.
+
+The following criteria are used:
+
+- *Fidelity*, $F_g$: it's the variance reduction ratio. It is called "Fidelity" because we want the output signal to be as close as possible to the input signal where the noise component is removed
+$$
+F_g(\theta) = \sum_{k=-p}^{+f}\theta_{k}^{2}
+$$
+$F_g$ can be rewritten in a positive quadratic form: $F_g(\theta)=\theta'F\theta$ with $F$ the identity matrix of order $p+f+1$.
+
+- *Smoothness*, $S_g$: it's the Henderson smoothness criterion (sum of the squared of the third difference of the coefficients of the filter). 
+It measures the flexibility of the coefficient curve of a filter and the smoothness of the trend.
+$$
+S_g(\theta) = \sum_{j}(\nabla^{3}\theta_{j})^{2}
+$$
+$S_g$ could also be rewritten in a positive quadratic form: $S_g(\theta)=\theta'S\theta$ with $S$ a symmetric matrix of order $p+f+1$.
+
+
+- *Timeliness*, $T_g$: it measures the phase shift between input and output signal for specific frequencies. 
+When a linear filter is applied, the level input signal is also altered by the gain function. 
+Therefore, it is natural to consider that the higher the gain is, the higher the phase shift impact is. 
+That's why the timeliness criterion depends on the gain and phase shift functions ($\rho_\theta$ and $\varphi_{\theta}$), the link between both functions being made by a penalty function $f$.
+$$
+T_g(\theta)=\int_{\omega_{1}}^{\omega_{2}}f(\rho_{\theta}(\omega),\varphi_{\theta}(\omega))\ud\omega
+$$
+In this article we use $\omega_1=0$ and $\omega_2=2\pi/12$ (for monthly data): we focus on the phase shift impact on cycles of more than one year.
+For the penalty function, we take $f\colon(\rho,\varphi)\mapsto\rho^2\sin(\varphi)^2$. 
+Indeed, for this function, the timeliness criterion is analytically solvable ($T_g=\theta'T\theta$ with $T$ a square symmetric matrix of order $p+f+1$), which is better in a computational point of view.
+
+The asymmetric filters are computed minimizing a weighted sum of the past three criteria, subject to some constraints. Those constraints are usually polynomial preservation.
+
+$$
+\begin{cases}
+\underset{\theta}{\min} & J(\theta)=
+\alpha F_g(\theta)+\beta S_g(\theta)+\gamma T_g(\theta)\\
+s.t. & C\theta=a
+\end{cases}
+$$
+The conditions $\alpha,\beta,\gamma\geq 0\text{ and }\alpha\beta\ne 0$ guarantee that $J(\theta)$ is a strictly convex function: therefore the optimization problem has a unique solution.
+
+The Henderson symmetric filters can for example be computed with 
+$$C=\begin{pmatrix}
+1 & \cdots&1\\
+-h & \cdots&h \\
+(-h)^2 & \cdots&h^2
+\end{pmatrix},\quad
+a=\begin{pmatrix}
+1 \\0\\0
+\end{pmatrix},\quad
+\alpha=\gamma=0,\quad
+\beta=1$$
+
+This approach can be called as the "FST approach" in reference to the three indicators used in the optimization problem.
+One drawback of this approach is that the different criteria are not normalized: their values cannot be compared with each other.
+As a result, the value of weights has no sense.
+
+:::: {.summary_box data-latex="{FST filters}"}
+`r if (knitr::is_html_output()) '
+:::{#title}
+Summary — FST filters
+:::
+'`
+**Advantages**:
+
+- The asymmetric linear filter is independent of the symmetric filter, the data and the date of estimation.
+
+- Unique solution to the optimization problem.
+
+- The approach can be customized adding new criteria.
+
+**Drawbacks**:
+
+- The different criteria are not normalized: the associated weights cannot be compared.
+::::
+
+## Extension with the revision criterion
+
+The FST --- Fidelity-Smoothness-Timeliness --- approach is the only one that doesn't directly include a criterion on the revision error relative to a symmetric filter.  
+This approach could be somewhat generalized in order to include the revision criterion, replacing in the orthogonal form $\theta$ by $(w-\theta)$ (with $w$ the symmetric filter), and $F$ by a matrix relative to the data (see @ch12HBSA).
+
+In this paper, we consider the method that consists to extend the minimization problem of local polynomial filters adding the Timeliness criterion defined by @ch15HBSA^[This method is for example coded in Java by Jean Palate in https://github.com/palatej/jdemetra-core.].
+Using the same notations as in section \@ref(subsec:lppasymf), $\theta=v$ and noting $g=v-w_p$, the Timeliness criterion can be rewritten:
+$$
+T_g(v)=v'Tv=g'Tg+2w_p'Tg+w_p'Tw_p
+\quad(T\text{ being symmetric)}
+$$
+Moreover, the objective function $\varphi$ of equation \@ref(eq:lppasym) can be rewritten as:
+\begin{align*}
+\varphi(v)&=(v-w_{p})'D_{p}(v-w_{p})+
+  w_{f}'D_{f}w_{f}+
+  [\delta'(Z_{p}'v-Z'w)]^{2}+
+2l'(U_{p}'v-U'w)\\
+&=g'Qg-2Pg+2l'(U_{p}'v-U'w)+c\quad\text{with }
+\begin{cases}
+Q=D_p+Z_p\delta\delta'Z'_p \\
+P=w_fZ_f\delta\delta'Z_p'\\
+c\text{ a constant independent of }v
+\end{cases}
+\end{align*}
+
+Adding the Timeliness criterion, it becomes:
+$$
+\widetilde\varphi(v)=g'\widetilde Qg-
+2\widetilde Pg+2l'(U_{p}'v-U'w)+
+\widetilde c\quad\text{with }
+\begin{cases}
+\widetilde Q=D_p+Z_p\delta\delta'Z'_p +\alpha_TT\\
+\widetilde P=w_fZ_f\delta\delta'Z_p'-\alpha_Tw_pT\\
+\widetilde c\text{ a constant independent of }v
+\end{cases}
+$$
+where $\alpha_T$ is the weight associated to the Timeliness criterion. With $\alpha_T=0$ we find $\varphi(v)$.
+
+The figures \@ref(fig:lppguglc) show the impact of $\alpha_T$ on the coefficients of the linear filter with the LC method:
+
+- The more $\alpha_T$ increases, the more the coefficient associated to the current observation increases: this is what we expected.
+
+- $\alpha_T$ impacts logarithmically the coefficients: we can restraint $\alpha_T$ to $[0,2000]$.
+
+- As expected, including the timeliness criterion has more impact for the value of $q$ that gives filters with higher timeliness: it corresponds to $q\leq2$ for the LC method. 
+For the QL method we find that $\alpha_T$ has an impact for medium values of $q$ ($2\leq q\leq4$).
+
+
+\begin{figure}[!ht]
+\animategraphics[autoplay,loop,width=\textwidth,controls]{0.5}{img/lppgug_lc_q}{0}{5} 
+\caption{Impact of the timeliness weight ($\alpha_T$) on the coefficients of the local polynomial filter with the LC method with $h=6$, $R=3.5$ and the Henderson kernel.
+}\label{fig:lppguglc}\footnotesize
+\emph{Note: to see the animation, the PDF must be open with Acrobat Reader, KDE Okular, PDF-XChange or Foxit Reader. 
+Otherwise you will only be able to see the results for $q=0$.}
+\end{figure}

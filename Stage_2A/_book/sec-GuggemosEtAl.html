@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="english" xml:lang="english">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Section 4 General optimization problem: FST filters | Real-time detection of turning points with linear filters</title>
+  <meta name="description" content="Stage 2A de l’Ensae d’Alain Quartier-la-Tente" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Section 4 General optimization problem: FST filters | Real-time detection of turning points with linear filters" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Stage 2A de l’Ensae d’Alain Quartier-la-Tente" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Section 4 General optimization problem: FST filters | Real-time detection of turning points with linear filters" />
+  
+  <meta name="twitter:description" content="Stage 2A de l’Ensae d’Alain Quartier-la-Tente" />
+  
+
+<meta name="author" content="Alain Quartier-la-Tente" />
+
+
+<meta name="date" content="2021-07-27" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="sec-lppfilters.html"/>
+<link rel="next" href="sec-WildiMcLeroy.html"/>
+<script src="libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Stage 2A Ensae AQLT</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Abstracts</a></li>
+<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="chapter" data-level="1" data-path="sec-SAtoTCE.html"><a href="sec-SAtoTCE.html"><i class="fa fa-check"></i><b>1</b> From seasonal adjustment to trend-cycle estimation</a></li>
+<li class="chapter" data-level="2" data-path="sec-propMM.html"><a href="sec-propMM.html"><i class="fa fa-check"></i><b>2</b> Moving average and filters</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="sec-propMM.html"><a href="sec-propMM.html#gain-and-phase-shift-functions"><i class="fa fa-check"></i><b>2.1</b> Gain and phase shift functions</a></li>
+<li class="chapter" data-level="2.2" data-path="sec-propMM.html"><a href="sec-propMM.html#desirable-properties-of-a-moving-average"><i class="fa fa-check"></i><b>2.2</b> Desirable properties of a moving average</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="sec-propMM.html"><a href="sec-propMM.html#trend-preservation"><i class="fa fa-check"></i><b>2.2.1</b> Trend preservation</a></li>
+<li class="chapter" data-level="2.2.2" data-path="sec-propMM.html"><a href="sec-propMM.html#variance-reduction"><i class="fa fa-check"></i><b>2.2.2</b> Variance reduction</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="sec-propMM.html"><a href="sec-propMM.html#defAsymProb"><i class="fa fa-check"></i><b>2.3</b> Real-time estimation and asymmetric moving average</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html"><i class="fa fa-check"></i><b>3</b> Local polynomial filters</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#sec:kernels"><i class="fa fa-check"></i><b>3.1</b> Different kernels</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#sec:sympolyfilter"><i class="fa fa-check"></i><b>3.1.1</b> Specific symmetric filters</a></li>
+<li class="chapter" data-level="3.1.2" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#analysis-of-symmetric-filters"><i class="fa fa-check"></i><b>3.1.2</b> Analysis of symmetric filters</a></li>
+<li class="chapter" data-level="3.1.3" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#gain-functions"><i class="fa fa-check"></i><b>3.1.3</b> Gain functions</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#asymmetric-filters"><i class="fa fa-check"></i><b>3.2</b> Asymmetric filters</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#direct-asymmetric-filters-daf"><i class="fa fa-check"></i><b>3.2.1</b> Direct asymmetric filters (DAF)</a></li>
+<li class="chapter" data-level="3.2.2" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#subsec:lppasymf"><i class="fa fa-check"></i><b>3.2.2</b> General class of asymmetric filters</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="sec-GuggemosEtAl.html"><a href="sec-GuggemosEtAl.html"><i class="fa fa-check"></i><b>4</b> General optimization problem: FST filters</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="sec-GuggemosEtAl.html"><a href="sec-GuggemosEtAl.html#description-of-the-approach"><i class="fa fa-check"></i><b>4.1</b> Description of the approach</a></li>
+<li class="chapter" data-level="4.2" data-path="sec-GuggemosEtAl.html"><a href="sec-GuggemosEtAl.html#extension-with-the-revision-criterion"><i class="fa fa-check"></i><b>4.2</b> Extension with the revision criterion</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="sec-WildiMcLeroy.html"><a href="sec-WildiMcLeroy.html"><i class="fa fa-check"></i><b>5</b> Data-dependent filter</a></li>
+<li class="chapter" data-level="6" data-path="sec-Dagum.html"><a href="sec-Dagum.html"><i class="fa fa-check"></i><b>6</b> Asymmetric filters and Reproducing Kernel Hilbert Space</a></li>
+<li class="chapter" data-level="7" data-path="sec-comparison.html"><a href="sec-comparison.html"><i class="fa fa-check"></i><b>7</b> Comparison of the different filters</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="sec-comparison.html"><a href="sec-comparison.html#comparison-with-the-fst-approach"><i class="fa fa-check"></i><b>7.1</b> Comparison with the FST approach</a></li>
+<li class="chapter" data-level="7.2" data-path="sec-comparison.html"><a href="sec-comparison.html#illustration-with-an-example"><i class="fa fa-check"></i><b>7.2</b> Illustration with an example</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i>Conclusion</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Real-time detection of turning points with linear filters</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<!-- <script type="text/x-mathjax-config"> -->
+    <!-- MathJax.Hub.Config({ -->
+            <!--   TeX: { -->
+                    <!--     Macros: { -->
+                            <!--       NN: "{\\mathbb{N}}", -->
+                            <!--       ZZ: "{\\mathbb{Z}}", -->
+                            <!--       QQ: "{\\mathbb{Q}}", -->
+                            <!--       RR: "{\\mathbb{R}}", -->
+                            <!--       shiftset: "{\\mathcal{D}}", -->
+                            <!--       dx: ["{\\mathrm{d}^{#1}\\mspace{-1mu}\\mathord{#2}}", 2, ""], -->
+                            <!--       indic: "{\\unicode{x1D7D9}}", -->
+                            <!--       prob: "\\mathop{\\mathbb{P}}", -->
+                            <!--       esp: "\\mathop{\\mathbb{E}}", -->
+                            <!--       var: "\\mathop{\\mathbb{V}\\text{ar}}", -->
+                            <!--       cov: "\\mathop{\\mathbb{C}\\text{ov}}", -->
+                            <!--       PP: ["{\\prob\\left({#1}\\right)}", 1], -->
+                            <!--       EE: ["{\\esp\\left[{#1}\\right]}", 1], -->
+                            <!--       VV: ["{\\var\\left[{#1}\\right]}", 1], -->
+                            <!--       CC: ["{\\cov\\left[{#1}\\right]}", 1], -->
+                            <!--       normal: ["{\\mathcal{N}\\left({#1},{#2}\\right)}", 2], -->
+                            <!--       ou: ["{#1}_{\\text{ou}}", 1], -->
+                            <!--       oui: ["{#1}_{\\text{ou},#2}", 2], -->
+                            <!--       pv: "{\\mathfrak{p}}", -->
+                            <!--       qv: "{\\mathfrak{q}}", -->
+                            <!--       zs: "{\\mathfrak{z}}", -->
+                            <!--       ts: "{\\mathfrak{t}}", -->
+                            <!--       sign: "{\\mathfrak{s}}", -->
+                            <!--       shifts: "{\\delta}", -->
+                            <!--       optim: "{\\beta}", -->
+                            <!--       param: "{\\theta}", -->
+                            <!--       unif: ["{\\mathcal{U}\\left({#1}\\right)}", 1], -->
+                            <!--       argmin: "\\mathop{\\mathrm{argmin}}", -->
+                            <!--       diag: "\\mathop{\\mathrm{Diag}}", -->
+                            <!--       rang: "\\mathop{\\mathrm{rang}}", -->
+                            <!--       pa: "\\mathop{\\mathrm{pa}}", -->
+                            <!--       mrca: "\\mathop{\\mathrm{mrca}}", -->
+                            <!--       desc: "\\mathop{\\mathrm{desc}}", -->
+                            <!--       warning: ["\\color{red}{{#1}}", 1] -->
+                            <!--     } -->
+                    <!--   } -->
+            <!-- }); -->
+    <!-- </script> -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    TeX: {Macros: {
+            E: "{\\mathbb{E}}"
+        },
+        Augment: {
+        Definitions: {
+          delimiter: {
+            "\\llbracket": '\u27E6',
+            '\\rrbracket': '\u27E7'
+          }}
+        }}
+    });
+</script>
+    <body>
+    <div style="display:none" aria-hidden="true">
+    \(
+        \newcommand\R{\mathbb{R}}
+        \newcommand\Z{\mathbb{Z}}
+        \newcommand\LL{\mathbb{L}}
+        \newcommand{\E}[1]{\mathbb{E}\left[#1\right]}
+        \newcommand{\V}[1]{\mathbb{V}\left[#1\right]}
+        \newcommand\1{\mathbb{1}}
+        \newcommand\N{\mathcal{N}}
+        \newcommand{\transp}[1]{{}^t\!#1}
+        \newcommand\ud{\,\mathrm{d}}
+        \DeclareMathOperator*{\argmax}{argmax}
+        \DeclareMathOperator*{\argmin}{argmin}
+        \DeclareMathOperator{\e}{e}
+        \DeclareMathOperator{\Cov}{Cov}
+    \)
+    </div>
+    </body>
+            
+<div id="sec:GuggemosEtAl" class="section level1" number="4">
+<h1><span class="header-section-number">Section 4</span> General optimization problem: FST filters</h1>
+<div id="description-of-the-approach" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Description of the approach</h2>
+<p><span class="citation"><a href="#ref-ch15HBSA" role="doc-biblioref">Grun-Rehomme, Guggemos, and Ladiray</a> (<a href="#ref-ch15HBSA" role="doc-biblioref">2018</a>)</span> defined a general approach to derive linear filters, based on an optimization problem of three criteria.
+Contrary to the local polynomial approach of <span class="citation"><a href="#ref-proietti2008" role="doc-biblioref">Proietti and Luati</a> (<a href="#ref-proietti2008" role="doc-biblioref">2008</a>)</span>, this method enables to control the size of the timeliness in order to minimize the phase-shift.</p>
+<p>The following criteria are used:</p>
+<ul>
+<li><p><em>Fidelity</em>, <span class="math inline">\(F_g\)</span>: it’s the variance reduction ratio. It is called “Fidelity” because we want the output signal to be as close as possible to the input signal where the noise component is removed
+<span class="math display">\[
+F_g(\theta) = \sum_{k=-p}^{+f}\theta_{k}^{2}
+\]</span>
+<span class="math inline">\(F_g\)</span> can be rewritten in a positive quadratic form: <span class="math inline">\(F_g(\theta)=\theta&#39;F\theta\)</span> with <span class="math inline">\(F\)</span> the identity matrix of order <span class="math inline">\(p+f+1\)</span>.</p></li>
+<li><p><em>Smoothness</em>, <span class="math inline">\(S_g\)</span>: it’s the Henderson smoothness criterion (sum of the squared of the third difference of the coefficients of the filter).
+It measures the flexibility of the coefficient curve of a filter and the smoothness of the trend.
+<span class="math display">\[
+S_g(\theta) = \sum_{j}(\nabla^{3}\theta_{j})^{2}
+\]</span>
+<span class="math inline">\(S_g\)</span> could also be rewritten in a positive quadratic form: <span class="math inline">\(S_g(\theta)=\theta&#39;S\theta\)</span> with <span class="math inline">\(S\)</span> a symmetric matrix of order <span class="math inline">\(p+f+1\)</span>.</p></li>
+<li><p><em>Timeliness</em>, <span class="math inline">\(T_g\)</span>: it measures the phase shift between input and output signal for specific frequencies.
+When a linear filter is applied, the level input signal is also altered by the gain function.
+Therefore, it is natural to consider that the higher the gain is, the higher the phase shift impact is.
+That’s why the timeliness criterion depends on the gain and phase shift functions (<span class="math inline">\(\rho_\theta\)</span> and <span class="math inline">\(\varphi_{\theta}\)</span>), the link between both functions being made by a penalty function <span class="math inline">\(f\)</span>.
+<span class="math display">\[
+T_g(\theta)=\int_{\omega_{1}}^{\omega_{2}}f(\rho_{\theta}(\omega),\varphi_{\theta}(\omega))\ud\omega
+\]</span>
+In this article we use <span class="math inline">\(\omega_1=0\)</span> and <span class="math inline">\(\omega_2=2\pi/12\)</span> (for monthly data): we focus on the phase shift impact on cycles of more than one year.
+For the penalty function, we take <span class="math inline">\(f\colon(\rho,\varphi)\mapsto\rho^2\sin(\varphi)^2\)</span>.
+Indeed, for this function, the timeliness criterion is analytically solvable (<span class="math inline">\(T_g=\theta&#39;T\theta\)</span> with <span class="math inline">\(T\)</span> a square symmetric matrix of order <span class="math inline">\(p+f+1\)</span>), which is better in a computational point of view.</p></li>
+</ul>
+<p>The asymmetric filters are computed minimizing a weighted sum of the past three criteria, subject to some constraints. Those constraints are usually polynomial preservation.</p>
+<p><span class="math display">\[
+\begin{cases}
+\underset{\theta}{\min} &amp; J(\theta)=
+\alpha F_g(\theta)+\beta S_g(\theta)+\gamma T_g(\theta)\\
+s.t. &amp; C\theta=a
+\end{cases}
+\]</span>
+The conditions <span class="math inline">\(\alpha,\beta,\gamma\geq 0\text{ and }\alpha\beta\ne 0\)</span> guarantee that <span class="math inline">\(J(\theta)\)</span> is a strictly convex function: therefore the optimization problem has a unique solution.</p>
+<p>The Henderson symmetric filters can for example be computed with
+<span class="math display">\[C=\begin{pmatrix}
+1 &amp; \cdots&amp;1\\
+-h &amp; \cdots&amp;h \\
+(-h)^2 &amp; \cdots&amp;h^2
+\end{pmatrix},\quad
+a=\begin{pmatrix}
+1 \\0\\0
+\end{pmatrix},\quad
+\alpha=\gamma=0,\quad
+\beta=1\]</span></p>
+<p>This approach can be called as the “FST approach” in reference to the three indicators used in the optimization problem.
+One drawback of this approach is that the different criteria are not normalized: their values cannot be compared with each other.
+As a result, the value of weights has no sense.</p>
+<div class="summary_box">
+<div id="title">
+<p>Summary — FST filters</p>
+</div>
+<p><strong>Advantages</strong>:</p>
+<ul>
+<li><p>The asymmetric linear filter is independent of the symmetric filter, the data and the date of estimation.</p></li>
+<li><p>Unique solution to the optimization problem.</p></li>
+<li><p>The approach can be customized adding new criteria.</p></li>
+</ul>
+<p><strong>Drawbacks</strong>:</p>
+<ul>
+<li>The different criteria are not normalized: the associated weights cannot be compared.</li>
+</ul>
+</div>
+</div>
+<div id="extension-with-the-revision-criterion" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> Extension with the revision criterion</h2>
+<p>The FST — Fidelity-Smoothness-Timeliness — approach is the only one that doesn’t directly include a criterion on the revision error relative to a symmetric filter.<br />
+This approach could be somewhat generalized in order to include the revision criterion, replacing in the orthogonal form <span class="math inline">\(\theta\)</span> by <span class="math inline">\((w-\theta)\)</span> (with <span class="math inline">\(w\)</span> the symmetric filter), and <span class="math inline">\(F\)</span> by a matrix relative to the data (see <span class="citation"><a href="#ref-ch12HBSA" role="doc-biblioref">Ladiray</a> (<a href="#ref-ch12HBSA" role="doc-biblioref">2018</a>)</span>).</p>
+<p>In this paper, we consider the method that consists to extend the minimization problem of local polynomial filters adding the Timeliness criterion defined by <span class="citation"><a href="#ref-ch15HBSA" role="doc-biblioref">Grun-Rehomme, Guggemos, and Ladiray</a> (<a href="#ref-ch15HBSA" role="doc-biblioref">2018</a>)</span><a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>.
+Using the same notations as in section <a href="sec-lppfilters.html#subsec:lppasymf">3.2.2</a>, <span class="math inline">\(\theta=v\)</span> and noting <span class="math inline">\(g=v-w_p\)</span>, the Timeliness criterion can be rewritten:
+<span class="math display">\[
+T_g(v)=v&#39;Tv=g&#39;Tg+2w_p&#39;Tg+w_p&#39;Tw_p
+\quad(T\text{ being symmetric)}
+\]</span>
+Moreover, the objective function <span class="math inline">\(\varphi\)</span> of equation <a href="sec-lppfilters.html#eq:lppasym">(3.1)</a> can be rewritten as:
+<span class="math display">\[\begin{align*}
+\varphi(v)&amp;=(v-w_{p})&#39;D_{p}(v-w_{p})+
+  w_{f}&#39;D_{f}w_{f}+
+  [\delta&#39;(Z_{p}&#39;v-Z&#39;w)]^{2}+
+2l&#39;(U_{p}&#39;v-U&#39;w)\\
+&amp;=g&#39;Qg-2Pg+2l&#39;(U_{p}&#39;v-U&#39;w)+c\quad\text{with }
+\begin{cases}
+Q=D_p+Z_p\delta\delta&#39;Z&#39;_p \\
+P=w_fZ_f\delta\delta&#39;Z_p&#39;\\
+c\text{ a constant independent of }v
+\end{cases}
+\end{align*}\]</span></p>
+<p>Adding the Timeliness criterion, it becomes:
+<span class="math display">\[
+\widetilde\varphi(v)=g&#39;\widetilde Qg-
+2\widetilde Pg+2l&#39;(U_{p}&#39;v-U&#39;w)+
+\widetilde c\quad\text{with }
+\begin{cases}
+\widetilde Q=D_p+Z_p\delta\delta&#39;Z&#39;_p +\alpha_TT\\
+\widetilde P=w_fZ_f\delta\delta&#39;Z_p&#39;-\alpha_Tw_pT\\
+\widetilde c\text{ a constant independent of }v
+\end{cases}
+\]</span>
+where <span class="math inline">\(\alpha_T\)</span> is the weight associated to the Timeliness criterion. With <span class="math inline">\(\alpha_T=0\)</span> we find <span class="math inline">\(\varphi(v)\)</span>.</p>
+<p>The figures <a href="#fig:lppguglc"><strong>??</strong></a> show the impact of <span class="math inline">\(\alpha_T\)</span> on the coefficients of the linear filter with the LC method:</p>
+<ul>
+<li><p>The more <span class="math inline">\(\alpha_T\)</span> increases, the more the coefficient associated to the current observation increases: this is what we expected.</p></li>
+<li><p><span class="math inline">\(\alpha_T\)</span> impacts logarithmically the coefficients: we can restraint <span class="math inline">\(\alpha_T\)</span> to <span class="math inline">\([0,2000]\)</span>.</p></li>
+<li><p>As expected, including the timeliness criterion has more impact for the value of <span class="math inline">\(q\)</span> that gives filters with higher timeliness: it corresponds to <span class="math inline">\(q\leq2\)</span> for the LC method.
+For the QL method we find that <span class="math inline">\(\alpha_T\)</span> has an impact for medium values of <span class="math inline">\(q\)</span> (<span class="math inline">\(2\leq q\leq4\)</span>).</p></li>
+</ul>
+
+</div>
+</div>
+<h3>References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-ch15HBSA" class="csl-entry">
+Grun-Rehomme, Michel, Fabien Guggemos, and Dominique Ladiray. 2018. <span>“Asymmetric Moving Averages Minimizing Phase Shift.”</span> <em>Handbook on Seasonal Adjustment</em>. <a href="https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-001">ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-001</a>.
+</div>
+<div id="ref-ch12HBSA" class="csl-entry">
+Ladiray, Dominique. 2018. <span>“Moving Average Based Seasonal Adjustment.”</span> <em>Handbook on Seasonal Adjustment</em>. <a href="https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-001">ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-001</a>.
+</div>
+<div id="ref-proietti2008" class="csl-entry">
+Proietti, Tommaso, and Alessandra Luati. 2008. <span>“Real Time Estimation in Local Polynomial Regression, with Application to Trend-Cycle Analysis.”</span> <em>Ann. Appl. Stat.</em> 2 (4): 1523–53. <a href="https://doi.org/10.1214/08-AOAS195">https://doi.org/10.1214/08-AOAS195</a>.
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="12">
+<li id="fn12"><p>This method is for example coded in Java by Jean Palate in <a href="https://github.com/palatej/jdemetra-core" class="uri">https://github.com/palatej/jdemetra-core</a>.<a href="sec-GuggemosEtAl.html#fnref12" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="sec-lppfilters.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="sec-WildiMcLeroy.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["Stage_2A.pdf", "Stage_2A.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

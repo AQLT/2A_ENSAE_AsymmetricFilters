@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="english" xml:lang="english">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Section 3 Local polynomial filters | Real-time detection of turning points with linear filters</title>
+  <meta name="description" content="Stage 2A de l’Ensae d’Alain Quartier-la-Tente" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Section 3 Local polynomial filters | Real-time detection of turning points with linear filters" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Stage 2A de l’Ensae d’Alain Quartier-la-Tente" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Section 3 Local polynomial filters | Real-time detection of turning points with linear filters" />
+  
+  <meta name="twitter:description" content="Stage 2A de l’Ensae d’Alain Quartier-la-Tente" />
+  
+
+<meta name="author" content="Alain Quartier-la-Tente" />
+
+
+<meta name="date" content="2021-07-27" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="sec-propMM.html"/>
+<link rel="next" href="sec-GuggemosEtAl.html"/>
+<script src="libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Stage 2A Ensae AQLT</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Abstracts</a></li>
+<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="chapter" data-level="1" data-path="sec-SAtoTCE.html"><a href="sec-SAtoTCE.html"><i class="fa fa-check"></i><b>1</b> From seasonal adjustment to trend-cycle estimation</a></li>
+<li class="chapter" data-level="2" data-path="sec-propMM.html"><a href="sec-propMM.html"><i class="fa fa-check"></i><b>2</b> Moving average and filters</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="sec-propMM.html"><a href="sec-propMM.html#gain-and-phase-shift-functions"><i class="fa fa-check"></i><b>2.1</b> Gain and phase shift functions</a></li>
+<li class="chapter" data-level="2.2" data-path="sec-propMM.html"><a href="sec-propMM.html#desirable-properties-of-a-moving-average"><i class="fa fa-check"></i><b>2.2</b> Desirable properties of a moving average</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="sec-propMM.html"><a href="sec-propMM.html#trend-preservation"><i class="fa fa-check"></i><b>2.2.1</b> Trend preservation</a></li>
+<li class="chapter" data-level="2.2.2" data-path="sec-propMM.html"><a href="sec-propMM.html#variance-reduction"><i class="fa fa-check"></i><b>2.2.2</b> Variance reduction</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="sec-propMM.html"><a href="sec-propMM.html#defAsymProb"><i class="fa fa-check"></i><b>2.3</b> Real-time estimation and asymmetric moving average</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html"><i class="fa fa-check"></i><b>3</b> Local polynomial filters</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#sec:kernels"><i class="fa fa-check"></i><b>3.1</b> Different kernels</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#sec:sympolyfilter"><i class="fa fa-check"></i><b>3.1.1</b> Specific symmetric filters</a></li>
+<li class="chapter" data-level="3.1.2" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#analysis-of-symmetric-filters"><i class="fa fa-check"></i><b>3.1.2</b> Analysis of symmetric filters</a></li>
+<li class="chapter" data-level="3.1.3" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#gain-functions"><i class="fa fa-check"></i><b>3.1.3</b> Gain functions</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#asymmetric-filters"><i class="fa fa-check"></i><b>3.2</b> Asymmetric filters</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#direct-asymmetric-filters-daf"><i class="fa fa-check"></i><b>3.2.1</b> Direct asymmetric filters (DAF)</a></li>
+<li class="chapter" data-level="3.2.2" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#subsec:lppasymf"><i class="fa fa-check"></i><b>3.2.2</b> General class of asymmetric filters</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="sec-GuggemosEtAl.html"><a href="sec-GuggemosEtAl.html"><i class="fa fa-check"></i><b>4</b> General optimization problem: FST filters</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="sec-GuggemosEtAl.html"><a href="sec-GuggemosEtAl.html#description-of-the-approach"><i class="fa fa-check"></i><b>4.1</b> Description of the approach</a></li>
+<li class="chapter" data-level="4.2" data-path="sec-GuggemosEtAl.html"><a href="sec-GuggemosEtAl.html#extension-with-the-revision-criterion"><i class="fa fa-check"></i><b>4.2</b> Extension with the revision criterion</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="sec-WildiMcLeroy.html"><a href="sec-WildiMcLeroy.html"><i class="fa fa-check"></i><b>5</b> Data-dependent filter</a></li>
+<li class="chapter" data-level="6" data-path="sec-Dagum.html"><a href="sec-Dagum.html"><i class="fa fa-check"></i><b>6</b> Asymmetric filters and Reproducing Kernel Hilbert Space</a></li>
+<li class="chapter" data-level="7" data-path="sec-comparison.html"><a href="sec-comparison.html"><i class="fa fa-check"></i><b>7</b> Comparison of the different filters</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="sec-comparison.html"><a href="sec-comparison.html#comparison-with-the-fst-approach"><i class="fa fa-check"></i><b>7.1</b> Comparison with the FST approach</a></li>
+<li class="chapter" data-level="7.2" data-path="sec-comparison.html"><a href="sec-comparison.html#illustration-with-an-example"><i class="fa fa-check"></i><b>7.2</b> Illustration with an example</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i>Conclusion</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Real-time detection of turning points with linear filters</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<!-- <script type="text/x-mathjax-config"> -->
+    <!-- MathJax.Hub.Config({ -->
+            <!--   TeX: { -->
+                    <!--     Macros: { -->
+                            <!--       NN: "{\\mathbb{N}}", -->
+                            <!--       ZZ: "{\\mathbb{Z}}", -->
+                            <!--       QQ: "{\\mathbb{Q}}", -->
+                            <!--       RR: "{\\mathbb{R}}", -->
+                            <!--       shiftset: "{\\mathcal{D}}", -->
+                            <!--       dx: ["{\\mathrm{d}^{#1}\\mspace{-1mu}\\mathord{#2}}", 2, ""], -->
+                            <!--       indic: "{\\unicode{x1D7D9}}", -->
+                            <!--       prob: "\\mathop{\\mathbb{P}}", -->
+                            <!--       esp: "\\mathop{\\mathbb{E}}", -->
+                            <!--       var: "\\mathop{\\mathbb{V}\\text{ar}}", -->
+                            <!--       cov: "\\mathop{\\mathbb{C}\\text{ov}}", -->
+                            <!--       PP: ["{\\prob\\left({#1}\\right)}", 1], -->
+                            <!--       EE: ["{\\esp\\left[{#1}\\right]}", 1], -->
+                            <!--       VV: ["{\\var\\left[{#1}\\right]}", 1], -->
+                            <!--       CC: ["{\\cov\\left[{#1}\\right]}", 1], -->
+                            <!--       normal: ["{\\mathcal{N}\\left({#1},{#2}\\right)}", 2], -->
+                            <!--       ou: ["{#1}_{\\text{ou}}", 1], -->
+                            <!--       oui: ["{#1}_{\\text{ou},#2}", 2], -->
+                            <!--       pv: "{\\mathfrak{p}}", -->
+                            <!--       qv: "{\\mathfrak{q}}", -->
+                            <!--       zs: "{\\mathfrak{z}}", -->
+                            <!--       ts: "{\\mathfrak{t}}", -->
+                            <!--       sign: "{\\mathfrak{s}}", -->
+                            <!--       shifts: "{\\delta}", -->
+                            <!--       optim: "{\\beta}", -->
+                            <!--       param: "{\\theta}", -->
+                            <!--       unif: ["{\\mathcal{U}\\left({#1}\\right)}", 1], -->
+                            <!--       argmin: "\\mathop{\\mathrm{argmin}}", -->
+                            <!--       diag: "\\mathop{\\mathrm{Diag}}", -->
+                            <!--       rang: "\\mathop{\\mathrm{rang}}", -->
+                            <!--       pa: "\\mathop{\\mathrm{pa}}", -->
+                            <!--       mrca: "\\mathop{\\mathrm{mrca}}", -->
+                            <!--       desc: "\\mathop{\\mathrm{desc}}", -->
+                            <!--       warning: ["\\color{red}{{#1}}", 1] -->
+                            <!--     } -->
+                    <!--   } -->
+            <!-- }); -->
+    <!-- </script> -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    TeX: {Macros: {
+            E: "{\\mathbb{E}}"
+        },
+        Augment: {
+        Definitions: {
+          delimiter: {
+            "\\llbracket": '\u27E6',
+            '\\rrbracket': '\u27E7'
+          }}
+        }}
+    });
+</script>
+    <body>
+    <div style="display:none" aria-hidden="true">
+    \(
+        \newcommand\R{\mathbb{R}}
+        \newcommand\Z{\mathbb{Z}}
+        \newcommand\LL{\mathbb{L}}
+        \newcommand{\E}[1]{\mathbb{E}\left[#1\right]}
+        \newcommand{\V}[1]{\mathbb{V}\left[#1\right]}
+        \newcommand\1{\mathbb{1}}
+        \newcommand\N{\mathcal{N}}
+        \newcommand{\transp}[1]{{}^t\!#1}
+        \newcommand\ud{\,\mathrm{d}}
+        \DeclareMathOperator*{\argmax}{argmax}
+        \DeclareMathOperator*{\argmin}{argmin}
+        \DeclareMathOperator{\e}{e}
+        \DeclareMathOperator{\Cov}{Cov}
+    \)
+    </div>
+    </body>
+            
+<div id="sec:lppfilters" class="section level1" number="3">
+<h1><span class="header-section-number">Section 3</span> Local polynomial filters</h1>
+<p>In this section we detail the filters that arise from fitting a local polynomial to our time series, as described by <span class="citation"><a href="#ref-proietti2008" role="doc-biblioref">Proietti and Luati</a> (<a href="#ref-proietti2008" role="doc-biblioref">2008</a>)</span>.
+Local polynomial filters encompass classical filters like Henderson and Musgrave filters (see sections <a href="sec-lppfilters.html#sec:sympolyfilter">3.1.1</a> and <a href="sec-lppfilters.html#subsec:lppasymf">3.2.2</a>).</p>
+<p>We assume that our time series <span class="math inline">\(y_t\)</span> can be decomposed as
+<span class="math display">\[
+y_t=\mu_t+\varepsilon_t
+\]</span>
+where <span class="math inline">\(\mu_t\)</span> is the signal (trend) and <span class="math inline">\(\varepsilon_{t}\overset{i.i.d}{\sim}\mathcal{N}(0,\sigma^{2})\)</span> is the noise<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a>.
+We assume that <span class="math inline">\(\mu_t\)</span> can be locally approximated by a polynomial of degree <span class="math inline">\(d\)</span> of the time <span class="math inline">\(t\)</span> between <span class="math inline">\(y_t\)</span> and the neighboring observations <span class="math inline">\(\left(y_{t+j}\right)_{j\in\left\llbracket -h,h\right\rrbracket}\)</span>.
+Then <span class="math inline">\(\mu_t\simeq m_{t}\)</span> with:
+<span class="math display">\[
+\forall j\in\left\llbracket -h,h\right\rrbracket :\:
+y_{t+j}=m_{t+j}+\varepsilon_{t+j},\quad m_{t+j}=\sum_{i=0}^{d}\beta_{i}j^{i}
+\]</span>
+This signal extraction problem is then equivalent to the estimation of <span class="math inline">\(m_t=\beta_0\)</span>. In matrix notation we can write:
+<span class="math display">\[
+\underbrace{\begin{pmatrix}y_{t-h}\\
+y_{t-(h-1)}\\
+\vdots\\
+y_{t}\\
+\vdots\\
+y_{t+(h-1)}\\
+y_{t+h}
+\end{pmatrix}}_{y}=\underbrace{\begin{pmatrix}1 &amp; -h &amp; h^{2} &amp; \cdots &amp; (-h)^{d}\\
+1 &amp; -(h-1) &amp; (h-1)^{2} &amp; \cdots &amp; (-(h-1))^{d}\\
+\vdots &amp; \vdots &amp; \vdots &amp; \cdots &amp; \vdots\\
+1 &amp; 0 &amp; 0 &amp; \cdots &amp; 0\\
+\vdots &amp; \vdots &amp; \vdots &amp; \cdots &amp; \vdots\\
+1 &amp; h-1 &amp; (h-1)^{2} &amp; \cdots &amp; (h-1)^{d}\\
+1 &amp; h &amp; h^{2} &amp; \cdots &amp; h^{d}
+\end{pmatrix}}_{X}\underbrace{\begin{pmatrix}\beta_{0}\\
+\beta_{1}\\
+\vdots\\
+\vdots\\
+\vdots\\
+\vdots\\
+\beta_{d}
+\end{pmatrix}}_{\beta}+\underbrace{\begin{pmatrix}\varepsilon_{t-h}\\
+\varepsilon_{t-(h-1)}\\
+\vdots\\
+\varepsilon_{t}\\
+\vdots\\
+\varepsilon_{t+(h-1)}\\
+\varepsilon_{t+h}
+\end{pmatrix}}_{\varepsilon}
+\]</span>
+Two parameters are crucial in determining the accuracy of the approximation:</p>
+<ul>
+<li><p>the degree <span class="math inline">\(d\)</span> of the polynomial;</p></li>
+<li><p>the number of neighbors <span class="math inline">\(H=2h+1\)</span> (or the <em>bandwidth</em> <span class="math inline">\(h\)</span>).</p></li>
+</ul>
+<p>In order to estimate <span class="math inline">\(\beta\)</span> we need <span class="math inline">\(H\geq d+1\)</span> and the estimation is done by the weighted least squares (WLS), which consists of minimizing the following objective function:
+<span class="math display">\[
+S(\hat{\beta}_{0},\dots,\hat{\beta}_{d})=\sum_{j=-h}^{h}\kappa_{j}(y_{t+j}-\hat{\beta}_{0}-\hat{\beta}_{1}j-\dots-\hat{\beta}_{d}j^{d})^{2}
+\]</span>
+where <span class="math inline">\(\kappa_j\)</span> is a set of weights called <em>kernel</em>. We have <span class="math inline">\(\kappa_j\geq 0:\kappa_{-j}=\kappa_j\)</span>, and with <span class="math inline">\(K=diag(\kappa_{-h},\dots,\kappa_{h})\)</span>, the estimate of <span class="math inline">\(\beta\)</span> can be written as <span class="math inline">\(\hat{\beta}=(X&#39;KX)^{1}X&#39;Ky\)</span>.
+With <span class="math inline">\(e_{1}=\begin{pmatrix}1&amp;0&amp;\cdots&amp;0\end{pmatrix}&#39;\)</span>, the estimate of the trend is:
+<span class="math display">\[
+\hat{m}_{t}=e_{1}\hat{\beta}=w&#39;y=\sum_{j=-h}^{h}w_{j}y_{t-j}\text{ with }w=KX(X&#39;KX)^{-1}e_{1}
+\]</span>
+To conclude, the estimate of the trend <span class="math inline">\(\hat{m}_{t}\)</span> can be obtained applying the symmetric filter <span class="math inline">\(w\)</span> to <span class="math inline">\(y_t\)</span><a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a>.
+Moreover, <span class="math inline">\(X&#39;w=e_{1}\)</span> so:
+<span class="math display">\[
+\sum_{j=-h}^{h}w_{j}=1,\quad\forall r\in\left\llbracket 1,d\right\rrbracket :\sum_{j=-h}^{h}j^{r}w_{j}=0
+\]</span>
+Hence, the filter <span class="math inline">\(w\)</span> preserve deterministic polynomial of order <span class="math inline">\(d\)</span>.</p>
+<div id="sec:kernels" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Different kernels</h2>
+<p>In signal extraction, observations are generally weighted according to their distance from time <span class="math inline">\(t\)</span>: this is the role of the kernel function.
+In the discrete case, a kernel function is a set of weights <span class="math inline">\(\kappa_j\)</span>, <span class="math inline">\(j=0,\pm1,\dots,\pm h\)</span> with <span class="math inline">\(\kappa_j \geq0\)</span> and <span class="math inline">\(\kappa_j=\kappa_{-j}\)</span>.
+An important class of kernels is the Beta kernels. In the discrete case, up to a proportional factor (so that <span class="math inline">\(\sum_{j=-h}^h\kappa_j=1\)</span>):
+<span class="math display">\[
+\kappa_j = \left(
+  1-
+  \left\lvert
+  \frac j {h+1}
+  \right\lvert^r
+\right)^s
+\]</span>
+with <span class="math inline">\(r&gt;0\)</span>, <span class="math inline">\(s\geq 0\)</span>.
+It encompasses all kernels used in this report, except Henderson, trapezoidal and gaussian kernel.The following kernels are considered in this report:</p>
+<!-- Let $x\in ]0,1[$ and $f_x(a,b)=\left(1-x^{a}\right)^{b}$. We have: -->
+<!-- \begin{align*} -->
+<!-- \frac{\partial}{\partial a}f(a,b) &=-a\ln (x)x^a(1-x^{a})^{b}>0 \\ -->
+<!-- \frac{\partial}{\partial b}f(a,b)&=\ln(1-x^{a})(1-x^{a})^{b} <0 -->
+<!-- \end{align*} -->
+<!-- So: -->
+<p>Henderson, trapezoidal and gaussian kernel are very specific:</p>
+<ul>
+<li><p>The Henderson and trapezoidal kernel functions change with the bandwidth (the other kernel only depend on the ratio <span class="math inline">\(j/h+1\)</span>).</p></li>
+<li><p>Other definitions of the trapezoidal and gaussian kernel can be used.
+The trapezoidal kernel is here considered because it corresponds to the filter used to extract the seasonal component in the X-12ARIMA algorithm.
+Therefore it is never used to extract trend-cycle component.</p></li>
+</ul>
+<p>The figure <a href="#fig:kernels"><strong>??</strong></a> summarizes the coefficients of the different kernels.
+Analyzing the coefficients we can already anticipate some properties of the associated filters:</p>
+<ul>
+<li><p>The triweight kernel has the narrowest distribution.
+The narrowest a distribution is, the smallest the weights of furthest neighbors are: the associated filter should have a high weight in the current observation (<span class="math inline">\(t\)</span>).</p></li>
+<li><p>For <span class="math inline">\(h\)</span> high the Henderson kernel is equivalent to the triweight kernel (since <span class="math inline">\(h+1\sim h+2 \sim h+3\)</span>, <span class="math inline">\(\kappa_j^H\sim\kappa_j^{TW}\)</span>), the associated filter should also be equivalent.
+However, for <span class="math inline">\(h\)</span> small (<span class="math inline">\(h\leq10\)</span>) the Henderson kernel is closer to the biweight kernel than to the triweight kernel.</p></li>
+</ul>
+<div id="sec:sympolyfilter" class="section level3" number="3.1.1">
+<h3><span class="header-section-number">3.1.1</span> Specific symmetric filters</h3>
+<p>When <span class="math inline">\(p=0\)</span> (local adjustment by a constant) we obtain the <strong>Nadaraya-Watson</strong>’s estimator.</p>
+<p>With the uniform kernel we obtain the <strong>Macaulay filter</strong>.
+When <span class="math inline">\(p=0,1\)</span>, this is the arithmetic moving average: <span class="math inline">\(w_j=w=\frac{1}{2h+1}\)</span>.</p>
+<p>The <strong>Epanechnikov</strong> kernel is often recommended as the optimal kernel that minimizes the mean square error of the estimation by local polynomial.</p>
+<p><strong>Loess</strong> is a locally weighted polynomial regression that uses tricube kernel.</p>
+<p>The <strong>Henderson filter</strong> is a specific case of a local cubic fit (<span class="math inline">\(p=3\)</span>), widely used for trend estimation (for example it’s the filter used in the seasonal adjustment software X-12ARIMA). For a fixed bandwidth, Henderson found the kernel that gave the smoothest estimates of the trend.
+He showed that the three following problems were equivalent:</p>
+<ol style="list-style-type: decimal">
+<li>minimize the variance of third difference of the series by the application of the moving average;<br />
+</li>
+<li>minimize the sum of squares of third difference of the coefficients of the filter, it’s the <em>smoothness criterion</em>: <span class="math inline">\(S=\sum_j(\nabla^{3}\theta_{j})^{2}\)</span>;<br />
+</li>
+<li>fit a local cubic polynomial by weighted least squares, where the weights are chose to minimize the sum of squares of the resulting filter.</li>
+</ol>
+<p>Resolving the last problem leads to the kernel presented in section <a href="sec-lppfilters.html#sec:kernels">3.1</a>.</p>
+</div>
+<div id="analysis-of-symmetric-filters" class="section level3" number="3.1.2">
+<h3><span class="header-section-number">3.1.2</span> Analysis of symmetric filters</h3>
+<p>In this section, all the filters are computed by local polynomial of degree <span class="math inline">\(d=3\)</span>.
+The figure <a href="#fig:filterscoefs"><strong>??</strong></a> plots the coefficients of the filters for the different kernels presented in different kernels presented in section <a href="sec-lppfilters.html#sec:kernels">3.1</a> and for different bandwidths <span class="math inline">\(h\)</span>.
+The table <a href="sec-lppfilters.html#tab:varianceReductionSymmetricFilters">3.1</a> shows the variance reduction of the different filters.
+We find the similar results than in section <a href="#fig:kernels"><strong>??</strong></a>:</p>
+<ul>
+<li><p>The triweight kernel gives the filter with the narrowest distribution.
+The narrowest a distribution is, the higher the variance reduction should be.
+Indeed, the distribution of the coefficients of the filter can be interpreted as the output signal of an additive outlier.
+As a result, with a wide distribution, an additive outlier will be more persistent than with a narrow distribution.
+Therefore, it’s the triweight that has the higher variance reduction for all <span class="math inline">\(h\leq30\)</span>.</p></li>
+<li><p>For <span class="math inline">\(h\)</span> small, the trapezoidal filter seems to produce similar results than the Epanechnikov one.</p></li>
+<li><p>For <span class="math inline">\(h\)</span> small the Henderson filter is closed to the biweight kernel, for <span class="math inline">\(h\)</span> high it is equivalent to the triweight kernel.</p></li>
+</ul>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:varianceReductionSymmetricFilters">Table 3.1: </span>Variance reduction ratio (<span class="math inline">\(\sum\theta_i^2\)</span>) of symmetric filters computed by local polynomial of degree <span class="math inline">\(3\)</span>.
+</caption>
+<thead>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="9">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Kernel
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:center;">
+<span class="math inline">\(h\)</span>
+</th>
+<th style="text-align:center;">
+Biweight
+</th>
+<th style="text-align:center;">
+Epanechnikov
+</th>
+<th style="text-align:center;">
+Gaussian
+</th>
+<th style="text-align:center;">
+Henderson
+</th>
+<th style="text-align:center;">
+Trapezoidal
+</th>
+<th style="text-align:center;">
+Triangular
+</th>
+<th style="text-align:center;">
+Tricube
+</th>
+<th style="text-align:center;">
+Triweight
+</th>
+<th style="text-align:center;">
+Uniform
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+2
+</td>
+<td style="text-align:center;">
+0.50
+</td>
+<td style="text-align:center;">
+0.49
+</td>
+<td style="text-align:center;">
+0.49
+</td>
+<td style="text-align:center;">
+0.50
+</td>
+<td style="text-align:center;">
+0.51
+</td>
+<td style="text-align:center;">
+0.51
+</td>
+<td style="text-align:center;">
+0.49
+</td>
+<td style="text-align:center;">
+0.52
+</td>
+<td style="text-align:center;">
+0.49
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+3
+</td>
+<td style="text-align:center;">
+0.33
+</td>
+<td style="text-align:center;">
+0.30
+</td>
+<td style="text-align:center;">
+0.30
+</td>
+<td style="text-align:center;">
+0.32
+</td>
+<td style="text-align:center;">
+0.31
+</td>
+<td style="text-align:center;">
+0.33
+</td>
+<td style="text-align:center;">
+0.32
+</td>
+<td style="text-align:center;">
+0.37
+</td>
+<td style="text-align:center;">
+0.28
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+4
+</td>
+<td style="text-align:center;">
+0.25
+</td>
+<td style="text-align:center;">
+0.23
+</td>
+<td style="text-align:center;">
+0.24
+</td>
+<td style="text-align:center;">
+0.25
+</td>
+<td style="text-align:center;">
+0.23
+</td>
+<td style="text-align:center;">
+0.25
+</td>
+<td style="text-align:center;">
+0.25
+</td>
+<td style="text-align:center;">
+0.28
+</td>
+<td style="text-align:center;">
+0.22
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+5
+</td>
+<td style="text-align:center;">
+0.22
+</td>
+<td style="text-align:center;">
+0.21
+</td>
+<td style="text-align:center;">
+0.21
+</td>
+<td style="text-align:center;">
+0.22
+</td>
+<td style="text-align:center;">
+0.20
+</td>
+<td style="text-align:center;">
+0.22
+</td>
+<td style="text-align:center;">
+0.22
+</td>
+<td style="text-align:center;">
+0.24
+</td>
+<td style="text-align:center;">
+0.20
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+6
+</td>
+<td style="text-align:center;">
+0.20
+</td>
+<td style="text-align:center;">
+0.19
+</td>
+<td style="text-align:center;">
+0.19
+</td>
+<td style="text-align:center;">
+0.20
+</td>
+<td style="text-align:center;">
+0.19
+</td>
+<td style="text-align:center;">
+0.20
+</td>
+<td style="text-align:center;">
+0.20
+</td>
+<td style="text-align:center;">
+0.21
+</td>
+<td style="text-align:center;">
+0.19
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+7
+</td>
+<td style="text-align:center;">
+0.19
+</td>
+<td style="text-align:center;">
+0.18
+</td>
+<td style="text-align:center;">
+0.18
+</td>
+<td style="text-align:center;">
+0.19
+</td>
+<td style="text-align:center;">
+0.18
+</td>
+<td style="text-align:center;">
+0.19
+</td>
+<td style="text-align:center;">
+0.19
+</td>
+<td style="text-align:center;">
+0.20
+</td>
+<td style="text-align:center;">
+0.18
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+8
+</td>
+<td style="text-align:center;">
+0.18
+</td>
+<td style="text-align:center;">
+0.17
+</td>
+<td style="text-align:center;">
+0.18
+</td>
+<td style="text-align:center;">
+0.18
+</td>
+<td style="text-align:center;">
+0.17
+</td>
+<td style="text-align:center;">
+0.18
+</td>
+<td style="text-align:center;">
+0.18
+</td>
+<td style="text-align:center;">
+0.19
+</td>
+<td style="text-align:center;">
+0.17
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+9
+</td>
+<td style="text-align:center;">
+0.17
+</td>
+<td style="text-align:center;">
+0.17
+</td>
+<td style="text-align:center;">
+0.17
+</td>
+<td style="text-align:center;">
+0.17
+</td>
+<td style="text-align:center;">
+0.17
+</td>
+<td style="text-align:center;">
+0.17
+</td>
+<td style="text-align:center;">
+0.17
+</td>
+<td style="text-align:center;">
+0.18
+</td>
+<td style="text-align:center;">
+0.17
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+10
+</td>
+<td style="text-align:center;">
+0.17
+</td>
+<td style="text-align:center;">
+0.16
+</td>
+<td style="text-align:center;">
+0.17
+</td>
+<td style="text-align:center;">
+0.17
+</td>
+<td style="text-align:center;">
+0.16
+</td>
+<td style="text-align:center;">
+0.17
+</td>
+<td style="text-align:center;">
+0.17
+</td>
+<td style="text-align:center;">
+0.17
+</td>
+<td style="text-align:center;">
+0.16
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+20
+</td>
+<td style="text-align:center;">
+0.12
+</td>
+<td style="text-align:center;">
+0.12
+</td>
+<td style="text-align:center;">
+0.13
+</td>
+<td style="text-align:center;">
+0.13
+</td>
+<td style="text-align:center;">
+0.12
+</td>
+<td style="text-align:center;">
+0.12
+</td>
+<td style="text-align:center;">
+0.13
+</td>
+<td style="text-align:center;">
+0.13
+</td>
+<td style="text-align:center;">
+0.12
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+30
+</td>
+<td style="text-align:center;">
+0.10
+</td>
+<td style="text-align:center;">
+0.10
+</td>
+<td style="text-align:center;">
+0.10
+</td>
+<td style="text-align:center;">
+0.10
+</td>
+<td style="text-align:center;">
+0.10
+</td>
+<td style="text-align:center;">
+0.10
+</td>
+<td style="text-align:center;">
+0.10
+</td>
+<td style="text-align:center;">
+0.10
+</td>
+<td style="text-align:center;">
+0.10
+</td>
+</tr>
+</tbody>
+</table>
+<p>Moreover, we find that for all the filters, the coefficients decrease, when the distance to the central observation increases, until a negative value and then increase towards 0 (except for the uniform kernel).
+Negative coefficients might be disturbing but they arise from the cubic polynomial constraints.
+Indeed to preserve polynomial of degree 2 (and so 3) we need <span class="math inline">\(\sum_{j=-h}^hj^2\theta_i=0\)</span>, which constraint some coefficients to be negative.
+However, those negative coefficients are negligible compare to the central coefficients (they are more 80% smaller than the central coefficient for all kernels, except for uniform and trapezoidal with high bandwidth).</p>
+</div>
+<div id="gain-functions" class="section level3" number="3.1.3">
+<h3><span class="header-section-number">3.1.3</span> Gain functions</h3>
+<p>Figure <a href="#fig:filtersSymgains"><strong>??</strong></a> plots the gain functions of the different filters.
+Gain functions are usually plotted between 0 and <span class="math inline">\(\pi\)</span>.
+However, locally weighted polynomial regression are low-pass filters: they leave almost unchanged low frequency components (such as the trend) and attenuate high frequency fluctuations (noise).
+For a monthly data, a cycle of 3 years corresponds to the frequency <span class="math inline">\(2\pi/36\)</span> and a cycle of 7 years to the frequency <span class="math inline">\(2\pi/84\)</span>.
+Therefore, an ideal pass-band filter will have a gain function equal to 1 for low frequency (<span class="math inline">\(\leq 2\pi/36\)</span>) and equal to 0 for other frequencies.</p>
+<p>When the bandwidth <span class="math inline">\(h\)</span> increases, the gain function decreases for low frequencies: short business cycles will then be attenuated.
+For a fixed value of <span class="math inline">\(h\)</span>, gaussian, Henderson and triweight filters will preserve more short business cycles than the other filters (especially uniform, trapezoidal and Epanechnikov).
+Moreover, the gain function of those filters decreases faster to zero with less fluctuations: it enhances the higher variance reduction ratio shown in table <a href="sec-lppfilters.html#tab:varianceReductionSymmetricFilters">3.1</a>.</p>
+<p>Just analyzing the symmetric filters properties, there is no doubt that Henderson, triweight and biweight filters have similar properties and will perform better than the other kernel for trend-cycle extraction.
+The same results are found with asymmetric filters.
+Thus, in order to simplify the presentation analysis, in the next sections we will only show the results with the Henderson filter.</p>
+</div>
+</div>
+<div id="asymmetric-filters" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Asymmetric filters</h2>
+<div id="direct-asymmetric-filters-daf" class="section level3" number="3.2.1">
+<h3><span class="header-section-number">3.2.1</span> Direct asymmetric filters (DAF)</h3>
+<p>As mentioned in section <a href="sec-propMM.html#defAsymProb">2.3</a>, symmetric filters cannot be used in boundary points. For real-time estimation, three different approaches can be used:</p>
+<ol style="list-style-type: decimal">
+<li><p>Build an asymmetric filter fitting local polynomial to the available observations <span class="math inline">\(y_{t}\)</span> for <span class="math inline">\(t\in\left\llbracket n-h,n\right\rrbracket\)</span>.</p></li>
+<li><p>Apply the symmetric filter to the series extended by forecast (or backcast) <span class="math inline">\(\hat{y}_{n+l\mid n},l\in\left\llbracket 1,h\right\rrbracket\)</span>.</p></li>
+<li><p>Build an asymmetric filter which minimize the mean square revision error subject to polynomial reproducing constraints.</p></li>
+</ol>
+<p><span class="citation"><a href="#ref-proietti2008" role="doc-biblioref">Proietti and Luati</a> (<a href="#ref-proietti2008" role="doc-biblioref">2008</a>)</span> show that the first two approaches are equivalent when the forecast is done by a polynomial extrapolation of order <span class="math inline">\(d\)</span> (forecasts generated with the same polynomial model than the symmetric filter).
+This is called the <em>direct asymmetric filter</em> (DAF).
+Let <span class="math inline">\(q\)</span> be the number of available observations in the future: <span class="math inline">\(q\)</span> varies from 0 (real time filter) to <span class="math inline">\(h\)</span> (symmetric filter).</p>
+<p>Rewriting the matrix <span class="math inline">\(X\)</span>, <span class="math inline">\(K\)</span> <span class="math inline">\(y\)</span> in the following way:
+<span class="math display">\[
+X=\begin{pmatrix}X_{p}\\
+X_{f}
+\end{pmatrix},\quad y=\begin{pmatrix}y_{p}\\
+y_{f}
+\end{pmatrix},\quad K=\begin{pmatrix}K_{p} &amp; 0\\
+0 &amp; K_{f}
+\end{pmatrix}
+\]</span>
+where <span class="math inline">\(y_{p}\)</span> correspond to the available data and <span class="math inline">\(y_{f}\)</span> the missing data.
+The DAF <span class="math inline">\(w_a\)</span> and the forecast <span class="math inline">\(\hat{y}_{f}\)</span> can be written as:
+<span class="math display">\[
+w_{a}=K_{p}X_{p}(X&#39;_{p}K_{p}X_{p})^{-1}e_{1},
+\quad
+\hat{y}_{f}=X_{f}(X&#39;_{p}K_{p}X_{p})^{-1}X_{p}&#39;K_{p}y_{p}
+\]</span>
+Moreover, we have the following results with the DAF <span class="math inline">\(w_a\)</span>:</p>
+<ul>
+<li><p>it satisfies the same polynomial reproduction constraints as the symmetric filter (conserve polynomial of degree <span class="math inline">\(d\)</span>).
+Thus, the bias in estimating an unknown function of time has the same order of magnitude as in the interior of time support.</p></li>
+<li><p><span class="math inline">\(w_a\)</span> minimize the weighted distance (by the kernel function) between the asymmetric filter coefficients and the symmetric ones.
+Therefore, for the DAF it is equivalent to fit a local polynomial and to minimize the revisions</p></li>
+</ul>
+<p>However, the weights <span class="math inline">\(w_{a,0}\)</span> of the DAF are highly concentrated in the current observation <span class="math inline">\(t\)</span> with an important change between <span class="math inline">\(q=0\)</span> (real-time filter) and <span class="math inline">\(q=h\)</span> (see figure <a href="#fig:filtersdafcoefs"><strong>??</strong></a>).
+Moreover the real-time filter doesn’t have a satisfying gain functions: it is closer to one for all the frequencies (it thus has a low noise reduction power).
+Therefore, even if the real-time filter is unbiased (if the series is generated by a polynomial of degree <span class="math inline">\(d\)</span>) it is at the expenses of a high variance.</p>
+<!-- \begin{figure}[!ht] -->
+<!-- \animategraphics[autoplay,loop,width=\textwidth,controls]{2}{img/daf/coef_gain_}{1}{9} -->
+<!-- \caption{Coefficients and gain function of direct asymmetric filters (DAF) computed by local polynomial of degree $3$ with the Henderson kerne for $h=6$.}\label{fig:filtersdafcoefs}\footnotesize -->
+<!-- \emph{Note: to see the animation, the PDF must be open with Acrobat Reader, KDE Okular, PDF-XChange or Foxit Reader. -->
+<!-- Otherwise you will only be able to see the results for the Henderson kernel.} -->
+<!-- \end{figure} -->
+<p>For all the kernels, we find the same results as in <span class="citation"><a href="#ref-proietti2008" role="doc-biblioref">Proietti and Luati</a> (<a href="#ref-proietti2008" role="doc-biblioref">2008</a>)</span>:</p>
+<ul>
+<li><p>For a fixed value of <span class="math inline">\(d\)</span>, the more the data is available (<span class="math inline">\(q\)</span> increases), the more the weight associated to the current observation <span class="math inline">\(w_{a,0}\)</span> decreases.</p></li>
+<li><p>For a fixed value of <span class="math inline">\(h\)</span> and <span class="math inline">\(q\)</span>, <span class="math inline">\(w_{a,0}\)</span> increases exponentially with the polynomial degree <span class="math inline">\(d\)</span> (in particular, for <span class="math inline">\(d=h\)</span>, <span class="math inline">\(w_{a,0}=1\)</span>).</p></li>
+</ul>
+</div>
+<div id="subsec:lppasymf" class="section level3" number="3.2.2">
+<h3><span class="header-section-number">3.2.2</span> General class of asymmetric filters</h3>
+<p>To deal with the problem of the variance of the estimates of the real-time filters, <span class="citation"><a href="#ref-proietti2008" role="doc-biblioref">Proietti and Luati</a> (<a href="#ref-proietti2008" role="doc-biblioref">2008</a>)</span> suggest a general of asymmetric filters to make a tradeoff between bias and variance.
+It is a generalisation of Musgrave asymmetric filters (used in the seasonal adjustment algorithm X-12ARIMA, see <span class="citation"><a href="#ref-musgrave1964set" role="doc-biblioref">Musgrave</a> (<a href="#ref-musgrave1964set" role="doc-biblioref">1964</a>)</span>).</p>
+<p>Here we consider that the data is generated by the model:
+<span class="math display">\[
+y=U\gamma+Z\delta+\varepsilon,\quad
+\varepsilon\sim\mathcal{N}(0,D)
+\]</span>
+The goal is to find a filter <span class="math inline">\(v\)</span> which minimize the mean square revision error (with the symmetric filter <span class="math inline">\(w\)</span>) subject to some constraints.
+The constraints are summarized by the matrix <span class="math inline">\(U=\begin{pmatrix}U_{p}&#39;&amp;U_{f}&#39;\end{pmatrix}&#39;\)</span> (with <span class="math inline">\(U_p\)</span> the available observations of the matrix <span class="math inline">\(U\)</span> for the asymmetric filter): <span class="math inline">\(U_p&#39;v=U&#39;w\)</span>.
+The problem is equivalent to find <span class="math inline">\(v\)</span> that minimize:
+<span class="math display" id="eq:lppasym">\[\begin{equation}
+\varphi(v)=
+\underbrace{
+  \underbrace{(v-w_{p})&#39;D_{p}(v-w_{p})+
+  w_{f}&#39;D_{f}w_{f}}_\text{revision error variance}+
+  \underbrace{[\delta&#39;(Z_{p}&#39;v-Z&#39;w)]^{2}}_{biais^2}
+}_\text{Mean square revision error}+
+\underbrace{2l&#39;(U_{p}&#39;v-U&#39;w)}_{\text{constraints}}
+\tag{3.1}
+\end{equation}\]</span>
+with <span class="math inline">\(l\)</span> a vector of Lagrange multipliers.</p>
+<p>When <span class="math inline">\(U=X\)</span> this is equivalent to the constraint to preserve polynomial of degree <span class="math inline">\(d\)</span>: we find the direct asymmetric filters <span class="math inline">\(w_a\)</span> with <span class="math inline">\(D=K^{-1}\)</span>.</p>
+<p>When <span class="math inline">\(U=\begin{pmatrix}1&amp;\cdots&amp;1\end{pmatrix}&#39;\)</span>, <span class="math inline">\(Z=\begin{pmatrix}-h&amp;\cdots&amp;+h\end{pmatrix}&#39;\)</span>, <span class="math inline">\(\delta=\delta_1\)</span>, <span class="math inline">\(D=\sigma^2I\)</span> and when the symmetric filter is the Henderson filter we obtain the Musgrave asymmetric filters.
+With this filter we assume that the data is generated by a linear process and that the asymmetric filters preserve constant signals (<span class="math inline">\(\sum v_i=\sum w_i=1\)</span>).
+The asymmetric filters depends on the ratio <span class="math inline">\(\delta_1/\sigma\)</span>, which is related to the “I-C” ratio <span class="math inline">\(R=\frac{\bar{I}}{\bar{C}}=\frac{\sum\lvert I_t-I_{t-1}\rvert}{\sum\lvert C_t-C_{t-1}\rvert}\)</span> (<span class="math inline">\(\delta_1/\sigma=2/(R\sqrt{\pi})\)</span>), the ratio between the expected absolute difference of the irregular and of the trend-cycle.
+In the seasonal adjustment method, the I-C ratio<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a> is used to determine the bandwidth to use for the Henderson filter. For monthly data:</p>
+<ul>
+<li><p>if <span class="math inline">\(R&lt;1\)</span> a 9-term Henderson is used (<span class="math inline">\(h=4\)</span>);</p></li>
+<li><p>if <span class="math inline">\(1\leq R\leq3.5\)</span> a 13-term Henderson is used (<span class="math inline">\(h=6\)</span>);</p></li>
+<li><p>if <span class="math inline">\(3.5&lt; R\)</span> a 23-term Henderson is used (<span class="math inline">\(h=12\)</span>).</p></li>
+</ul>
+<p>In this report, for simplicity we only consider 13-term symmetric filters: the ratio <span class="math inline">\(\delta^2/\sigma^2\)</span> is fixed to <span class="math inline">\(3.5\)</span>.</p>
+<p>When <span class="math inline">\(U\)</span> corresponds to the first <span class="math inline">\(d^*+1\)</span> first the columns of <span class="math inline">\(X\)</span>, <span class="math inline">\(d^*&lt;d\)</span>, the constraint is that the asymmetric filter should reproduce polynomial of degree <span class="math inline">\(d^*\)</span>, the potential bias depends on the value of <span class="math inline">\(\delta\)</span>.
+This will reduce the variance at the expense of a bias: it is the idea followed by <span class="citation"><a href="#ref-proietti2008" role="doc-biblioref">Proietti and Luati</a> (<a href="#ref-proietti2008" role="doc-biblioref">2008</a>)</span> to propose three class of asymmetric filters:</p>
+<ol style="list-style-type: decimal">
+<li><p><em>Linear-Constant</em> (LC): <span class="math inline">\(y_t\)</span> linear (<span class="math inline">\(d=1\)</span>) and <span class="math inline">\(v\)</span> preserves constant signals (<span class="math inline">\(d^*=0\)</span>).
+We obtain Musgrave filters when the Henderson kernel is used.</p></li>
+<li><p><em>Quadratic-Linear</em> (QL): <span class="math inline">\(y_t\)</span> quadratic (<span class="math inline">\(d=2\)</span>) and <span class="math inline">\(v\)</span> preserves linear signals (<span class="math inline">\(d^*=1\)</span>).</p></li>
+<li><p><em>Cubic-Quadratic</em> (CQ): <span class="math inline">\(y_t\)</span> cubic (<span class="math inline">\(d=3\)</span>) and <span class="math inline">\(v\)</span> preserves quadratic signals (<span class="math inline">\(d^*=2\)</span>).</p></li>
+</ol>
+<!-- ```{r criteriaLp, echo = FALSE} -->
+<!-- lp_diagnostics <- readRDS("data/lp_diagnostics.RDS") -->
+<!-- title <- "Quality criteria of real-time filters ($q=0$) computed by local polynomial." -->
+<!-- groupement <- table(factor(lp_diagnostics[,1],levels = unique(lp_diagnostics[,1]), ordered = TRUE)) -->
+<!-- lp_diagnostics[,-1] %>%  -->
+<!--   kable(format.args = list(digits = 3), align = "c", booktabs = T, row.names = FALSE, -->
+<!--         escape = FALSE,caption = title) %>%  -->
+<!--   kable_styling(latex_options=c(#"striped",  -->
+<!--                                 "scale_down", "hold_position")) %>% -->
+<!--   add_header_above(c(" " = 1, "Kernel" = ncol(lp_diagnostics)-2)) %>% -->
+<!--   pack_rows(index = groupement) -->
+<!-- ``` -->
+<p>The table <a href="sec-lppfilters.html#tab:criteriaLp">3.2</a> shows the quality criteria of the different methods with the Henderson kernel and <span class="math inline">\(h=6\)</span>.
+For real-time filters (<span class="math inline">\(q=0\)</span>), the more complex the filter is (in terms of polynomial preservation), the less the timeliness is and the more the fidelity/smoothness is: the reduction of the time-delay is at the expense of an increased variance.
+This change when <span class="math inline">\(q\)</span> increases: for <span class="math inline">\(q=2\)</span> the QL filter has a greater timeliness that the LC filter.
+This unexpected result underlines the fact that in the approach of <span class="citation"><a href="#ref-proietti2008" role="doc-biblioref">Proietti and Luati</a> (<a href="#ref-proietti2008" role="doc-biblioref">2008</a>)</span>, the timeliness is never set as a goal to minimize.</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:criteriaLp">Table 3.2: </span>Quality criteria of asymmetric filters (<span class="math inline">\(q=0,1,2\)</span>) computed by local polynomial with Henderson kernel for <span class="math inline">\(h=6\)</span> and <span class="math inline">\(R=3.5\)</span>.
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;">
+Method
+</th>
+<th style="text-align:center;">
+$ b_c $
+</th>
+<th style="text-align:center;">
+$ b_l $
+</th>
+<th style="text-align:center;">
+$ b_q $
+</th>
+<th style="text-align:center;">
+$ F_g $
+</th>
+<th style="text-align:center;">
+$ S_g $
+</th>
+<th style="text-align:center;">
+$ T_g ^{-3} $
+</th>
+<th style="text-align:center;">
+$ A_w $
+</th>
+<th style="text-align:center;">
+$ S_w $
+</th>
+<th style="text-align:center;">
+$ T_w $
+</th>
+<th style="text-align:center;">
+$ R_w $
+</th>
+</tr>
+</thead>
+<tbody>
+<tr grouplength="4">
+<td colspan="11" style="border-bottom: 1px solid;">
+<strong>$ q=0 <span class="math inline">\(&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt; &lt;tr&gt;  &lt;td style=&quot;text-align:center;padding-left: 2em;&quot; indentlevel=&quot;1&quot;&gt; LC &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; -0.407 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; -2.161 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.388 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 1.272 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 30.341 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.098 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.488 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.409 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.548 &lt;/td&gt;  &lt;/tr&gt;  &lt;tr&gt;  &lt;td style=&quot;text-align:center;padding-left: 2em;&quot; indentlevel=&quot;1&quot;&gt; QL &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.000 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; -0.473 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.711 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 5.149 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.047 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.067 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 1.894 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.000 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.106 &lt;/td&gt;  &lt;/tr&gt;  &lt;tr&gt;  &lt;td style=&quot;text-align:center;padding-left: 2em;&quot; indentlevel=&quot;1&quot;&gt; CQ &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.000 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.000 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.913 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 11.942 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.015 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.016 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 2.231 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.000 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.102 &lt;/td&gt;  &lt;/tr&gt;  &lt;tr&gt;  &lt;td style=&quot;text-align:center;padding-left: 2em;&quot; indentlevel=&quot;1&quot;&gt; DAF &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.000 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.000 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.943 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 14.203 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.003 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.015 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 2.178 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.000 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.098 &lt;/td&gt;  &lt;/tr&gt;  &lt;tr grouplength=&quot;4&quot;&gt;&lt;td colspan=&quot;11&quot; style=&quot;border-bottom: 1px solid;&quot;&gt;&lt;strong&gt;\)</span> q=1 <span class="math inline">\(&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt; &lt;tr&gt;  &lt;td style=&quot;text-align:center;padding-left: 2em;&quot; indentlevel=&quot;1&quot;&gt; LC &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; -0.121 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; -0.525 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.268 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.433 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 4.797 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.009 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.119 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.063 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.112 &lt;/td&gt;  &lt;/tr&gt;  &lt;tr&gt;  &lt;td style=&quot;text-align:center;padding-left: 2em;&quot; indentlevel=&quot;1&quot;&gt; QL &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.000 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; -0.061 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.287 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.707 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.694 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.005 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.192 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.007 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.042 &lt;/td&gt;  &lt;/tr&gt;  &lt;tr&gt;  &lt;td style=&quot;text-align:center;padding-left: 2em;&quot; indentlevel=&quot;1&quot;&gt; CQ &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.000 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.000 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.372 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.571 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.158 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.022 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.575 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.001 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.061 &lt;/td&gt;  &lt;/tr&gt;  &lt;tr&gt;  &lt;td style=&quot;text-align:center;padding-left: 2em;&quot; indentlevel=&quot;1&quot;&gt; DAF &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.000 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.000 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.409 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.366 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.061 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.020 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.760 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.000 &lt;/td&gt;  &lt;td style=&quot;text-align:center;&quot;&gt; 0.059 &lt;/td&gt;  &lt;/tr&gt;  &lt;tr grouplength=&quot;4&quot;&gt;&lt;td colspan=&quot;11&quot; style=&quot;border-bottom: 1px solid;&quot;&gt;&lt;strong&gt;\)</span> q=2 $</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:center;padding-left: 2em;" indentlevel="1">
+LC
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+0.003
+</td>
+<td style="text-align:center;">
+1.076
+</td>
+<td style="text-align:center;">
+0.201
+</td>
+<td style="text-align:center;">
+0.080
+</td>
+<td style="text-align:center;">
+0.347
+</td>
+<td style="text-align:center;">
+0.009
+</td>
+<td style="text-align:center;">
+0.012
+</td>
+<td style="text-align:center;">
+0.004
+</td>
+<td style="text-align:center;">
+0.015
+</td>
+</tr>
+<tr>
+<td style="text-align:center;padding-left: 2em;" indentlevel="1">
+QL
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+0.000
+</td>
+<td style="text-align:center;">
+0.033
+</td>
+<td style="text-align:center;">
+0.215
+</td>
+<td style="text-align:center;">
+0.052
+</td>
+<td style="text-align:center;">
+2.083
+</td>
+<td style="text-align:center;">
+0.000
+</td>
+<td style="text-align:center;">
+0.011
+</td>
+<td style="text-align:center;">
+0.023
+</td>
+<td style="text-align:center;">
+0.067
+</td>
+</tr>
+<tr>
+<td style="text-align:center;padding-left: 2em;" indentlevel="1">
+CQ
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+0.000
+</td>
+<td style="text-align:center;">
+0.000
+</td>
+<td style="text-align:center;">
+0.370
+</td>
+<td style="text-align:center;">
+0.658
+</td>
+<td style="text-align:center;">
+0.131
+</td>
+<td style="text-align:center;">
+0.021
+</td>
+<td style="text-align:center;">
+0.558
+</td>
+<td style="text-align:center;">
+0.001
+</td>
+<td style="text-align:center;">
+0.055
+</td>
+</tr>
+<tr>
+<td style="text-align:center;padding-left: 2em;" indentlevel="1">
+DAF
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+0.000
+</td>
+<td style="text-align:center;">
+0.000
+</td>
+<td style="text-align:center;">
+0.398
+</td>
+<td style="text-align:center;">
+0.768
+</td>
+<td style="text-align:center;">
+0.023
+</td>
+<td style="text-align:center;">
+0.017
+</td>
+<td style="text-align:center;">
+0.677
+</td>
+<td style="text-align:center;">
+0.000
+</td>
+<td style="text-align:center;">
+0.048
+</td>
+</tr>
+</tbody>
+</table>
+<p>Regarding the mean square revision error (<span class="math inline">\(A_w+S_w+T_w+R_w\)</span>), LC and QL filters always gives better results than CQ and DAF filters.
+This “theorical” mean square revision error can be compared to the “empirical” one computed applying the filters to real data.
+The table <a href="#tab:mseIPI"><strong>??</strong></a> shows the average mean square revision error of the different filters applied to the Industrial production indices of the European Union between 2003 and 2019.
+The mean square revision errors are different in level but give same results comparing the different filters: this validate the formula used for the criteria <span class="math inline">\(A_w,S_w,T_w,\text{ and }R_w\)</span> (see section <a href="sec-WildiMcLeroy.html#sec:WildiMcLeroy">5</a>).</p>
+<p>Taking for the value <span class="math inline">\(R\)</span> the “I-C” ratio computed with the raw data gives the same summary results.</p>
+<p> All those results suggest focusing on LC and QL filters and to focus on asymmetric linear filters that preserve polynomial trends of degree equal or less than one.</p>
+<p>The results for the different kernels can also be visualized in an online application available at <a href="https://aqlt.shinyapps.io/FiltersProperties/" class="uri">https://aqlt.shinyapps.io/FiltersProperties/</a>.</p>
+<div class="summary_box">
+<div id="title">
+<p>Summary — Local polynomial filters</p>
+</div>
+<p><strong>Advantages</strong>:</p>
+<ul>
+<li><p>Simple models with an easy interpretation.</p></li>
+<li><p>The asymmetric linear filter is independent of the date of estimation.
+However, it depends on the data if we calibrate the filter with the “I-C” ratio.</p></li>
+</ul>
+<p><strong>Drawbacks</strong>:</p>
+<ul>
+<li>Timeliness is not controlled.</li>
+</ul>
+</div>
+
+</div>
+</div>
+</div>
+<h3>References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-musgrave1964set" class="csl-entry">
+Musgrave, John C. 1964. <span>“A Set of End Weights to End All End Weights.”</span> <em>US Census Bureau [Custodian]</em>. <a href="https://www.census.gov/ts/papers/Musgrave1964a.pdf">https://www.census.gov/ts/papers/Musgrave1964a.pdf</a>.
+</div>
+<div id="ref-proietti2008" class="csl-entry">
+Proietti, Tommaso, and Alessandra Luati. 2008. <span>“Real Time Estimation in Local Polynomial Regression, with Application to Trend-Cycle Analysis.”</span> <em>Ann. Appl. Stat.</em> 2 (4): 1523–53. <a href="https://doi.org/10.1214/08-AOAS195">https://doi.org/10.1214/08-AOAS195</a>.
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="9">
+<li id="fn9"><p>The time series is therefore seasonally adjusted.<a href="sec-lppfilters.html#fnref9" class="footnote-back">↩︎</a></p></li>
+<li id="fn10"><p>
+<span class="math inline">\(w\)</span> is symmetric due to the symmetry of the kernel weights <span class="math inline">\(\kappa_j\)</span>.<a href="sec-lppfilters.html#fnref10" class="footnote-back">↩︎</a></p></li>
+<li id="fn11"><p>
+To compute the I-C ratio, a first decomposition of the seasonally adjusted series is computed using a 13-term Henderson moving average.<a href="sec-lppfilters.html#fnref11" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="sec-propMM.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="sec-GuggemosEtAl.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["Stage_2A.pdf", "Stage_2A.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

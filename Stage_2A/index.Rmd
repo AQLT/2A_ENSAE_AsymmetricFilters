@@ -1,0 +1,61 @@
+--- 
+title: "Real-time detection of turning points with linear filters"
+author: "Alain Quartier-la-Tente"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: article
+link-citations: yes
+description: "Stage 2A de l'Ensae d'Alain Quartier-la-Tente"
+themeoptions: "coding=utf8"
+classoption: 'a4paper'
+lang: "english"
+fontsize: 12pt
+bibliography: [biblio.bib]
+biblio-style: authoryear
+urlcolor: blue
+geometry: margin=1in
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      fig.path = "img/")
+library(kableExtra)
+```
+
+\newpage
+
+# Abstracts {-}
+
+:::: {.abstract data-latex=""}
+In the business cycle analysis, estimates are usually derived from moving average (also called linear filters) techniques. 
+In the center of the series, symmetric filters are applied. 
+However, due to the lack of future observations, real-time estimates must rely on asymmetric moving averages.
+Classic asymmetric moving averages minimize revisions errors but introduce delays in the detecting turning points.
+
+This paper describes and compares different approaches to build asymmetric filters: local polynomials filters, methods based on an optimization of filters' properties (Fidelity-Smoothness-Timeliness, FST, approach and a data-dependent filter) and filters based on Reproducing Kernel Hilbert Space.
+It also describes how local polynomials filters can be extended to include a timeliness criterion to minimize phase shift.
+
+This paper shows that constraining asymmetric filters to preserve constant and linear trends only (and not necessarily polynomial ones) reduce revision error and time lag. 
+Besides, the more future observations are available, the more the different methods produce similar results.
+Finally, the FST approach seems to outperform the other methods.
+::::
+
+\renewcommand{\abstractname}{Résumé}
+
+:::: {.abstract data-latex=""}
+Les moyennes mobiles (ou les filtres linéaires) sont omniprésents dans les méthodes d'extraction du cycle économique.
+Au centre de la série, des filtres symétriques sont appliqués.
+Cependant, en raison du manque d'observations futures, les estimations en temps réel doivent s'appuyer sur des moyennes mobiles asymétriques.
+Les moyennes mobiles asymétriques classiques minimisent les erreurs de révision mais introduisent des retards dans la détection des points de retournement (déphasage).
+
+Ce rapport décrit et compare différentes approches pour construire des filtres asymétriques: l'ajustement de polynôme locaux, des méthodes basées sur une optimisation des propriétés des filtres (l'approche *Fidelity-Smoothness-Timeliness* --- Fidélité-Lissage-Temporalité ---, FST, approche et un filtre dépendant des données) et des filtres basés sur les espaces de Hilbert à noyau reproduisant (RKHS).
+Il décrit également comment les filtres polynomiaux locaux peuvent être étendus pour inclure un critère de temporalité afin de minimiser le déphasage.
+
+Ce rapport montre que contraindre les filtres asymétriques à ne conserver que les tendances constantes et linéaires (et pas nécessairement polynomiales) réduit l'erreur de révision et le décalage temporel.
+Par ailleurs, plus d'observations futures sont disponibles, plus les différentes méthodes produisent des résultats similaires.
+Enfin, l'approche FST semble l'emporter sur les autres méthodes.
+::::
+
+
+\newpage
+

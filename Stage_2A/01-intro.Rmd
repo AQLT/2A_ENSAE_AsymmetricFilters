@@ -1,0 +1,20 @@
+# Introduction {-}
+
+With the COVID-19 crisis, one of the major questions on the economy was when it will recover. 
+It illustrates that business cycle analysis, and in particular the early detection of turning points in a series, is a major topic in the analysis of economic outlook.
+
+Moving averages, or linear filters, are ubiquitous in business cycle extraction and seasonal adjustment methods^[
+A moving average is a statistical method that consists in applying a rolling weighted mean to a times series: for each date it computes a weighted mean of $p$ past points and $q$ future points where $p,q\geq0$ depends on the moving average.
+]. 
+For example, the X-12ARIMA seasonal adjustment method uses Henderson moving averages and composite moving averages to estimate the main components of a time series, while TRAMO-SEATS uses Wiener-Kolmogorov filters. 
+Symmetric filters are applied to the center of the series, but when it comes to estimate the most recent points, all of these methods must rely on asymmetric filters. 
+For example, even if X-12ARIMA or TRAMO-SEATS apply symmetrical averages to the forecasts obtained from an ARIMA model of the series, in reality it consists in applying asymmetric filters at the end of the series, because the predicted values are linear combinations of past values.
+
+If the classic asymmetric moving averages have good properties regarding the future revisions induced by the process^[See for example @pierce1980SA.], they create phase shifts that impact the real-time estimation of turning points, introducing time delay in the detection.
+
+This report aims to describe and compare the recent approaches around trend-cycle extraction and asymmetric filters: local polynomial filters, methods based on an optimization of filters properties and filters based on Reproducing Kernel Hilbert Space.
+Due to the link between seasonal adjustment and trend-cycle extraction (section \@ref(sec:SAtoTCE)), we focus on non-parametric methods that could be included in X-12ARIMA.
+After a description of the general properties of a linear filter (section \@ref(sec:propMM)), we describe the linear filters methods developed by @proietti2008, @ch15HBSA, @trilemmaWMR2019 and @dagumbianconcini2008 (sections \@ref(sec:lppfilters) to \@ref(sec:Dagum)).
+Finally, in section \@ref(sec:comparison), we compare the different methods, first theoretically and then applying them to a real time series.
+
+\newpage

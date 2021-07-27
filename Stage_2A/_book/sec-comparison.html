@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="english" xml:lang="english">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Section 7 Comparison of the different filters | Real-time detection of turning points with linear filters</title>
+  <meta name="description" content="Stage 2A de l’Ensae d’Alain Quartier-la-Tente" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Section 7 Comparison of the different filters | Real-time detection of turning points with linear filters" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Stage 2A de l’Ensae d’Alain Quartier-la-Tente" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Section 7 Comparison of the different filters | Real-time detection of turning points with linear filters" />
+  
+  <meta name="twitter:description" content="Stage 2A de l’Ensae d’Alain Quartier-la-Tente" />
+  
+
+<meta name="author" content="Alain Quartier-la-Tente" />
+
+
+<meta name="date" content="2021-07-27" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="sec-Dagum.html"/>
+<link rel="next" href="conclusion.html"/>
+<script src="libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Stage 2A Ensae AQLT</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Abstracts</a></li>
+<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="chapter" data-level="1" data-path="sec-SAtoTCE.html"><a href="sec-SAtoTCE.html"><i class="fa fa-check"></i><b>1</b> From seasonal adjustment to trend-cycle estimation</a></li>
+<li class="chapter" data-level="2" data-path="sec-propMM.html"><a href="sec-propMM.html"><i class="fa fa-check"></i><b>2</b> Moving average and filters</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="sec-propMM.html"><a href="sec-propMM.html#gain-and-phase-shift-functions"><i class="fa fa-check"></i><b>2.1</b> Gain and phase shift functions</a></li>
+<li class="chapter" data-level="2.2" data-path="sec-propMM.html"><a href="sec-propMM.html#desirable-properties-of-a-moving-average"><i class="fa fa-check"></i><b>2.2</b> Desirable properties of a moving average</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="sec-propMM.html"><a href="sec-propMM.html#trend-preservation"><i class="fa fa-check"></i><b>2.2.1</b> Trend preservation</a></li>
+<li class="chapter" data-level="2.2.2" data-path="sec-propMM.html"><a href="sec-propMM.html#variance-reduction"><i class="fa fa-check"></i><b>2.2.2</b> Variance reduction</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="sec-propMM.html"><a href="sec-propMM.html#defAsymProb"><i class="fa fa-check"></i><b>2.3</b> Real-time estimation and asymmetric moving average</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html"><i class="fa fa-check"></i><b>3</b> Local polynomial filters</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#sec:kernels"><i class="fa fa-check"></i><b>3.1</b> Different kernels</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#sec:sympolyfilter"><i class="fa fa-check"></i><b>3.1.1</b> Specific symmetric filters</a></li>
+<li class="chapter" data-level="3.1.2" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#analysis-of-symmetric-filters"><i class="fa fa-check"></i><b>3.1.2</b> Analysis of symmetric filters</a></li>
+<li class="chapter" data-level="3.1.3" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#gain-functions"><i class="fa fa-check"></i><b>3.1.3</b> Gain functions</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#asymmetric-filters"><i class="fa fa-check"></i><b>3.2</b> Asymmetric filters</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#direct-asymmetric-filters-daf"><i class="fa fa-check"></i><b>3.2.1</b> Direct asymmetric filters (DAF)</a></li>
+<li class="chapter" data-level="3.2.2" data-path="sec-lppfilters.html"><a href="sec-lppfilters.html#subsec:lppasymf"><i class="fa fa-check"></i><b>3.2.2</b> General class of asymmetric filters</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="sec-GuggemosEtAl.html"><a href="sec-GuggemosEtAl.html"><i class="fa fa-check"></i><b>4</b> General optimization problem: FST filters</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="sec-GuggemosEtAl.html"><a href="sec-GuggemosEtAl.html#description-of-the-approach"><i class="fa fa-check"></i><b>4.1</b> Description of the approach</a></li>
+<li class="chapter" data-level="4.2" data-path="sec-GuggemosEtAl.html"><a href="sec-GuggemosEtAl.html#extension-with-the-revision-criterion"><i class="fa fa-check"></i><b>4.2</b> Extension with the revision criterion</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="sec-WildiMcLeroy.html"><a href="sec-WildiMcLeroy.html"><i class="fa fa-check"></i><b>5</b> Data-dependent filter</a></li>
+<li class="chapter" data-level="6" data-path="sec-Dagum.html"><a href="sec-Dagum.html"><i class="fa fa-check"></i><b>6</b> Asymmetric filters and Reproducing Kernel Hilbert Space</a></li>
+<li class="chapter" data-level="7" data-path="sec-comparison.html"><a href="sec-comparison.html"><i class="fa fa-check"></i><b>7</b> Comparison of the different filters</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="sec-comparison.html"><a href="sec-comparison.html#comparison-with-the-fst-approach"><i class="fa fa-check"></i><b>7.1</b> Comparison with the FST approach</a></li>
+<li class="chapter" data-level="7.2" data-path="sec-comparison.html"><a href="sec-comparison.html#illustration-with-an-example"><i class="fa fa-check"></i><b>7.2</b> Illustration with an example</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i>Conclusion</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Real-time detection of turning points with linear filters</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<!-- <script type="text/x-mathjax-config"> -->
+    <!-- MathJax.Hub.Config({ -->
+            <!--   TeX: { -->
+                    <!--     Macros: { -->
+                            <!--       NN: "{\\mathbb{N}}", -->
+                            <!--       ZZ: "{\\mathbb{Z}}", -->
+                            <!--       QQ: "{\\mathbb{Q}}", -->
+                            <!--       RR: "{\\mathbb{R}}", -->
+                            <!--       shiftset: "{\\mathcal{D}}", -->
+                            <!--       dx: ["{\\mathrm{d}^{#1}\\mspace{-1mu}\\mathord{#2}}", 2, ""], -->
+                            <!--       indic: "{\\unicode{x1D7D9}}", -->
+                            <!--       prob: "\\mathop{\\mathbb{P}}", -->
+                            <!--       esp: "\\mathop{\\mathbb{E}}", -->
+                            <!--       var: "\\mathop{\\mathbb{V}\\text{ar}}", -->
+                            <!--       cov: "\\mathop{\\mathbb{C}\\text{ov}}", -->
+                            <!--       PP: ["{\\prob\\left({#1}\\right)}", 1], -->
+                            <!--       EE: ["{\\esp\\left[{#1}\\right]}", 1], -->
+                            <!--       VV: ["{\\var\\left[{#1}\\right]}", 1], -->
+                            <!--       CC: ["{\\cov\\left[{#1}\\right]}", 1], -->
+                            <!--       normal: ["{\\mathcal{N}\\left({#1},{#2}\\right)}", 2], -->
+                            <!--       ou: ["{#1}_{\\text{ou}}", 1], -->
+                            <!--       oui: ["{#1}_{\\text{ou},#2}", 2], -->
+                            <!--       pv: "{\\mathfrak{p}}", -->
+                            <!--       qv: "{\\mathfrak{q}}", -->
+                            <!--       zs: "{\\mathfrak{z}}", -->
+                            <!--       ts: "{\\mathfrak{t}}", -->
+                            <!--       sign: "{\\mathfrak{s}}", -->
+                            <!--       shifts: "{\\delta}", -->
+                            <!--       optim: "{\\beta}", -->
+                            <!--       param: "{\\theta}", -->
+                            <!--       unif: ["{\\mathcal{U}\\left({#1}\\right)}", 1], -->
+                            <!--       argmin: "\\mathop{\\mathrm{argmin}}", -->
+                            <!--       diag: "\\mathop{\\mathrm{Diag}}", -->
+                            <!--       rang: "\\mathop{\\mathrm{rang}}", -->
+                            <!--       pa: "\\mathop{\\mathrm{pa}}", -->
+                            <!--       mrca: "\\mathop{\\mathrm{mrca}}", -->
+                            <!--       desc: "\\mathop{\\mathrm{desc}}", -->
+                            <!--       warning: ["\\color{red}{{#1}}", 1] -->
+                            <!--     } -->
+                    <!--   } -->
+            <!-- }); -->
+    <!-- </script> -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    TeX: {Macros: {
+            E: "{\\mathbb{E}}"
+        },
+        Augment: {
+        Definitions: {
+          delimiter: {
+            "\\llbracket": '\u27E6',
+            '\\rrbracket': '\u27E7'
+          }}
+        }}
+    });
+</script>
+    <body>
+    <div style="display:none" aria-hidden="true">
+    \(
+        \newcommand\R{\mathbb{R}}
+        \newcommand\Z{\mathbb{Z}}
+        \newcommand\LL{\mathbb{L}}
+        \newcommand{\E}[1]{\mathbb{E}\left[#1\right]}
+        \newcommand{\V}[1]{\mathbb{V}\left[#1\right]}
+        \newcommand\1{\mathbb{1}}
+        \newcommand\N{\mathcal{N}}
+        \newcommand{\transp}[1]{{}^t\!#1}
+        \newcommand\ud{\,\mathrm{d}}
+        \DeclareMathOperator*{\argmax}{argmax}
+        \DeclareMathOperator*{\argmin}{argmin}
+        \DeclareMathOperator{\e}{e}
+        \DeclareMathOperator{\Cov}{Cov}
+    \)
+    </div>
+    </body>
+            
+<div id="sec:comparison" class="section level1" number="7">
+<h1><span class="header-section-number">Section 7</span> Comparison of the different filters</h1>
+<div id="comparison-with-the-fst-approach" class="section level2" number="7.1">
+<h2><span class="header-section-number">7.1</span> Comparison with the FST approach</h2>
+<p>The FST approach provides a useful tool to validate a method of construction of linear filter.
+Indeed, a linear filter can be considered as suboptimal if we can find a set of weight for the FST approach that gives better results (in terms of fidelity, smoothness and timeliness) with the same (or higher) polynomial constraints.</p>
+<p>For <span class="math inline">\(h=6\)</span> (13-term symmetric filter), for the RKHS filters we find that:</p>
+<ul>
+<li><p>imposing that asymmetric filters preserve constants, the FST approach gives better results for all values of <span class="math inline">\(q\)</span> for the filters computed with <span class="math inline">\(b_{q,G}\)</span> and <span class="math inline">\(b_{q,\gamma}\)</span>, and for <span class="math inline">\(q\leq 3\)</span> for the one computed with <span class="math inline">\(b_{q,\varphi}\)</span>.</p></li>
+<li><p>imposing that asymmetric filters preserve linear trends, the FST approach gives better results for <span class="math inline">\(q\in[2,5]\)</span> for the filters computed with <span class="math inline">\(b_{q,G}\)</span> and <span class="math inline">\(b_{q,\gamma}\)</span>, and for <span class="math inline">\(q\in[2,4]\)</span> for the one computed with <span class="math inline">\(b_{q,\varphi}\)</span>.</p></li>
+</ul>
+<p> Therefore, the RKHS approach seems not to be the better approach to build asymmetric filters to apply to monthly regular data (i.e.: data for which we usually use <span class="math inline">\(h=6\)</span>).</p>
+<p>For the local polynomial filters we find that:</p>
+<ul>
+<li><p>imposing that asymmetric filters preserve constants, the FST approach gives better results than the LC method for all values of <span class="math inline">\(q\)</span>.
+Adding the timeliness criterion allows to have better results than the FST approach for <span class="math inline">\(q=0,1\)</span>.</p></li>
+<li><p>imposing that asymmetric filters preserve linear trends, the FST approach gives better results for <span class="math inline">\(q\in[2,5]\)</span> for the LC and QL methods.
+Adding the timeliness criterion doesn’t change the results.</p></li>
+</ul>
+<p> In terms of quality criteria, local polynomial seems to perform better for real-time and one-period ahead filters (<span class="math inline">\(q=0,1\)</span>).</p>
+<p>Those comparisons can be seen in an online application available at <a href="https://aqlt.shinyapps.io/FSTfilters/" class="uri">https://aqlt.shinyapps.io/FSTfilters/</a>.</p>
+</div>
+<div id="illustration-with-an-example" class="section level2" number="7.2">
+<h2><span class="header-section-number">7.2</span> Illustration with an example</h2>
+<p>In this section we compare the different asymmetric filters applying them to the French industrial production index of manufacture of motor vehicles, trailers and semi-trailers<a href="#fn14" class="footnote-ref" id="fnref14"><sup>14</sup></a>.
+For simplicity, for the FST approach we only show an extreme filter example minimizing the phase shift by putting a large weight to the timeliness (<span class="math inline">\(\alpha = 0\)</span>, <span class="math inline">\(\beta = 1\)</span>, <span class="math inline">\(\gamma = 1000\)</span>).
+For local polynomial filters, the Henderson kernel is used with <span class="math inline">\(R=3.5\)</span>.
+The figure <a href="#fig:cl2all"><strong>??</strong></a> shows the results around a turning point (the economic crisis of 2009) and during “normal cycles” (between 2000 and 2008), from <span class="math inline">\(q=0\)</span> (real-time estimates) to <span class="math inline">\(q=3\)</span> (three future available observations).</p>
+<p>For this example, in terms of time lag to detect the turning point of February 2009<a href="#fn15" class="footnote-ref" id="fnref15"><sup>15</sup></a>, the DAF is the worst filter since it introduces a delay of one month until <span class="math inline">\(q=3\)</span>.
+LC, QL, <span class="math inline">\(b_{q,\gamma}\)</span> filters introduce a delay only for real-time filter (<span class="math inline">\(q=0\)</span>) of two months for QL filter and one month for the others.
+Surprisingly, the FST filter that minimize the phase shift introduce a time lag for <span class="math inline">\(q=0\)</span> and <span class="math inline">\(q=1\)</span> (the upturn is detected earlier), whereas <span class="math inline">\(b_{q,\phi}\)</span> doesn’t introduce any time lag.</p>
+<div class="remarque">
+<p>Those results differ from the one obtained in the real-time during the economic crisis.
+Indeed, here we take the time series already seasonally adjusted in the overall period, whereas during the real-time estimates, the seasonal adjustment process also introduce a time lag.</p>
+</div>
+<p>In terms of revision error, the DAF filters also give the worst results.
+For real-time estimates (<span class="math inline">\(q=0\)</span>), the LC and RKHS filters minimize the revision between 2000 and 2008 but when more data are available all the methods (except the DAF filters) give similar results.
+As excepted, the QL filter minimizes the revision around the turning point of 2009 since it is the only filter that preserve polynomial trends of degree 1.
+For small values of <span class="math inline">\(q\)</span>, <span class="math inline">\(b_{q,\phi}\)</span> filter distorts less polynomial trends of degree 1 and 2 than the other RKHS filters (<span class="math inline">\(b_l\)</span> and <span class="math inline">\(b_q\)</span> statistics are lower, table <a href="sec-Dagum.html#tab:criteriarkhs">6.1</a>): it explains why it performs better around the turning point.</p>
+<p>With this simple example we cannot generalize properties on the different asymmetric filters, but it gives some leads to extend this study:</p>
+<ul>
+<li><p>minimize the timeliness doesn’t imply earlier detection of turning points: more investigations on the timeliness criterion could be done;</p></li>
+<li><p>accept some bias in polynomial trends preservation can lead to asymmetric filters that performs better in term of turning points detection;</p></li>
+<li><p>for almost all the filters, there is no time lag to detect the turning points when two future observations are available, and the different methods gives similar results.
+Therefore, it is pointless to optimize asymmetric filters when too much future observations are available.</p></li>
+</ul>
+<p>Moreover, this example also illustrates that the different methods perform better than the DAF filters.
+The real-time estimates methods that use this filter could be easily improved.
+This is for example the case of STL (Seasonal-Trend decomposition based on Loess) seasonal adjustment method proposed by <span class="citation"><a href="#ref-cleveland90" role="doc-biblioref">Cleveland et al.</a> (<a href="#ref-cleveland90" role="doc-biblioref">1990</a>)</span>.</p>
+<div style="page-break-after: always;"></div>
+
+</div>
+</div>
+<h3>References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-cleveland90" class="csl-entry">
+Cleveland, Robert B., William S. Cleveland, Jean E. McRae, and Irma Terpenning. 1990. <span>“STL: A Seasonal-Trend Decomposition Procedure Based on Loess (with Discussion).”</span> <em>Journal of Official Statistics</em> 6: 3–73.
+</div>
+<div id="ref-Zellner1991" class="csl-entry">
+Zellner, Arnold, Chansik Hong, and Chung-ki Min. 1991. <span>“Forecasting Turning Points in International Output Growth Rates Using Bayesian Exponentially Weighted Autoregression, Time-Varying Parameter, and Pooling Techniques.”</span> <em>Journal of Econometrics</em> 49 (1-2): 275–304. <a href="https://EconPapers.repec.org/RePEc:eee:econom:v:49:y:1991:i:1-2:p:275-304">https://EconPapers.repec.org/RePEc:eee:econom:v:49:y:1991:i:1-2:p:275-304</a>.
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="14">
+<li id="fn14"><p>This series is produced by the INSEE, the French National Statistical Office, and is available at <a href="https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/010537940" class="uri">https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/010537940</a>.<a href="sec-comparison.html#fnref14" class="footnote-back">↩︎</a></p></li>
+<li id="fn15"><p>
+A turning point (upturn) is defined to occur at time <span class="math inline">\(t\)</span> if <span class="math inline">\(y_{t-k}\geq\cdots\geq y_{t-1}&lt;y_t\leq y_{t+1}\leq\cdots y_{t+m}\)</span>.
+A downturn would be equivalently defined as a date <span class="math inline">\(t\)</span> <span class="math inline">\(y_{t-k}\leq\cdots\leq y_{t-1}&gt;y_t\geq y_{t+1}\geq\cdots y_{t+m}\)</span>.
+Following <span class="citation"><a href="#ref-Zellner1991" role="doc-biblioref">Zellner, Hong, and Min</a> (<a href="#ref-Zellner1991" role="doc-biblioref">1991</a>)</span>, <span class="math inline">\(k=3\)</span> and <span class="math inline">\(m=1\)</span> are chosen given the smoothness of the trend-cycle data. <a href="sec-comparison.html#fnref15" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="sec-Dagum.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="conclusion.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["Stage_2A.pdf", "Stage_2A.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -1,0 +1,29 @@
+
+# Conclusion {.unnumbered}
+
+To sum up, this study presents many results about how to build asymmetric filters to minimize revision and time shift in the detection of turning points.
+
+First, there is no need to seek to preserve polynomial trends of degree more than one to build asymmetric filters: it introduces more bias in the detection of turning point with a low gain on the revision error. Moreover, introducing a small bias in polynomial preservation can lead to filters that performs globally better. 
+This property has been illustrated empirically on the French IPI of manufacture of motor vehicles, trailers and semi-trailers in section \@ref(sec:comparison) using the RKHS $b_{q,\phi}$ filter.
+
+Second, focusing on some specific criteria, the FST approach can lead to asymmetric filters that outperform the other ones (local polynomials and RKHS). 
+More research should be done in that direction to understand when it performs better and if the improvement is statistically significant.
+
+<!-- Third, all the methods lots of degrees of freedom on the criteria used to build them.  -->
+<!-- Therefore, more theoretical and empirical studies should be done on the effects of this degrees of freedom to see how they impact the estimation and if we cannot simplify them, as it is done in the X-12ARIMA algorithm to choose the length of the Henderson filter.  -->
+
+Finally, the study of asymmetric filters should focus on estimates when few future observations are available. 
+Indeed, for monthly data, when two or more future observations are available, the different methods give similar results and the gain to compute optimized filters is small.
+Consequently, adding the timeliness criterion to local polynomial filters will mainly be useful for the LC method, for which it has an impact only when few future observations are known (whereas for the QL method is has almost no impact on real-time estimates).
+
+This study could be extended in many ways.
+One lead could be to do more investigation on the selection of the length of the filters. 
+<!-- In most of the studies on asymmetric filters, the asymmetric filters use as many past observations as the symmetric filters. -->
+<!-- However, we could consider asymmetric filters that take into account more past observations.  -->
+In this paper we only focused on regular monthly data, but if we focus on high frequency or irregular data, some properties may not be effective anymore and, besides, some more issues could appear (as the problem of choosing the length of the filter).
+
+Another lead could be to study the impact of atypical points: in X-12ARIMA there is a strong correction of atypical points of the irregular component before applying the filters to extract the trend. 
+It encourages to study what is the impact of atypical points on the estimation of trends and turning points, but also to explore new kinds of asymmetric filters based on robust methods (like robust local regressions). 
+
+
+\newpage
