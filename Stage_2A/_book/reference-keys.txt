@@ -1,6 +1,7 @@
 tab:varianceReductionSymmetricFilters
 eq:lppasym
 tab:criteriaLp
+tab:mseIPI
 eq:msedef
 eq:msedecomp
 tab:criteriarkhs
@@ -27,3 +28,6 @@ sec:Dagum
 sec:comparison
 comparison-with-the-fst-approach
 illustration-with-an-example
+fig:unnamed-chunk-1
+fig:unnamed-chunk-2
+fig:exgainPhase

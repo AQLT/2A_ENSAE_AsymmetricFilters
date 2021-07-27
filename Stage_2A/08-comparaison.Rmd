@@ -12,7 +12,7 @@ For $h=6$ (13-term symmetric filter), for the RKHS filters we find that:
 
 - imposing that asymmetric filters preserve linear trends, the FST approach gives better results for $q\in[2,5]$ for the filters computed with $b_{q,G}$ and $b_{q,\gamma}$, and for $q\in[2,4]$ for the one computed with $b_{q,\varphi}$.
 
-\faArrowCircleRight{} Therefore, the RKHS approach seems not to be the better approach to build asymmetric filters to apply to monthly regular data (i.e.: data for which we usually use $h=6$).
+`r fa_arrow_circle_right` Therefore, the RKHS approach seems not to be the better approach to build asymmetric filters to apply to monthly regular data (i.e.: data for which we usually use $h=6$).
 
 For the local polynomial filters we find that:
 
@@ -22,7 +22,7 @@ Adding the timeliness criterion allows to have better results than the FST appro
 - imposing that asymmetric filters preserve linear trends, the FST approach gives better results for $q\in[2,5]$ for the LC and QL methods. 
 Adding the timeliness criterion doesn't change the results.
 
-\faArrowCircleRight{} In terms of quality criteria, local polynomial seems to perform better for real-time and one-period ahead filters ($q=0,1$).
+`r fa_arrow_circle_right` In terms of quality criteria, local polynomial seems to perform better for real-time and one-period ahead filters ($q=0,1$).
 
 Those comparisons can be seen in an online application available at https://aqlt.shinyapps.io/FSTfilters/.
 

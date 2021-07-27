@@ -28,7 +28,7 @@ We have:
 
 The interval $[0,\pi]$ is then splitted in two: the pass-band $[0,\omega_1]$ (the frequency interval that contains the target signal) and the stop-band  $[\omega_1,\pi]$.
 
-The mean squared error defined in equation \@ref(eq:msedef) can then be decomposed additively into four quantities:
+The mean square error defined in equation \@ref(eq:msedef) can then be decomposed additively into four quantities:
 \begin{align*}
 Accuracy =A_w&= 2\int_0^{\omega_1}\left(\rho_s(\omega)-\rho_\theta(\omega)\right)^{2}h(\omega)\ud\omega\\
 Timeliness =T_w&= 8\int_0^{\omega_1}\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h(\omega)\ud\omega\\

@@ -79,6 +79,8 @@ The more data is available (i.e.: $q$ increases), the less the asymmetric filter
 ```{r criteriarkhs, echo = FALSE}
 rkhs_diagnostics <- readRDS("data/rkhs_diagnostics.RDS")
 title <- "Quality criteria of asymmetric filters ($q=0,1,2$) computed by the RKHS methodology $h=6$."
+colnames(rkhs_diagnostics) <- gsub(" ?\\$ ?","$",colnames(rkhs_diagnostics))
+rkhs_diagnostics[,1] <- gsub(" ?\\$ ?","$",rkhs_diagnostics[,1])
 groupement <- table(rkhs_diagnostics[,1])
 rkhs_diagnostics[,-1] %>% 
   kable(format.args = list(digits = 3), align = "c", booktabs = T, row.names = FALSE,

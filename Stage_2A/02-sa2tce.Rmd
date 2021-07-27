@@ -17,7 +17,7 @@ Thus, the estimation of trend-cycle component is technically linked to the seaso
 
 Moreover, since the trend-cycle extraction methods are applied to seasonally adjusted data, both problems cannot be separated.
 This link also explains that in this paper, all the methods used are implemented in the core libraries of JDemetra+ ^[See https://github.com/jdemetra/jdemetra-core.], the seasonal adjustment software recommended by Eurostat. 
-An \faIcon{r-project} interface is implemented in the package `rjdfilters`^[Available at https://github.com/palatej/rjdfilters.] and was developed during this internship.
+An `r fa_r_project` interface is implemented in the package `rjdfilters`^[Available at https://github.com/palatej/rjdfilters.] and was developed during this internship.
 
 In the literature, different approaches where considered for trend-cycle extraction^[See for example @alexandrov2012TEreview for a review of some modern approaches to trend extraction.]. 
 Among the most popular, we can cite the Model-Based Approach and the non-parametric extraction methods:

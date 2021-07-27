@@ -24,7 +24,7 @@
 <meta name="author" content="Alain Quartier-la-Tente" />
 
 
-<meta name="date" content="2021-07-27" />
+<meta name="date" content="2021-07-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -53,6 +53,8 @@
 
 <link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<link href="libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -304,7 +306,7 @@ As a result, the value of weights has no sense.</p>
 <h2><span class="header-section-number">4.2</span> Extension with the revision criterion</h2>
 <p>The FST — Fidelity-Smoothness-Timeliness — approach is the only one that doesn’t directly include a criterion on the revision error relative to a symmetric filter.<br />
 This approach could be somewhat generalized in order to include the revision criterion, replacing in the orthogonal form <span class="math inline">\(\theta\)</span> by <span class="math inline">\((w-\theta)\)</span> (with <span class="math inline">\(w\)</span> the symmetric filter), and <span class="math inline">\(F\)</span> by a matrix relative to the data (see <span class="citation"><a href="#ref-ch12HBSA" role="doc-biblioref">Ladiray</a> (<a href="#ref-ch12HBSA" role="doc-biblioref">2018</a>)</span>).</p>
-<p>In this paper, we consider the method that consists to extend the minimization problem of local polynomial filters adding the Timeliness criterion defined by <span class="citation"><a href="#ref-ch15HBSA" role="doc-biblioref">Grun-Rehomme, Guggemos, and Ladiray</a> (<a href="#ref-ch15HBSA" role="doc-biblioref">2018</a>)</span><a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>.
+<p>In this paper, we consider the method that consists to extend the minimization problem of local polynomial filters adding the Timeliness criterion defined by <span class="citation"><a href="#ref-ch15HBSA" role="doc-biblioref">Grun-Rehomme, Guggemos, and Ladiray</a> (<a href="#ref-ch15HBSA" role="doc-biblioref">2018</a>)</span><a href="#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a>.
 Using the same notations as in section <a href="sec-lppfilters.html#subsec:lppasymf">3.2.2</a>, <span class="math inline">\(\theta=v\)</span> and noting <span class="math inline">\(g=v-w_p\)</span>, the Timeliness criterion can be rewritten:
 <span class="math display">\[
 T_g(v)=v&#39;Tv=g&#39;Tg+2w_p&#39;Tg+w_p&#39;Tw_p
@@ -359,8 +361,8 @@ Proietti, Tommaso, and Alessandra Luati. 2008. <span>“Real Time Estimation in 
 </div>
 <div class="footnotes">
 <hr />
-<ol start="12">
-<li id="fn12"><p>This method is for example coded in Java by Jean Palate in <a href="https://github.com/palatej/jdemetra-core" class="uri">https://github.com/palatej/jdemetra-core</a>.<a href="sec-GuggemosEtAl.html#fnref12" class="footnote-back">↩︎</a></p></li>
+<ol start="13">
+<li id="fn13"><p>This method is for example coded in Java by Jean Palate in <a href="https://github.com/palatej/jdemetra-core" class="uri">https://github.com/palatej/jdemetra-core</a>.<a href="sec-GuggemosEtAl.html#fnref13" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

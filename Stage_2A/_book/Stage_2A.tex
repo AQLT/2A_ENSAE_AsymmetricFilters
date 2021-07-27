@@ -211,7 +211,7 @@ Service des relations entreprises et des stages\newline
 	frametitleaboveskip=\dimexpr-\ht\strutbox\relax,
 	innerlinewidth=0pt,
 }
-\NewEnviron{summary}[2][true]{%
+\NewEnviron{summary_box}[2][true]{%
 \begin{mdframed}[style=symmaryboxstyle,
 nobreak=#1,
 frametitle={%
@@ -264,7 +264,7 @@ frametitle={%
 
 \title{Real-time detection of turning points with linear filters}
 \author{Alain Quartier-la-Tente}
-\date{2021-07-27}
+\date{2021-07-28}
 
 \begin{document}
 \maketitle
@@ -665,77 +665,82 @@ with \(r>0\), \(s\geq 0\).
 It encompasses all kernels used in this report, except Henderson, trapezoidal and gaussian kernel.The following kernels are considered in this report:
 
 \begin{multicols}{2}
+
 \begin{itemize}
-\item $r=1,s=0$ uniform kernel: 
-$$\kappa_j^U=1$$
-\item $r=s=1$ triangle kernel:
-$$\kappa_j^T=\left(
+\item
+  \(r=1,s=0\) uniform kernel:
+  \[\kappa_j^U=1\]
+\item
+  \(r=s=1\) triangle kernel:
+  \[\kappa_j^T=\left(
   1-
   \left\lvert
   \frac j {h+1}
   \right\lvert
-\right)$$
-
-\item $r=2,s=1$  Epanechnikov (or Parabolic) kernel:
-$$\kappa_j^E=\left(
+  \right)\]
+\item
+  \(r=2,s=1\) Epanechnikov (or Parabolic) kernel:
+  \[\kappa_j^E=\left(
   1-
   \left\lvert
   \frac j {h+1}
   \right\lvert^2
-\right)$$
-
-\item $r=s=2$ biweight kernel:
-$$\kappa_j^{BW}=\left(
+  \right)\]
+\item
+  \(r=s=2\) biweight kernel:
+  \[\kappa_j^{BW}=\left(
   1-
   \left\lvert
   \frac j {h+1}
   \right\lvert^2
-\right)^2$$
-
-\item $r = 2, s = 3$ triweight kernel:
-$$\kappa_j^{TW}=\left(
+  \right)^2\]
+\item
+  \(r = 2, s = 3\) triweight kernel:
+  \[\kappa_j^{TW}=\left(
   1-
   \left\lvert
   \frac j {h+1}
   \right\lvert^2
-\right)^3$$
-
-\item $r = s = 3$ tricube kernel:
-$$\kappa_j^{TC}=\left(
+  \right)^3\]
+\item
+  \(r = s = 3\) tricube kernel:
+  \[\kappa_j^{TC}=\left(
   1-
   \left\lvert
   \frac j {h+1}
   \right\lvert^3
-\right)^3$$
-
-\item Henderson kernel (see section \ref{sec:sympolyfilter} for more details):
-$$
-\kappa_{j}=\left[1-\frac{j^2}{(h+1)^2}\right]
-\left[1-\frac{j^2}{(h+2)^2}\right]
-\left[1-\frac{j^2}{(h+3)^2}\right]
-$$
-\item Trapezoidal kernel:
-$$
-\kappa_j^{TP}=
-\begin{cases}
+  \right)^3\]
+\item
+  Henderson kernel (see section \ref{sec:sympolyfilter} for more details):
+  \[
+  \kappa_{j}=\left[1-\frac{j^2}{(h+1)^2}\right]
+  \left[1-\frac{j^2}{(h+2)^2}\right]
+  \left[1-\frac{j^2}{(h+3)^2}\right]
+  \]
+\item
+  Trapezoidal kernel:
+  \[
+  \kappa_j^{TP}=
+  \begin{cases}
   \frac{1}{3(2h-1)} & \text{ if }j=\pm h 
   \\
   \frac{2}{3(2h-1)} & \text{ if }j=\pm (h-1)\\
   \frac{1}{2h-1}& \text{ otherwise}
-\end{cases}
-$$
-\item Gaussian kernel\footnote{
-In this report we arbirarily take $\sigma^2=0.25$.
-}
-$$
-\kappa_j^G=\exp\left(
--\frac{
+  \end{cases}
+  \]
+\item
+  Gaussian kernel\footnote{
+    In this report we arbirarily take \(\sigma^2=0.25\).}:
+  \[
+  \kappa_j^G=\exp\left(
+  -\frac{
   j^2
-}{
+  }{
   2\sigma^2h^2
-}\right)
-$$
+  }\right)
+  \]
 \end{itemize}
+
 \end{multicols}
 
 Henderson, trapezoidal and gaussian kernel are very specific:
@@ -1022,22 +1027,22 @@ This unexpected result underlines the fact that in the approach of \textcite{pro
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{ccccccccccc}
 \toprule
-Method & $ b_c $ & $ b_l $ & $ b_q $ & $ F_g $ & $ S_g $ & $ T_g \times 10^{-3} $ & $ A_w $ & $ S_w $ & $ T_w $ & $ R_w $\\
+Method & $b_c$ & $b_l$ & $b_q$ & $F_g$ & $S_g$ & $T_g \times 10^{-3}$ & $A_w$ & $S_w$ & $T_w$ & $R_w$\\
 \midrule
 \addlinespace[0.3em]
-\multicolumn{11}{l}{\textbf{$ q=0 $}}\\
+\multicolumn{11}{l}{\textbf{$q=0$}}\\
 \hspace{1em}LC & 0 & -0.407 & -2.161 & 0.388 & 1.272 & 30.341 & 0.098 & 0.488 & 0.409 & 0.548\\
 \hspace{1em}QL & 0 & 0.000 & -0.473 & 0.711 & 5.149 & 0.047 & 0.067 & 1.894 & 0.000 & 0.106\\
 \hspace{1em}CQ & 0 & 0.000 & 0.000 & 0.913 & 11.942 & 0.015 & 0.016 & 2.231 & 0.000 & 0.102\\
 \hspace{1em}DAF & 0 & 0.000 & 0.000 & 0.943 & 14.203 & 0.003 & 0.015 & 2.178 & 0.000 & 0.098\\
 \addlinespace[0.3em]
-\multicolumn{11}{l}{\textbf{$ q=1 $}}\\
+\multicolumn{11}{l}{\textbf{$q=1$}}\\
 \hspace{1em}LC & 0 & -0.121 & -0.525 & 0.268 & 0.433 & 4.797 & 0.009 & 0.119 & 0.063 & 0.112\\
 \hspace{1em}QL & 0 & 0.000 & -0.061 & 0.287 & 0.707 & 0.694 & 0.005 & 0.192 & 0.007 & 0.042\\
 \hspace{1em}CQ & 0 & 0.000 & 0.000 & 0.372 & 0.571 & 0.158 & 0.022 & 0.575 & 0.001 & 0.061\\
 \hspace{1em}DAF & 0 & 0.000 & 0.000 & 0.409 & 0.366 & 0.061 & 0.020 & 0.760 & 0.000 & 0.059\\
 \addlinespace[0.3em]
-\multicolumn{11}{l}{\textbf{$ q=2 $}}\\
+\multicolumn{11}{l}{\textbf{$q=2$}}\\
 \hspace{1em}LC & 0 & 0.003 & 1.076 & 0.201 & 0.080 & 0.347 & 0.009 & 0.012 & 0.004 & 0.015\\
 \hspace{1em}QL & 0 & 0.000 & 0.033 & 0.215 & 0.052 & 2.083 & 0.000 & 0.011 & 0.023 & 0.067\\
 \hspace{1em}CQ & 0 & 0.000 & 0.000 & 0.370 & 0.658 & 0.131 & 0.021 & 0.558 & 0.001 & 0.055\\
@@ -1090,7 +1095,7 @@ Method & 2007-2010 & 2003-2019 & $A_w+S_w+T_w+R_w$\\
 
 The results for the different kernels can also be visualized in an online application available at \url{https://aqlt.shinyapps.io/FiltersProperties/}.
 
-\begin{summary}{Local polynomial filters}
+\begin{summary_box}{Local polynomial filters}
 
 \textbf{Advantages}:
 
@@ -1110,7 +1115,7 @@ The results for the different kernels can also be visualized in an online applic
   Timeliness is not controlled.
 \end{itemize}
 
-\end{summary}
+\end{summary_box}
 
 \hypertarget{sec:GuggemosEtAl}{%
 \section{General optimization problem: FST filters}\label{sec:GuggemosEtAl}}
@@ -1177,7 +1182,7 @@ This approach can be called as the ``FST approach'' in reference to the three in
 One drawback of this approach is that the different criteria are not normalized: their values cannot be compared with each other.
 As a result, the value of weights has no sense.
 
-\begin{summary}{FST filters}
+\begin{summary_box}{FST filters}
 
 \textbf{Advantages}:
 
@@ -1198,7 +1203,7 @@ As a result, the value of weights has no sense.
   The different criteria are not normalized: the associated weights cannot be compared.
 \end{itemize}
 
-\end{summary}
+\end{summary_box}
 
 \hypertarget{extension-with-the-revision-criterion}{%
 \subsection{Extension with the revision criterion}\label{extension-with-the-revision-criterion}}
@@ -1292,7 +1297,7 @@ We have:
 
 The interval \([0,\pi]\) is then splitted in two: the pass-band \([0,\omega_1]\) (the frequency interval that contains the target signal) and the stop-band \([\omega_1,\pi]\).
 
-The mean squared error defined in equation \eqref{eq:msedef} can then be decomposed additively into four quantities:
+The mean square error defined in equation \eqref{eq:msedef} can then be decomposed additively into four quantities:
 \begin{align*}
 Accuracy =A_w&= 2\int_0^{\omega_1}\left(\rho_s(\omega)-\rho_\theta(\omega)\right)^{2}h(\omega)\ud\omega\\
 Timeliness =T_w&= 8\int_0^{\omega_1}\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h(\omega)\ud\omega\\
@@ -1330,7 +1335,7 @@ To have criteria that don't depend on the data (and the one defined in table \re
 h_{RW}(x)=\frac{1}{2(1-\cos(x))}
 \]
 
-\begin{summary}{Data-dependent filters}
+\begin{summary_box}{Data-dependent filters}
 
 \textbf{Advantages}:
 
@@ -1349,7 +1354,7 @@ h_{RW}(x)=\frac{1}{2(1-\cos(x))}
   Some optimization problems might occur (several minimum, etc.).
 \end{itemize}
 
-\end{summary}
+\end{summary_box}
 
 We could also use a non-parametric approach to build asymmetric using \(h_{RW}\) for the spectral density of the series.
 However, due to a lack of time, this option is not considered in this study.
@@ -1446,20 +1451,20 @@ The more data is available (i.e.: \(q\) increases), the less the asymmetric filt
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{ccccccccccc}
 \toprule
-Method & $ b_c $ & $ b_l $ & $ b_q $ & $ F_g $ & $ S_g $ & $ T_g \times 10^{-3} $ & $ A_w $ & $ S_w $ & $ T_w $ & $ R_w $\\
+Method & $b_c$ & $b_l$ & $b_q$ & $F_g$ & $S_g$ & $T_g \times 10^{-3}$ & $A_w$ & $S_w$ & $T_w$ & $R_w$\\
 \midrule
 \addlinespace[0.3em]
-\multicolumn{11}{l}{\textbf{$ q=0 $}}\\
+\multicolumn{11}{l}{\textbf{$q=0$}}\\
 \hspace{1em}$b_{q,\gamma}$ & 0 & -1.526 & 3.893 & 0.222 & 0.469 & 74.991 & 0.017 & 0.069 & 2.164 & 0.671\\
 \hspace{1em}$b_{q,G}$ & 0 & -2.039 & 6.937 & 0.177 & 0.305 & 98.650 & 0.082 & 0.066 & 3.547 & 0.715\\
 \hspace{1em}$b_{q,\varphi}$ & 0 & -0.614 & 0.033 & 0.381 & 1.204 & 23.323 & 0.019 & 0.549 & 0.451 & 0.356\\
 \addlinespace[0.3em]
-\multicolumn{11}{l}{\textbf{$ q=1 $}}\\
+\multicolumn{11}{l}{\textbf{$q=1$}}\\
 \hspace{1em}$b_{q,\gamma}$ & 0 & -0.516 & 0.992 & 0.226 & 0.303 & 14.386 & 0.002 & 0.047 & 0.313 & 0.170\\
 \hspace{1em}$b_{q,G}$ & 0 & -0.923 & 2.880 & 0.189 & 0.248 & 27.386 & 0.039 & 0.036 & 0.786 & 0.213\\
 \hspace{1em}$b_{q,\varphi}$ & 0 & -0.176 & 0.295 & 0.276 & 0.359 & 2.901 & 0.003 & 0.182 & 0.050 & 0.071\\
 \addlinespace[0.3em]
-\multicolumn{11}{l}{\textbf{$ q=2 $}}\\
+\multicolumn{11}{l}{\textbf{$q=2$}}\\
 \hspace{1em}$b_{q,\gamma}$ & 0 & 0.041 & 0.863 & 0.202 & 0.090 & 0.328 & 0.006 & 0.010 & 0.004 & 0.018\\
 \hspace{1em}$b_{q,G}$ & 0 & -0.007 & 1.001 & 0.197 & 0.096 & 0.637 & 0.009 & 0.010 & 0.008 & 0.021\\
 \hspace{1em}$b_{q,\varphi}$ & 0 & 0.105 & 0.820 & 0.215 & 0.077 & 0.064 & 0.003 & 0.025 & 0.005 & 0.010\\
@@ -1467,7 +1472,7 @@ Method & $ b_c $ & $ b_l $ & $ b_q $ & $ F_g $ & $ S_g $ & $ T_g \times 10^{-3} 
 \end{tabular}}
 \end{table}
 
-\begin{summary}{RKHS filters}
+\begin{summary_box}{RKHS filters}
 
 \textbf{Advantages}:
 
@@ -1487,7 +1492,7 @@ Method & $ b_c $ & $ b_l $ & $ b_q $ & $ F_g $ & $ S_g $ & $ T_g \times 10^{-3} 
   Some optimization problems might occur (several minimum, etc.).
 \end{itemize}
 
-\end{summary}
+\end{summary_box}
 
 \hypertarget{sec:comparison}{%
 \section{Comparison of the different filters}\label{sec:comparison}}

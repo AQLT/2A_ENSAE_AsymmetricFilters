@@ -24,7 +24,7 @@
 <meta name="author" content="Alain Quartier-la-Tente" />
 
 
-<meta name="date" content="2021-07-27" />
+<meta name="date" content="2021-07-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -267,7 +267,13 @@ For all symmetric moving average we have <span class="math inline">\(\Phi_\theta
 \Gamma_{\theta_0}(\omega)=\frac{1}{2}+\frac{1}{2}\e^{-i\omega}
 =\lvert\cos(\omega/2)\rvert\e^{-i\frac{\omega}{2}}
 \]</span>
-The figure <a href="#fig:exgainPhase"><strong>??</strong></a> illustrates the gain and the phase shift for <span class="math inline">\(\omega=\pi/2\)</span> and <span class="math inline">\(X_t=\sin(\omega t)\)</span>.</p>
+The figure <a href="sec-propMM.html#fig:exgainPhase">2.1</a> illustrates the gain and the phase shift for <span class="math inline">\(\omega=\pi/2\)</span> and <span class="math inline">\(X_t=\sin(\omega t)\)</span>.</p>
+<div class="figure"><span id="fig:exgainPhase"></span>
+<img src="img/tikz-def-mm.png" alt="Smoothing of the time series $X_t=\sin(\omega t)$ by the moving average $M_{\theta_0}X_t=\frac{1}{2}X_{t-1}+\frac{1}{2}X_{t}$ for $\omega=\pi/2$." width="100%" />
+<p class="caption">
+Figure 2.1: Smoothing of the time series <span class="math inline">\(X_t=\sin(\omega t)\)</span> by the moving average <span class="math inline">\(M_{\theta_0}X_t=\frac{1}{2}X_{t-1}+\frac{1}{2}X_{t}\)</span> for <span class="math inline">\(\omega=\pi/2\)</span>.
+</p>
+</div>
 </div>
 <div id="desirable-properties-of-a-moving-average" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> Desirable properties of a moving average</h2>

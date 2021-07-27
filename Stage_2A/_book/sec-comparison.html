@@ -24,7 +24,7 @@
 <meta name="author" content="Alain Quartier-la-Tente" />
 
 
-<meta name="date" content="2021-07-27" />
+<meta name="date" content="2021-07-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -53,6 +53,8 @@
 
 <link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<link href="libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -242,7 +244,7 @@ Indeed, a linear filter can be considered as suboptimal if we can find a set of 
 <li><p>imposing that asymmetric filters preserve constants, the FST approach gives better results for all values of <span class="math inline">\(q\)</span> for the filters computed with <span class="math inline">\(b_{q,G}\)</span> and <span class="math inline">\(b_{q,\gamma}\)</span>, and for <span class="math inline">\(q\leq 3\)</span> for the one computed with <span class="math inline">\(b_{q,\varphi}\)</span>.</p></li>
 <li><p>imposing that asymmetric filters preserve linear trends, the FST approach gives better results for <span class="math inline">\(q\in[2,5]\)</span> for the filters computed with <span class="math inline">\(b_{q,G}\)</span> and <span class="math inline">\(b_{q,\gamma}\)</span>, and for <span class="math inline">\(q\in[2,4]\)</span> for the one computed with <span class="math inline">\(b_{q,\varphi}\)</span>.</p></li>
 </ul>
-<p> Therefore, the RKHS approach seems not to be the better approach to build asymmetric filters to apply to monthly regular data (i.e.: data for which we usually use <span class="math inline">\(h=6\)</span>).</p>
+<p><i class="fas fa-arrow-circle-right"></i> Therefore, the RKHS approach seems not to be the better approach to build asymmetric filters to apply to monthly regular data (i.e.: data for which we usually use <span class="math inline">\(h=6\)</span>).</p>
 <p>For the local polynomial filters we find that:</p>
 <ul>
 <li><p>imposing that asymmetric filters preserve constants, the FST approach gives better results than the LC method for all values of <span class="math inline">\(q\)</span>.
@@ -250,16 +252,16 @@ Adding the timeliness criterion allows to have better results than the FST appro
 <li><p>imposing that asymmetric filters preserve linear trends, the FST approach gives better results for <span class="math inline">\(q\in[2,5]\)</span> for the LC and QL methods.
 Adding the timeliness criterion doesn’t change the results.</p></li>
 </ul>
-<p> In terms of quality criteria, local polynomial seems to perform better for real-time and one-period ahead filters (<span class="math inline">\(q=0,1\)</span>).</p>
+<p><i class="fas fa-arrow-circle-right"></i> In terms of quality criteria, local polynomial seems to perform better for real-time and one-period ahead filters (<span class="math inline">\(q=0,1\)</span>).</p>
 <p>Those comparisons can be seen in an online application available at <a href="https://aqlt.shinyapps.io/FSTfilters/" class="uri">https://aqlt.shinyapps.io/FSTfilters/</a>.</p>
 </div>
 <div id="illustration-with-an-example" class="section level2" number="7.2">
 <h2><span class="header-section-number">7.2</span> Illustration with an example</h2>
-<p>In this section we compare the different asymmetric filters applying them to the French industrial production index of manufacture of motor vehicles, trailers and semi-trailers<a href="#fn14" class="footnote-ref" id="fnref14"><sup>14</sup></a>.
+<p>In this section we compare the different asymmetric filters applying them to the French industrial production index of manufacture of motor vehicles, trailers and semi-trailers<a href="#fn15" class="footnote-ref" id="fnref15"><sup>15</sup></a>.
 For simplicity, for the FST approach we only show an extreme filter example minimizing the phase shift by putting a large weight to the timeliness (<span class="math inline">\(\alpha = 0\)</span>, <span class="math inline">\(\beta = 1\)</span>, <span class="math inline">\(\gamma = 1000\)</span>).
 For local polynomial filters, the Henderson kernel is used with <span class="math inline">\(R=3.5\)</span>.
 The figure <a href="#fig:cl2all"><strong>??</strong></a> shows the results around a turning point (the economic crisis of 2009) and during “normal cycles” (between 2000 and 2008), from <span class="math inline">\(q=0\)</span> (real-time estimates) to <span class="math inline">\(q=3\)</span> (three future available observations).</p>
-<p>For this example, in terms of time lag to detect the turning point of February 2009<a href="#fn15" class="footnote-ref" id="fnref15"><sup>15</sup></a>, the DAF is the worst filter since it introduces a delay of one month until <span class="math inline">\(q=3\)</span>.
+<p>For this example, in terms of time lag to detect the turning point of February 2009<a href="#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a>, the DAF is the worst filter since it introduces a delay of one month until <span class="math inline">\(q=3\)</span>.
 LC, QL, <span class="math inline">\(b_{q,\gamma}\)</span> filters introduce a delay only for real-time filter (<span class="math inline">\(q=0\)</span>) of two months for QL filter and one month for the others.
 Surprisingly, the FST filter that minimize the phase shift introduce a time lag for <span class="math inline">\(q=0\)</span> and <span class="math inline">\(q=1\)</span> (the upturn is detected earlier), whereas <span class="math inline">\(b_{q,\phi}\)</span> doesn’t introduce any time lag.</p>
 <div class="remarque">
@@ -295,12 +297,12 @@ Zellner, Arnold, Chansik Hong, and Chung-ki Min. 1991. <span>“Forecasting Turn
 </div>
 <div class="footnotes">
 <hr />
-<ol start="14">
-<li id="fn14"><p>This series is produced by the INSEE, the French National Statistical Office, and is available at <a href="https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/010537940" class="uri">https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/010537940</a>.<a href="sec-comparison.html#fnref14" class="footnote-back">↩︎</a></p></li>
-<li id="fn15"><p>
+<ol start="15">
+<li id="fn15"><p>This series is produced by the INSEE, the French National Statistical Office, and is available at <a href="https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/010537940" class="uri">https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/010537940</a>.<a href="sec-comparison.html#fnref15" class="footnote-back">↩︎</a></p></li>
+<li id="fn16"><p>
 A turning point (upturn) is defined to occur at time <span class="math inline">\(t\)</span> if <span class="math inline">\(y_{t-k}\geq\cdots\geq y_{t-1}&lt;y_t\leq y_{t+1}\leq\cdots y_{t+m}\)</span>.
 A downturn would be equivalently defined as a date <span class="math inline">\(t\)</span> <span class="math inline">\(y_{t-k}\leq\cdots\leq y_{t-1}&gt;y_t\geq y_{t+1}\geq\cdots y_{t+m}\)</span>.
-Following <span class="citation"><a href="#ref-Zellner1991" role="doc-biblioref">Zellner, Hong, and Min</a> (<a href="#ref-Zellner1991" role="doc-biblioref">1991</a>)</span>, <span class="math inline">\(k=3\)</span> and <span class="math inline">\(m=1\)</span> are chosen given the smoothness of the trend-cycle data. <a href="sec-comparison.html#fnref15" class="footnote-back">↩︎</a></p></li>
+Following <span class="citation"><a href="#ref-Zellner1991" role="doc-biblioref">Zellner, Hong, and Min</a> (<a href="#ref-Zellner1991" role="doc-biblioref">1991</a>)</span>, <span class="math inline">\(k=3\)</span> and <span class="math inline">\(m=1\)</span> are chosen given the smoothness of the trend-cycle data. <a href="sec-comparison.html#fnref16" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

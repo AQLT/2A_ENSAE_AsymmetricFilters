@@ -24,7 +24,7 @@
 <meta name="author" content="Alain Quartier-la-Tente" />
 
 
-<meta name="date" content="2021-07-27" />
+<meta name="date" content="2021-07-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -53,6 +53,8 @@
 
 <link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<link href="libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -237,7 +239,7 @@ div.csl-indent {
 It allows them to develop to derive linear filters and associated asymmetric filters.</p>
 <p>A RKHS is a Hilbert space characterized by a kernel that reproduces, via an inner product defined by a density function <span class="math inline">\(f_0(t)\)</span>, every function of the space.
 Therefore, a kernel estimator <span class="math inline">\(K_p\)</span> of order <span class="math inline">\(p\)</span> (i.e.: that reproduce without distortion a polynomial trend of degree <span class="math inline">\(p-1\)</span>) can be decomposed into the product of a reproducing kernel <span class="math inline">\(R_{p-1}\)</span>, belonging to the space of polynomials of degree <span class="math inline">\(p-1\)</span>, and a probability density function <span class="math inline">\(f_0\)</span>.</p>
-<p>For any sequence <span class="math inline">\(\left(P_{i}\right)_{0\leq i\leq p-1}\)</span> of orthonormal polynomials in <span class="math inline">\(\mathbb{L}^{2}(f_{0})\)</span><a href="#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a>, the kernel estimator <span class="math inline">\(K_p\)</span> is defined by:
+<p>For any sequence <span class="math inline">\(\left(P_{i}\right)_{0\leq i\leq p-1}\)</span> of orthonormal polynomials in <span class="math inline">\(\mathbb{L}^{2}(f_{0})\)</span><a href="#fn14" class="footnote-ref" id="fnref14"><sup>14</sup></a>, the kernel estimator <span class="math inline">\(K_p\)</span> is defined by:
 <span class="math display">\[
 K_{p}(t)=\sum_{i=0}^{p-1}P_{i}(t)P_{i}(0)f_{0}(t)
 \]</span>
@@ -302,41 +304,41 @@ The more data is available (i.e.: <span class="math inline">\(q\)</span> increas
 Method
 </th>
 <th style="text-align:center;">
-$ b_c $
+<span class="math inline">\(b_c\)</span>
 </th>
 <th style="text-align:center;">
-$ b_l $
+<span class="math inline">\(b_l\)</span>
 </th>
 <th style="text-align:center;">
-$ b_q $
+<span class="math inline">\(b_q\)</span>
 </th>
 <th style="text-align:center;">
-$ F_g $
+<span class="math inline">\(F_g\)</span>
 </th>
 <th style="text-align:center;">
-$ S_g $
+<span class="math inline">\(S_g\)</span>
 </th>
 <th style="text-align:center;">
-$ T_g ^{-3} $
+<span class="math inline">\(T_g \times 10^{-3}\)</span>
 </th>
 <th style="text-align:center;">
-$ A_w $
+<span class="math inline">\(A_w\)</span>
 </th>
 <th style="text-align:center;">
-$ S_w $
+<span class="math inline">\(S_w\)</span>
 </th>
 <th style="text-align:center;">
-$ T_w $
+<span class="math inline">\(T_w\)</span>
 </th>
 <th style="text-align:center;">
-$ R_w $
+<span class="math inline">\(R_w\)</span>
 </th>
 </tr>
 </thead>
 <tbody>
 <tr grouplength="3">
 <td colspan="11" style="border-bottom: 1px solid;">
-<strong>$ q=0 $</strong>
+<strong><span class="math inline">\(q=0\)</span></strong>
 </td>
 </tr>
 <tr>
@@ -446,7 +448,7 @@ $ R_w $
 </tr>
 <tr grouplength="3">
 <td colspan="11" style="border-bottom: 1px solid;">
-<strong>$ q=1 $</strong>
+<strong><span class="math inline">\(q=1\)</span></strong>
 </td>
 </tr>
 <tr>
@@ -556,7 +558,7 @@ $ R_w $
 </tr>
 <tr grouplength="3">
 <td colspan="11" style="border-bottom: 1px solid;">
-<strong>$ q=2 $</strong>
+<strong><span class="math inline">\(q=2\)</span></strong>
 </td>
 </tr>
 <tr>
@@ -697,12 +699,12 @@ Proietti, Tommaso, and Alessandra Luati. 2008. <span>“Real Time Estimation in 
 </div>
 <div class="footnotes">
 <hr />
-<ol start="13">
-<li id="fn13"><p>
+<ol start="14">
+<li id="fn14"><p>
 <span class="math inline">\(\mathbb{L}^{2}(f_{0})\)</span> is the Hilbert space defined by the inner product:
 <span class="math display">\[
 \left\langle U(t),V(t)\right\rangle =\E{U(t)V(t)}=\int_{\R}U(t)V(t)f_{0}(t)\ud t
-\]</span><a href="sec-Dagum.html#fnref13" class="footnote-back">↩︎</a></p></li>
+\]</span><a href="sec-Dagum.html#fnref14" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

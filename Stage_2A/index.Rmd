@@ -20,6 +20,21 @@ geometry: margin=1in
 knitr::opts_chunk$set(echo = TRUE,
                       fig.path = "img/")
 library(kableExtra)
+
+# Fontawesome
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+if(knitr::is_html_output()){
+ fa_arrow_circle_right <- '<i class="fas fa-arrow-circle-right"></i>'
+ fa_r_project <- '<i class="fab fa-r-project"></i>'
+}else {
+    if(knitr::is_latex_output()){
+        fa_arrow_circle_right <- "\faIcon{arrow-circle-right}"
+        fa_r_project <- "\faIcon{r-project}"
+    }else {
+        fa_arrow_circle_right <- "->"
+        fa_r_project <- 'R'
+    }
+}
 ```
 
 \newpage
