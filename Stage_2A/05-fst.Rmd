@@ -63,7 +63,7 @@ As a result, the value of weights has no sense.
 :::: {.summary_box data-latex="{FST filters}"}
 `r if (knitr::is_html_output()) '
 :::{#title}
-Summary — FST filters
+FST filters
 :::
 '`
 **Advantages**:
@@ -134,3 +134,10 @@ For the QL method we find that $\alpha_T$ has an impact for medium values of $q$
 \emph{Note: to see the animation, the PDF must be open with Acrobat Reader, KDE Okular, PDF-XChange or Foxit Reader. 
 Otherwise you will only be able to see the results for $q=0$.}
 \end{figure}
+
+```{r lppguglc, echo = FALSE, fig.cap = "Impact of the timeliness weight ($\\alpha_T$) on the coefficients of the local polynomial filter with the LC method with $h=6$, $R=3.5$ and the Henderson kernel.", eval = knitr::is_html_output()}
+slickR::slickR(
+    sprintf("img/lppgug_lc_q%i.png",0:5),
+    height = 500,
+    width = '95%')
+```

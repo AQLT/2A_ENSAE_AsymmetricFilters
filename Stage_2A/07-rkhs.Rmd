@@ -11,7 +11,7 @@ Therefore, a kernel estimator $K_p$ of order $p$ (i.e.: that reproduce without d
 For any sequence $\left(P_{i}\right)_{0\leq i\leq p-1}$ of orthonormal polynomials in $\mathbb{L}^{2}(f_{0})$^[
 $\mathbb{L}^{2}(f_{0})$ is the Hilbert space defined by the inner product:
 $$
-\left\langle U(t),V(t)\right\rangle =\E{U(t)V(t)}=\int_{\R}U(t)V(t)f_{0}(t)\ud t
+\left\langle U(t),V(t)\right\rangle =\E{U(t)V(t)}=\int_{\R}U(t)V(t)f_{0}(t)\ud t.
 $$
 ], the kernel estimator $K_p$ is defined by:
 $$
@@ -77,6 +77,7 @@ Even if the symmetric filter preserves quadratic trends, this is not the case of
 The more data is available (i.e.: $q$ increases), the less the asymmetric filters distort polynomial trends (for example, for $q=2$, $b_l\simeq0$ for $b_{q,G}$).
 
 ```{r criteriarkhs, echo = FALSE}
+library(kableExtra)
 rkhs_diagnostics <- readRDS("data/rkhs_diagnostics.RDS")
 title <- "Quality criteria of asymmetric filters ($q=0,1,2$) computed by the RKHS methodology $h=6$."
 colnames(rkhs_diagnostics) <- gsub(" ?\\$ ?","$",colnames(rkhs_diagnostics))
@@ -93,7 +94,7 @@ rkhs_diagnostics[,-1] %>%
 :::: {.summary_box data-latex="{RKHS filters}"}
 `r if (knitr::is_html_output()) '
 :::{#title}
-Summary — RKHS filters
+RKHS filters
 :::
 '`
 **Advantages**:

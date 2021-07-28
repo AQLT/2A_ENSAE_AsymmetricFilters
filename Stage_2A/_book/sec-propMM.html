@@ -24,7 +24,7 @@
 <meta name="author" content="Alain Quartier-la-Tente" />
 
 
-<meta name="date" content="2021-07-28" />
+<meta name="date" content="2021-07-29" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -34,7 +34,7 @@
 <link rel="prev" href="sec-SAtoTCE.html"/>
 <link rel="next" href="sec-lppfilters.html"/>
 <script src="libs/header-attrs-2.9/header-attrs.js"></script>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.4.1/jquery-3.4.1.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -53,6 +53,20 @@
 
 <link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<link href="libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<script src="libs/jquery-migrate-3.1.0/jquery-migrate-3.1.0.min.js"></script>
+<link href="libs/slick-1.8.1/slick/slick.css" rel="stylesheet" />
+<link href="libs/slick-1.8.1/slick/slick-theme.css" rel="stylesheet" />
+<script src="libs/slick-1.8.1/slick/slick.min.js"></script>
+<script src="libs/css-resize-1.2.1/ResizeSensor.js"></script>
+<script src="libs/css-resize-1.2.1/ElementQueries.js"></script>
+<link href="libs/slickR-0.0.1/slick.css" rel="stylesheet" />
+<link href="libs/slickR-0.0.1/slick-theme.css" rel="stylesheet" />
+<script src="libs/slickR-0.0.1/slickR.js"></script>
 
 
 
@@ -250,17 +264,17 @@ In this case, the quantity <span class="math inline">\(h=p=f\)</span> is called 
 Y_t = M_{\theta}X_t = \sum_{k=-p}^{+f} \theta_k \e^{-i \omega (t+k)}
 = \left(\sum_{k=-p}^{+f} \theta_k \e^{-i \omega k}\right)\cdot X_t.
 \]</span>
-The function <span class="math inline">\(\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{-i \omega k}\)</span> is called the <em>transfer function</em> or <em>frequency response function</em><a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>.
+The function <span class="math inline">\(\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{-i \omega k}\)</span> is called the <em>transfer function</em> or <em>frequency response function</em><a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>.
 It can be rewritten as:
 <span class="math display">\[
 \Gamma_\theta(\omega) = G_\theta(\omega)\e^{-i\Phi_\theta(\omega)}
 \]</span>
-where <span class="math inline">\(G_\theta(\omega)=\lvert\Gamma_\theta(\omega)\rvert\)</span> is the <em>gain</em> or <em>amplitude</em> function and <span class="math inline">\(\Phi_\theta(\omega)\)</span> is the <em>phase shift</em> or <em>time shift</em> function<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>.
+where <span class="math inline">\(G_\theta(\omega)=\lvert\Gamma_\theta(\omega)\rvert\)</span> is the <em>gain</em> or <em>amplitude</em> function and <span class="math inline">\(\Phi_\theta(\omega)\)</span> is the <em>phase shift</em> or <em>time shift</em> function<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>.
 For all symmetric moving average we have <span class="math inline">\(\Phi_\theta(\omega)\equiv 0 \pmod{\pi}\)</span>.</p>
 <p>To sum up, applying a moving average to a harmonic times series affects it in in two different ways:</p>
 <ul>
 <li><p>by multiplying it by an amplitude coefficient <span class="math inline">\(G_{\theta}\left(\omega\right)\)</span>;</p></li>
-<li><p>by “shifting” it in time by <span class="math inline">\(\Phi_\theta(\omega)/\omega\)</span>, which directly affects the detection of turning points<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>.</p></li>
+<li><p>by “shifting” it in time by <span class="math inline">\(\Phi_\theta(\omega)/\omega\)</span>, which directly affects the detection of turning points<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>.</p></li>
 </ul>
 <p>Example: with <span class="math inline">\(M_{\theta_0}X_t=\frac{1}{2}X_{t-1}+\frac{1}{2}X_{t}\)</span> we have:
 <span class="math display">\[
@@ -339,7 +353,159 @@ In this paper we focus on the ones defined by <span class="citation"><a href="#r
 See section <a href="sec-GuggemosEtAl.html#sec:GuggemosEtAl">4</a> for more details.</p>
 <p><span class="citation"><a href="#ref-trilemmaWMR2019" role="doc-biblioref">Wildi and McElroy</a> (<a href="#ref-trilemmaWMR2019" role="doc-biblioref">2019</a>)</span> propose an approach based on the decomposition of the mean squared error between the symmetric and the asymmetric filter in four quantities: <em>Accuracy</em> (<span class="math inline">\(A_w\)</span>), <em>Timeliness</em> (<span class="math inline">\(T_w\)</span>), <em>Smoothness</em> (<span class="math inline">\(S_w\)</span>) and <em>Residual</em> (<span class="math inline">\(R_w\)</span>).
 See section <a href="sec-WildiMcLeroy.html#sec:WildiMcLeroy">5</a> for more details.</p>
-<p>All the indicators are summarized in table <a href="#tab:QC"><strong>??</strong></a>.</p>
+<p>All the indicators are summarized in table <a href="sec-propMM.html#tab:QC">2.1</a>.</p>
+<table style="NAborder-bottom: 0;">
+<caption>
+<span id="tab:QC">Table 2.1: </span>Criteria used to check the quality of a linear filter defined by its coefficients <span class="math inline">\(\theta=(\theta_k)_{-p\leq k\leq f}\)</span> and its gain and phase shift function, <span class="math inline">\(\rho_{\theta}\)</span> and <span class="math inline">\(\varphi_\theta\)</span>.
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;">
+Sigle
+</th>
+<th style="text-align:center;">
+Description
+</th>
+<th style="text-align:center;">
+Formula
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+<span class="math inline">\(b_c\)</span>
+</td>
+<td style="text-align:center;">
+Constant bias
+</td>
+<td style="text-align:center;">
+<span class="math inline">\(\sum_{k=-p}^{+f}\theta_{k}-1\)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+<span class="math inline">\(b_l\)</span>
+</td>
+<td style="text-align:center;">
+Linear bias
+</td>
+<td style="text-align:center;">
+<span class="math inline">\(\sum_{k=-p}^{+f}k\theta_{k}\)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+<span class="math inline">\(b_q\)</span>
+</td>
+<td style="text-align:center;">
+Quadratic bias
+</td>
+<td style="text-align:center;">
+<span class="math inline">\(\sum_{k=-p}^{+f}k^{2}\theta_{k}\)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+<span class="math inline">\(F_g\)</span>
+</td>
+<td style="text-align:center;">
+Variance reduction / Fidelity (Guggemos)
+</td>
+<td style="text-align:center;">
+<span class="math inline">\(\sum_{k=-p}^{+f}\theta_{k}^{2}\)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+<span class="math inline">\(S_g\)</span>
+</td>
+<td style="text-align:center;">
+Smoothness (Guggemos)
+</td>
+<td style="text-align:center;">
+<span class="math inline">\(\sum_{j}(\nabla^{3}\theta_{j})^{2}\)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+<span class="math inline">\(T_g\)</span>
+</td>
+<td style="text-align:center;">
+Timeliness (Guggemos)
+</td>
+<td style="text-align:center;">
+<span class="math inline">\(\int_{0}^{2\pi/12}\rho_{\theta}(\omega)\sin(\varphi_{\theta}(\omega))^{2}\ud\omega\)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+<span class="math inline">\(A_w\)</span>
+</td>
+<td style="text-align:center;">
+Accuracy (Wildi)
+</td>
+<td style="text-align:center;">
+<span class="math inline">\(2\int_0^{2\pi/12}\left(\rho_{s}(\omega)-\rho_{\theta}(\omega)\right)^{2}h_{RW}(\omega)\ud\omega\)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+<span class="math inline">\(T_w\)</span>
+</td>
+<td style="text-align:center;">
+Timeliness (Wildi)
+</td>
+<td style="text-align:center;">
+<span class="math inline">\(8\int_0^{2\pi/12} \rho_{s}(\omega)\rho_{\theta}(\omega)\sin^{2}\left(\frac{\varphi_s(\omega)-\varphi_\theta(\omega)}{2}\right)h_{RW}(\omega)\ud\omega\)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+<span class="math inline">\(S_w\)</span>
+</td>
+<td style="text-align:center;">
+Smoothness (Wildi)
+</td>
+<td style="text-align:center;">
+<span class="math inline">\(2\int_{2\pi/12}^{\pi}\left(\rho_{s}(\omega)-\rho_{\theta}(\omega)\right)^{2}h_{RW}(\omega)\ud\omega\)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+<span class="math inline">\(R_w\)</span>
+</td>
+<td style="text-align:center;">
+Residual (Wildi)
+</td>
+<td style="text-align:center;">
+<span class="math inline">\(8\int_{2\pi/12}^{\pi} \rho_{s}(\omega)\rho_{\theta}(\omega)\sin^{2}\left(\frac{\varphi_s(\omega)-\varphi_\theta(\omega)}{2}\right)h_{RW}(\omega)\ud\omega\)</span>
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<span style="font-style: italic;">Note: </span>
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> <span class="math inline">\(X_g\)</span> criteria are derived from <span class="citation"><a href="#ref-ch15HBSA" role="doc-biblioref">Grun-Rehomme, Guggemos, and Ladiray</a> (<a href="#ref-ch15HBSA" role="doc-biblioref">2018</a>)</span> and <span class="math inline">\(X_w\)</span> criteria from <span class="citation"><a href="#ref-trilemmaWMR2019" role="doc-biblioref">Wildi and McElroy</a> (<a href="#ref-trilemmaWMR2019" role="doc-biblioref">2019</a>)</span>.
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> <span class="math inline">\(\rho_s\)</span> and <span class="math inline">\(\varphi_s\)</span> represent the gain and phase shift function of the Henderson symmetric filter.
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> <span class="math inline">\(h_{RW}\)</span> is the spectral density of a random walk: <span class="math inline">\(h_{RW}(\omega)=\frac{1}{2(1-\cos(\omega))}\)</span>.
+</td>
+</tr>
+</tfoot>
+</table>
 
 </div>
 </div>
@@ -357,13 +523,13 @@ Wildi, Marc, and Tucker McElroy. 2019. <span>“The Trilemma Between Accuracy, T
 </div>
 <div class="footnotes">
 <hr />
-<ol start="3">
-<li id="fn3"><p>
-The frequency response function can equivalently be defined as <span class="math inline">\(\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{i \omega k}\)</span> or <span class="math inline">\(\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{2\pi i \omega k}\)</span>.<a href="sec-propMM.html#fnref3" class="footnote-back">↩︎</a></p></li>
-<li id="fn4"><p>
-This function is sometimes represented as <span class="math inline">\(\phi_\theta(\omega)=\frac{\Phi_\theta(\omega)}{\omega}\)</span> to mesure the phase shift in number of periods.<a href="sec-propMM.html#fnref4" class="footnote-back">↩︎</a></p></li>
-<li id="fn5"><p>
-When <span class="math inline">\(\Phi_\theta(\omega)/\omega&gt;0\)</span> the time shift is positive: a turning point is detected with delay.<a href="sec-propMM.html#fnref5" class="footnote-back">↩︎</a></p></li>
+<ol start="6">
+<li id="fn6"><p>
+The frequency response function can equivalently be defined as <span class="math inline">\(\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{i \omega k}\)</span> or <span class="math inline">\(\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{2\pi i \omega k}\)</span>.<a href="sec-propMM.html#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p>
+This function is sometimes represented as <span class="math inline">\(\phi_\theta(\omega)=\frac{\Phi_\theta(\omega)}{\omega}\)</span> to mesure the phase shift in number of periods.<a href="sec-propMM.html#fnref7" class="footnote-back">↩︎</a></p></li>
+<li id="fn8"><p>
+When <span class="math inline">\(\Phi_\theta(\omega)/\omega&gt;0\)</span> the time shift is positive: a turning point is detected with delay.<a href="sec-propMM.html#fnref8" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>

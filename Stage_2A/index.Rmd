@@ -35,6 +35,77 @@ if(knitr::is_html_output()){
         fa_r_project <- 'R'
     }
 }
+
+# library(knitr)
+# local({
+#   hook_plot <- function (x, options) {
+#       
+#     if (options$fig.show == "animate") 
+#         return(hook_plot_html(x, options))
+#     base = knitr:::`%n%`(opts_knit$get("base.url"), "")
+#     cap = knitr:::.img.cap(options)
+#     alt = knitr:::.img.cap(options, alt = TRUE)
+#     w = options[["out.width"]]
+#     h = options[["out.height"]]
+#     s = options$out.extra
+#     a = options$fig.align
+#     ai = options$fig.show == "asis"
+#     lnk = options$fig.link
+#     pandoc_html = cap != "" && is_html_output()
+#     in_bookdown = isTRUE(opts_knit$get("bookdown.internal.label"))
+#     plot1 = ai || options$fig.cur <= 1L
+#     plot2 = ai || options$fig.cur == options$fig.num
+#     to = pandoc_to()
+#     from = pandoc_from()
+#     if (is.null(w) && is.null(h) && is.null(s) && is.null(options$fig.alt) && 
+#         a == "default" && !(pandoc_html && in_bookdown)) {
+#         nocap = cap == "" && !is.null(to) && !grepl("^markdown", 
+#             to) && (options$fig.num == 1 || ai) && !grepl("-implicit_figures", 
+#             from)
+#         res = sprintf("![%s](%s%s)", cap, base, .upload.url(x))
+#         if (!is.null(lnk) && !is.na(lnk)) 
+#             res = sprintf("[%s](%s)", res, lnk)
+#         res = paste0(res, if (nocap) 
+#             "<!-- -->"
+#         else "", if (is_latex_output()) 
+#             " "
+#         else "")
+#         return(res)
+#     }
+#     add_link = function(x) {
+#         if (is.null(lnk) || is.na(lnk)) 
+#             return(x)
+#         sprintf("<a href=\"%s\" target=\"_blank\">%s</a>", lnk, 
+#             x)
+#     }
+#     if (pandoc_html && !isTRUE(grepl("-implicit_figures", from))) {
+#         d1 = if (plot1) 
+#             sprintf("<div class=\"figure\"%s>\n", knitr:::css_text_align(a))
+#         d2 = sprintf("<p class=\"caption\">Note: %s</p>", cap)
+#         if(!is.null(options$comment)){
+#           d2 <- sprintf("<p class='comment'>%s</p>%s",options$comment, d2)
+#         }
+#         img = sprintf("<img src=\"%s\" alt=\"%s\" %s />", paste0(opts_knit$get("base.url"), 
+#             knitr:::.upload.url(x)), alt, knitr:::.img.attr(w, h, s))
+#         img = add_link(img)
+#         if (isTRUE(options$fig.topcaption)) {
+#             paste0(d1, if (ai || options$fig.cur <= 1) 
+#                 d2, img, if (plot2) 
+#                 "</div>") 
+#         }
+#         else {
+#             paste0(d1, img, if (plot2) 
+#                 paste0("\n", d2, "\n</div>"))
+#         }
+#     }
+#     else add_link(.img.tag(.upload.url(x), w, h, alt, c(s, sprintf("style=\"%s\"", 
+#         css_align(a)))))
+# }
+#   knitr::knit_hooks$set(plot = function(x, options) {
+#       hook_plot(x, options)
+#   })
+# })
+
 ```
 
 \newpage
@@ -42,6 +113,11 @@ if(knitr::is_html_output()){
 # Abstracts {-}
 
 :::: {.abstract data-latex=""}
+`r if (knitr::is_html_output()) '
+:::{#title}
+Abstract
+:::
+'`
 In the business cycle analysis, estimates are usually derived from moving average (also called linear filters) techniques. 
 In the center of the series, symmetric filters are applied. 
 However, due to the lack of future observations, real-time estimates must rely on asymmetric moving averages.
@@ -58,6 +134,11 @@ Finally, the FST approach seems to outperform the other methods.
 \renewcommand{\abstractname}{Résumé}
 
 :::: {.abstract data-latex=""}
+`r if (knitr::is_html_output()) '
+:::{#title}
+Résumé
+:::
+'`
 Les moyennes mobiles (ou les filtres linéaires) sont omniprésents dans les méthodes d'extraction du cycle économique.
 Au centre de la série, des filtres symétriques sont appliqués.
 Cependant, en raison du manque d'observations futures, les estimations en temps réel doivent s'appuyer sur des moyennes mobiles asymétriques.

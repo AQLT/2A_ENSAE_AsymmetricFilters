@@ -13,6 +13,19 @@ pre code {
   white-space: inherit;
 }
 
+
+.abstract {
+    position: relative;
+    margin: 1.5em 0em;
+    padding: 0px 10px 8px;
+    border: solid 2px;
+    border-radius: 10px;
+}
+
+.abstract #title {
+    text-align: center;
+    font-weight: bold;
+}
 .summary_box {
     position: relative;
     margin: 1.5em 0em;
@@ -34,11 +47,34 @@ pre code {
     border: solid 1px;
     border-radius: 10px;
 }
+.summary_box #title:before {
+    content: "Summary — ";
+}
 .summary_box #title p {
     margin:0;
     margin-bottom: 0;
+    display: inline-block; /*pour ne pas passer à la ligne*/
 }
 .summary_box p {
     margin: 0; 
     padding: 0;
+}
+
+.remarque {
+    position: relative;
+    font-style: italic;
+    margin: 30px;
+}
+.remarque p{
+    display: inline;/*pour ne pas passer à la ligne*/
+}
+.remarque:before {
+  content: "Remark. ";
+  font-weight: bold;
+  font-style: normal;
+}
+#note{
+  margin-top: -0.85em;
+  font-style: italic;
+  font-size: 1.5rem;
 }

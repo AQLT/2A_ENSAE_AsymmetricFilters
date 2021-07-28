@@ -1,10 +1,18 @@
+fig:exgainPhase
+tab:QC
+fig:kernels
+fig:filterscoefs
 tab:varianceReductionSymmetricFilters
+fig:filtersSymgains
+fig:filtersdafcoefs
 eq:lppasym
 tab:criteriaLp
 tab:mseIPI
+fig:lppguglc
 eq:msedef
 eq:msedecomp
 tab:criteriarkhs
+fig:cl2all
 sec:SAtoTCE
 sec:propMM
 gain-and-phase-shift-functions
@@ -28,6 +36,3 @@ sec:Dagum
 sec:comparison
 comparison-with-the-fst-approach
 illustration-with-an-example
-fig:unnamed-chunk-1
-fig:unnamed-chunk-2
-fig:exgainPhase

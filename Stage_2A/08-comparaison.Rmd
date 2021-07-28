@@ -42,6 +42,14 @@ The figure \@ref(fig:cl2all) shows the results around a turning point (the econo
 Otherwise you will only be able to see the results for the DAF filter.}
 \end{figure}
 
+```{r cl2all, echo = FALSE, fig.cap = "Application of asymmetric filters to the French industrial production index of manufacture of motor vehicles, trailers and semi-trailers.", eval = knitr::is_html_output(), note = "The final trend is the one computed by a symmetric 13-terms Henderson filter."}
+slickR::slickR(
+    sprintf("img/illustration/illustration_%i.png",1:7),
+    height = 500,
+    width = '95%')
+```
+<p class="caption" id ="note">Note: The final trend is the one computed by a symmetric 13-terms Henderson filter.</p>
+
 For this example, in terms of time lag to detect the turning point of February 2009^[
 A turning point (upturn) is defined to occur at time $t$ if $y_{t-k}\geq\cdots\geq y_{t-1}<y_t\leq y_{t+1}\leq\cdots y_{t+m}$. 
 A downturn would be equivalently defined as a date $t$ $y_{t-k}\leq\cdots\leq y_{t-1}>y_t\geq y_{t+1}\geq\cdots y_{t+m}$.

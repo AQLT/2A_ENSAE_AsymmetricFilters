@@ -1,4 +1,3 @@
-
 # Moving average and filters {#sec:propMM}
 
 Lots of papers describe the definition and the properties of moving average and linear filters (see for example @ch12HBSA). 
@@ -76,10 +75,12 @@ xticklabels={0,$\pi$,$2\pi$,$3\pi$,$4\pi$,$5\pi$}
 \caption{Smoothing of the time series $X_t=\sin(\omega t)$ by the moving average $M_{\theta_0}X_t=\frac{1}{2}X_{t-1}+\frac{1}{2}X_{t}$ for $\omega=\pi/2$.}\label{fig:exgainPhase}
 \end{figure}
 
-
 ```{r exgainPhase, echo=FALSE, out.width="100%", fig.cap="Smoothing of the time series $X_t=\\sin(\\omega t)$ by the moving average $M_{\\theta_0}X_t=\\frac{1}{2}X_{t-1}+\\frac{1}{2}X_{t}$ for $\\omega=\\pi/2$.", eval=!knitr::is_latex_output()}
 knitr::include_graphics("img/tikz-def-mm.png")
 ```
+
+
+
 
 
 ## Desirable properties of a moving average
@@ -178,3 +179,38 @@ $$\begin{array}{ccc}
 
 \emph{$h_{RW}$ is the spectral density of a random walk: $h_{RW}(\omega)=\frac{1}{2(1-\cos(\omega))}$.}
 \end{table}
+
+```{r QC, echo = FALSE, eval=knitr::is_html_output()}
+criteria_mm <- data.frame(Sigle = c("b_c", "b_l", "b_q",
+                                    "F_g", "S_g", "T_g",
+                                    "A_w", "T_w", "S_w", "R_w"),
+                          Description = c(sprintf("%s bias", c("Constant", "Linear", "Quadratic")),
+                                          sprintf("%s (Guggemos)",
+                                                  c("Variance reduction / Fidelity", "Smoothness", "Timeliness")),
+                                          sprintf("%s (Wildi)",c("Accuracy", "Timeliness", "Smoothness", "Residual"))),
+                          Formula = c("\\sum_{k=-p}^{+f}\\theta_{k}-1",
+                                      "\\sum_{k=-p}^{+f}k\\theta_{k}",
+                                      "\\sum_{k=-p}^{+f}k^{2}\\theta_{k}",
+                                      "\\sum_{k=-p}^{+f}\\theta_{k}^{2}",
+                                      "\\sum_{j}(\\nabla^{3}\\theta_{j})^{2}",
+                                      "\\int_{0}^{2\\pi/12}\\rho_{\\theta}(\\omega)\\sin(\\varphi_{\\theta}(\\omega))^{2}\\ud\\omega",
+                                      "2\\int_0^{2\\pi/12}\\left(\\rho_{s}(\\omega)-\\rho_{\\theta}(\\omega)\\right)^{2}h_{RW}(\\omega)\\ud\\omega",
+                                      "8\\int_0^{2\\pi/12} \\rho_{s}(\\omega)\\rho_{\\theta}(\\omega)\\sin^{2}\\left(\\frac{\\varphi_s(\\omega)-\\varphi_\\theta(\\omega)}{2}\\right)h_{RW}(\\omega)\\ud\\omega",
+                                      "2\\int_{2\\pi/12}^{\\pi}\\left(\\rho_{s}(\\omega)-\\rho_{\\theta}(\\omega)\\right)^{2}h_{RW}(\\omega)\\ud\\omega",
+                                      "8\\int_{2\\pi/12}^{\\pi} \\rho_{s}(\\omega)\\rho_{\\theta}(\\omega)\\sin^{2}\\left(\\frac{\\varphi_s(\\omega)-\\varphi_\\theta(\\omega)}{2}\\right)h_{RW}(\\omega)\\ud\\omega"))
+criteria_mm[,1] <- sprintf("$%s$", criteria_mm[,1])
+criteria_mm[,3] <- sprintf("$%s$", criteria_mm[,3])
+library(kableExtra)
+title <- "Criteria used to check the quality of a linear filter defined by its coefficients $\\theta=(\\theta_k)_{-p\\leq k\\leq f}$ and its gain and phase shift function, $\\rho_{\\theta}$ and $\\varphi_\\theta$."
+footnotes <- c("$X_g$ criteria are derived from @ch15HBSA and $X_w$ criteria from @trilemmaWMR2019.",
+               "$\\rho_s$ and $\\varphi_s$ represent the gain and phase shift function of the Henderson symmetric filter.",
+               "$h_{RW}$ is the spectral density of a random walk: $h_{RW}(\\omega)=\\frac{1}{2(1-\\cos(\\omega))}$."
+)
+
+criteria_mm %>% 
+  kbl(align = "c", booktabs = T, row.names = FALSE,
+        escape = FALSE,caption = title) %>% 
+    footnote(general=footnotes, escape = FALSE)
+```
+
+
