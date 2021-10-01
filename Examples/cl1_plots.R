@@ -17,8 +17,8 @@ rkhs_apply <- function(y, component = c("frf", "gain", "phase"), q= 0){
   jasym_filter(y, coef, 6)
 }
 fst_apply <- function(y, q= 0){
-  f <- fstfilter(lags = 6, leads = q, pdegree=2, 
-                 smoothness.weight=1/1001, timeliness.weight = 1000/1001)$filter
+  f <- fst_filter(lags = 6, leads = q, pdegree=2, 
+                 smoothness.weight=1/1001, timeliness.weight = 1000/1001)$filters.coef
   jasym_filter(y, f, 6)
 }
 asymmetric_lp<-function(y,
@@ -29,7 +29,7 @@ asymmetric_lp<-function(y,
                         ic = 4.5,
                         q = 0,
                         tweight = 0, passband = pi/12){
-  coef <- lpp_properties(horizon = horizon, degree = degree,
+  coef <- lp_filter(horizon = horizon, degree = degree,
                          kernel = kernel, endpoints = endpoints,
                          ic = ic, tweight = tweight,
                          passband = passband)
@@ -146,12 +146,12 @@ graph_glob <- function(data, titre = NULL, sous_titre = NULL, legende = NULL, af
     periode <- factor(periode,levels = c("S1","S2"), ordered = T)
   }
   if (freq==4){
-    periode <- capitalize(quarters(zoo::as.yearqtr(dataGraph$date)))
-    periode <- factor(periode,levels=capitalize(quarters(zoo::as.yearqtr((0:3)/4))),ordered = T)
+    periode <- (quarters(zoo::as.yearqtr(dataGraph$date)))
+    periode <- factor(periode,levels=(quarters(zoo::as.yearqtr((0:3)/4))),ordered = T)
   }
   if (freq==12){
-    periode <- capitalize(months(zoo::as.yearmon(dataGraph$date)))
-    periode <- factor(periode,levels=capitalize(months(zoo::as.yearmon((0:11)/12))),ordered = T)
+    periode <- (months(zoo::as.yearmon(dataGraph$date)))
+    periode <- factor(periode,levels=(months(zoo::as.yearmon((0:11)/12))),ordered = T)
   }
   
   dataGraph <- data.frame(dataGraph,periode=periode)
@@ -188,6 +188,19 @@ for (i in seq_along(data_all)){
                n_xlabel = 8,x_lab_month = TRUE,
                ylimits = ylim2) + theme(legend.position = "none")
   ggsave(filename = sprintf("Rapport de stage/img/illustration/illustration_%i.pdf",i),
+         p,
+         width = 8, height = 6)
+}
+
+for (i in seq_along(data_all)){
+  data <- data_all[[i]]
+  p <- graph_glob(window(data,start = 2008, end = 2010),n_xlabel = 8,x_lab_month = TRUE,
+                  titre = parse(text=sprintf("%s~~filter", names(data_all)[i])),
+                  ylimits = ylim1) /
+    graph_glob(window(data,start = 2000, end = c(2007,12)),
+               n_xlabel = 8,x_lab_month = TRUE,
+               ylimits = ylim2) + theme(legend.position = "none")
+  ggsave(filename = sprintf("Stage_2A/img/illustration/illustration_%i.png",i),
          p,
          width = 8, height = 6)
 }

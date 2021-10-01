@@ -5,7 +5,7 @@ library(patchwork)
 
 horizons <- 5:6
 horizon = 2
-rm(list=ls())
+
 all_result <- lapply(horizons, function(horizon){
   data <- do.call(rbind,
           lapply(c("Henderson", "Gaussian", "Trapezoidal",
@@ -18,7 +18,7 @@ all_result <- lapply(horizons, function(horizon){
                    coefs <- sapply(0:(2*horizon-1),function(d){
                      print(sprintf("h=%i, kernel = %s, d=%i",horizon,n_kernel,d))
                      
-                     k_coef <- lpp_properties(horizon = horizon,
+                     k_coef <- lp_filter(horizon = horizon,
                                                 kernel = n_kernel,
                                                 degree = d,
                                                 endpoints = "DAF")$filters.coef
@@ -53,7 +53,7 @@ coef_daf <- function(horizon, endpoints = "DAF"){
                                   n_kernel <- kernel
                                   if(kernel == "Epanechnikov")
                                     n_kernel <- "Parabolic"
-                                  k_coef <- lpp_properties(horizon = horizon, kernel = n_kernel,
+                                  k_coef <- lp_filter(horizon = horizon, kernel = n_kernel,
                                                              endpoints = endpoints)$filters.coef
                                   coefs_na = sapply(0:horizon, function(x){
                                     c(rep(1,horizon+1+x),rep(NA,nrow(k_coef)-(horizon+1+x)))
@@ -100,7 +100,7 @@ gain_daf <- function(horizon, endpoints = "DAF"){
                                      n_kernel <- kernel
                                      if(kernel == "Epanechnikov")
                                        n_kernel <- "Parabolic"
-                                     k_gain <- lpp_properties(horizon = horizon, kernel = n_kernel,
+                                     k_gain <- lp_filter(horizon = horizon, kernel = n_kernel,
                                                                 endpoints = endpoints)$filters.gain
                                      data.frame(k_gain, by = kernel,
                                                 x = seq(0, pi, length.out = nrow(k_gain)),
@@ -163,3 +163,11 @@ for(i in seq_along(kernels)){
   ggsave(filename = sprintf("Rapport de stage/img/daf/coef_gain_%s.pdf",i), p3,
          width = 8, height = 5)
 }
+i<- 1
+p1 <- plot_daf_filters(data_coef, horizon = horizon,
+                       kernel = kernels[i])
+p2 <- plot_gain_daf(data_gain, horizon = horizon,
+                    kernel = kernels[i])
+p3 <- p1/p2
+ggsave(filename = sprintf("img/daf/coef_gain_%s.png",i), p3,
+       width = 8, height = 5)

@@ -3,11 +3,11 @@ compare_filter <- function(x,
                            hend_horizon = 3, ic = 3.5,
                            fst_lag = 6, fst_leads = 3, 
                            pdegree = 2, xlim = c(0,pi)){
-  small_h <- lpp_properties(horizon = hend_horizon,
+  small_h <- lp_filter(horizon = hend_horizon,
                               kernel = "Henderson", endpoints = "LC",
                               ic = ic)
   f <- tryCatch({
-    fstfilter(lags = fst_lag, leads = fst_leads, smoothness.weight = 1/(x+2), timeliness.weight = x/(x+2),
+    fst_filter(lags = fst_lag, leads = fst_leads, smoothness.weight = 1/(x+2), timeliness.weight = x/(x+2),
               pdegree = pdegree)
   },
   error = function(e) {
@@ -23,7 +23,7 @@ compare_filter <- function(x,
                    x)
   data_matrix <- cbind(diagnostic_matrix(small_h$filters.coef[,sprintf("q=%i",hend_horizon)],
                                           lb = hend_horizon),
-                       diagnostic_matrix(f$filter, lb = fst_lag))
+                       diagnostic_matrix(f$filters.coef, lb = fst_lag))
   data_matrix[nrow(data_matrix),] <- data_matrix[nrow(data_matrix),]*100
   data_matrix <- round(data_matrix,3)
   colnames(data_matrix) <- c(sprintf("H%ix%i",hend_horizon, hend_horizon),

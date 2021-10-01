@@ -11,7 +11,7 @@ asymmetric_lp<-function(y,
                         ic = 4.5,
                         q = 0,
                         tweight = 0, passband = pi/12){
-  coef <- lpp_properties(horizon = horizon, degree = degree,
+  coef <- lp_filter(horizon = horizon, degree = degree,
                          kernel = kernel, endpoints = endpoints,
                          ic = ic, tweight = tweight,
                          passband = passband)
@@ -29,7 +29,7 @@ ipi_c_eu <- ts(ipi_c_eu[, c("BE", "BG", "CZ", "DK", "DE",
                             "UK", "NO", "ME", "MK", "RS", "TR", "BA")],
                start = c(1990, 1), frequency = 12)
 # Last date is removed due to NA:
-ipi_c_eu <- window(ipi_c_eu, end = c(2019,12))
+ipi_c_eu <- window(ipi_c_eu, end = c(2020,1))
 get_all_asym_filters <- function(sa, icr, q, horizon,
                                  kernels = c("Henderson", "Gaussian", "Trapezoidal",
                                              "Triweight", "Tricube", "Biweight",
@@ -199,7 +199,7 @@ error_ipi_ic_free <- do.call(rbind, lapply(all_q, function(q){
                for(i in seq_len(ncol(add_trend))[-1]){
                  add_trend[,i] <- (add_trend[,1] - add_trend[,i])
                }
-               window(add_trend,start = 2003,extend = TRUE)
+               window(add_trend,start = 2003, end = c(2019,12),extend = TRUE)
              })
              names(all_asym_filters) <- c("Henderson")
              
@@ -207,8 +207,8 @@ error_ipi_ic_free <- do.call(rbind, lapply(all_q, function(q){
                         method = factor(colnames(all_asym_filters[["Henderson"]])[-1],
                                         levels = c("LC", "QL", "CQ", "DAF"), ordered = TRUE),
                         q = q,
-                        mse_crisis = apply(window(all_asym_filters[["Henderson"]][,-1],2007,c(2010,12))^2,2,mean),
-                        mse_all = apply(all_asym_filters[["Henderson"]][,-1]^2, 2,mean),
+                        mse_crisis = apply(window(all_asym_filters[["Henderson"]][,-1],2007,c(2010,12))^2,2,mean, na.rm = TRUE),
+                        mse_all = apply(all_asym_filters[["Henderson"]][,-1]^2, 2,mean, na.rm = TRUE),
                         stringsAsFactors = FALSE)
            }))
 }))
@@ -243,7 +243,7 @@ error_ipi_ic_fixed <- do.call(rbind, lapply(all_q, function(q){
                               for(i in seq_len(ncol(add_trend))[-1]){
                                 add_trend[,i] <- (add_trend[,1] - add_trend[,i])
                               }
-                              window(add_trend,start = 2003,extend = TRUE)
+                              window(add_trend,start = 2003, end = c(2019,12),extend = TRUE)
                             })
                             names(all_asym_filters) <- c("Henderson")
                             
@@ -251,8 +251,8 @@ error_ipi_ic_fixed <- do.call(rbind, lapply(all_q, function(q){
                                        method = factor(colnames(all_asym_filters[["Henderson"]])[-1],
                                                        levels = c("LC", "QL", "CQ", "DAF"), ordered = TRUE),
                                        q = q,
-                                       mse_crisis = apply(window(all_asym_filters[["Henderson"]][,-1],2007,c(2010,12))^2,2,mean),
-                                       mse_all = apply(all_asym_filters[["Henderson"]][,-1]^2, 2,mean),
+                                       mse_crisis = apply(window(all_asym_filters[["Henderson"]][,-1],2007,c(2010,12))^2,2,mean, na.rm = TRUE),
+                                       mse_all = apply(all_asym_filters[["Henderson"]][,-1]^2, 2,mean, na.rm = TRUE),
                                        stringsAsFactors = FALSE)
                           }))
 }))
@@ -262,9 +262,9 @@ kernel = c("Henderson")
 list_endpoints <- c("LC", "QL", "CQ", "DAF")
 all_q <- c(0,1,2)
 lp_diagnostics <- do.call(rbind,lapply(list_endpoints, function(endpoints){
-  f <- lpp_properties(horizon = 6, kernel = kernel, endpoints = endpoints, ic = 3.5)
+  f <- lp_filter(horizon = 6, kernel = kernel, endpoints = endpoints, ic = 3.5)
   a_coeff <- f$filters.coef[,sprintf("q=%i",all_q)]
-  data <- apply(a_coeff,2,diagnostic_matrix, lb = 6,sweight = f$filters.coef[,"q=6"])
+  data <- apply(a_coeff,2,diagnostic_matrix, lags = 6,sweight = f$filters.coef[,"q=6"])
   data <- data[-(1:6),]
   data <- colSums(data)
   data <- data.frame(q = all_q,
@@ -274,12 +274,6 @@ lp_diagnostics <- do.call(rbind,lapply(list_endpoints, function(endpoints){
   rownames(data) <- NULL
   data
 }))
-tmp1 <- error_ipi_crisis %>% 
-  filter(method%in%c("LC"))
-tmp2 <- error_ipi_crisis %>% 
-  filter(method%in%c("QL")) 
-tmp1[,4:5] <- tmp1[,4:5] - tmp2[,4:5]
-?Reduce
 
 stat_error_ipi_crisis_fixed <- error_ipi_ic_fixed %>% 
   group_by(q, method) %>% 
@@ -303,14 +297,31 @@ stat_error_ipi_crisis_free[,-(1:2)]<- round(stat_error_ipi_crisis_free[,-(1:2)],
 saveRDS(stat_error_ipi_crisis, file = "Rapport de stage/data/stat_error_ipi_crisis.RDS")
 
 library(kableExtra)
+stat_error_ipi_crisis <- readRDS(file = "data/stat_error_ipi_crisis.RDS")
+
+data <- structure(list(`$q$` = c(0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2), 
+                   Method = c("LC", "QL", "CQ", "DAF", "LC", "QL", "CQ", "DAF", "LC", "QL", 
+                              "CQ", "DAF"),
+                   `2007-2010` = c(1.54, 2.04, 2.88, 3.03,
+                                   2.96, 2.31, 2.62, 2.72,
+                                   6.78, 7.45, 7.99, 7.94),
+                   `2003-2019` = c(0.86, 1.56, 2.36, 2.49,
+                                   1.32, 1.07, 1.24, 1.44,
+                                   2.77, 3.07, 3.62, 3.62),
+                   `$A_w+S_w+T_w+R_w$` = c(1.54, 2.07, 2.35, 2.29,
+                                           0.30, 2.25, 0.66, 0.84,
+                                           0.04, 0.10, 0.64, 0.74)
+), row.names = c(NA, -12L), class = "data.frame")
 title <- "Mean squared revision error of asymmetric filters ($q=0,1,2$) computed by local polynomial on the Industrial production indices of the European Union."
-groupement <- table(stat_error_ipi_crisis_free[,1])
-stat_error_ipi_crisis_free[,-1] %>% 
+groupement <- table(data[,1])
+data[,-1] %>% 
   kable(format.args = list(digits = 3), align = "c", booktabs = T, row.names = FALSE,
         escape = FALSE,caption = title,format = "latex") %>% 
   kable_styling(latex_options=c("scale_down", "hold_position"))%>% 
   add_header_above(c(" " = 1, "Mean squared revision error" = 2, " " = 1)) %>%
-  pack_rows(index = groupement, escape = FALSE) 
+  pack_rows(index = groupement, escape = FALSE) %>% 
+    footnote(general="the filters are computed with $h=6$ (13-terms symmetric filter) and $R=3.5$.",
+             general_title = "Note: ",escape = FALSE, footnote_as_chunk = TRUE)
 sum(error_ipi_crisis[2,] < error_ipi_crisis[3,])
 ncol(error_ipi_crisis)
 bw <- bandwidth(icr)

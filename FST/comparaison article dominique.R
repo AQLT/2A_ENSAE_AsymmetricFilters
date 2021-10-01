@@ -4,7 +4,7 @@ test2 <- apply(test,2,function(x){
   tmp <- na.omit(rev(x))
   c(tmp, rep(NA,sum(is.na(x))))
 })
-filter <- lpp_properties(horizon = 6, degree = 3, kernel= "Henderson", endpoints = "LC",ic = 3.5)
+filter <- lp_filter(horizon = 6, degree = 3, kernel= "Henderson", endpoints = "LC",ic = 3.5)
 round(timeliness(filter,lowerbound = 0,
                  penalty = function(x,y)x^2*sin(y)^2),3)
 # filter[,-7][filter[,-7]==0] <- NA # Pas obligatoire d'enlever les 0
@@ -47,7 +47,7 @@ timeliness <- function(x, lowerbound = 2*pi/120,
 
 
 henderson <- sapply(0:6,function(i){
-  fstfilter(lags = 12-i, leads = 0+i, pdegree=2, 
+  fst_filter(lags = 12-i, leads = 0+i, pdegree=2, 
             smoothness.weight=1, timeliness.weight = 0)$criteria
 })
 colnames(henderson) <- 0:6
@@ -55,11 +55,11 @@ henderson <- round(henderson,3)
 henderson # tout OK
 
 no_phase_shift <- sapply(0:5,function(i){
-  fstfilter(lags = 12-i, leads = 0+i, pdegree=2, 
+  fst_filter(lags = 12-i, leads = 0+i, pdegree=2, 
             smoothness.weight=1/1001, timeliness.weight = 1000/1001)$criteria
 })
 no_phase_shift_coef <- sapply(0:5,function(i){
-  fstfilter(lags = 12-i, leads = 0+i, pdegree=2, 
+  fst_filter(lags = 12-i, leads = 0+i, pdegree=2, 
             smoothness.weight=1/1001, timeliness.weight = 1000/1001)$filter
 })
 colnames(no_phase_shift) <- 0:5
@@ -104,7 +104,7 @@ sum(sapply(0:5,function(i){
   fst(x, lags = -(12-i))$criteria
 })*c(0,1,1000))
 no_phase_shift2 <- sapply(0:5,function(i){
-  f <- fstfilter(lags = 12-i, leads = i, pdegree=3, 
+  f <- fst_filter(lags = 12-i, leads = i, pdegree=3, 
             smoothness.weight=1/1001, timeliness.weight = 1000/1001)$criteria
   f
 })
@@ -132,7 +132,7 @@ x0=nps_dom[,1]
 res$par 
 sum(fst(nps_dom[,1], lags = -12)$criteria*c(0,1,1000))
 sum(fst(no_phase_shift_coef[,1], lags = -12)$criteria*c(0,1,1000))
-fstfilter(lags = 12, leads = 12-i, pdegree=3, 
+fst_filter(lags = 12, leads = 12-i, pdegree=3, 
           smoothness.weight=1/1001, timeliness.weight = 1000/1001)
 
 pen(x0)

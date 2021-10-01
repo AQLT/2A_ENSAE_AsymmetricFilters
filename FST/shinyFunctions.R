@@ -25,15 +25,15 @@ all_fst_res <- function(lags=6, leads=0, pdegree=1, smoothness.weight=1, smoothn
                       timeliness.weight = c(seq(0,1,length.out = resolution),1-1/1000,1-1/2000,1-1/3000,1-1/4000,1-1/5000)
                       )
   data$fidelity.weight <- 1 - (data$smoothness.weight + data$timeliness.weight)
-  sym_filter <- lpp_properties(lags, kernel = "Henderson")$filters.coef[,sprintf("q=%i",lags)]
+  sym_filter <- lp_filter(lags, kernel = "Henderson")$filters.coef[,sprintf("q=%i",lags)]
   resultat <- t(mapply(function(x,y){
     tryCatch({
-      filter <- fstfilter(lags = lags, leads = leads, pdegree=pdegree, 
+      filter <- fst_filter(lags = lags, leads = leads, pdegree=pdegree, 
                           smoothness.weight=x, smoothness.degree=smoothness.degree,
                           timeliness.weight=y, timeliness.passband=timeliness.passband, timeliness.antiphase=timeliness.antiphase)
       
       c(filter$criteria,
-        mse(sweights = sym_filter, filter$filter,passband = timeliness.passband))
+        mse(sweights = sym_filter, filter$filters.coef,passband = timeliness.passband))
     }, error = function(e) rep(NA,7))
     
   }, data$smoothness.weight, data$timeliness.weight))
@@ -42,7 +42,7 @@ all_fst_res <- function(lags=6, leads=0, pdegree=1, smoothness.weight=1, smoothn
                 matrix(NA,ncol = ncol(data), nrow = 4, dimnames = list(NULL,colnames(data))))
   
   lpp_stats <- t(sapply(c("LC","QL","CQ","DAF"), function(endpoints){
-    a_coef <- lpp_properties(lags, kernel = "Henderson", endpoints = endpoints)$filters.coef[,sprintf("q=%i",leads)]
+    a_coef <- lp_filter(lags, kernel = "Henderson", endpoints = endpoints)$filters.coef[,sprintf("q=%i",leads)]
     a_coef <- rjdfilters:::trailingZeroAsNa(a_coef)
     a_coef <- na.omit(a_coef)
     c(fst(a_coef, lags = lags, passband = timeliness.passband)$criteria,

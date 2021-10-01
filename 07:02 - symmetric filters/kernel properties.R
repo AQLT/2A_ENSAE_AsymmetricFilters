@@ -39,7 +39,7 @@ get_all_sfilters <- function(horizon){
                                   if(kernel == "Epanechnikov")
                                     n_kernel <- "Parabolic"
                                   tryCatch({
-                                    k_coef <- filterproperties(horizon = horizon, kernel = n_kernel)$filters.coef
+                                    k_coef <- lp_filter(horizon = horizon, kernel = n_kernel)$filters.coef
                                     k_coef <- k_coef[,ncol(k_coef)]
                                     
                                     data.frame(x = seq(-horizon,horizon), y = (k_coef),
@@ -75,7 +75,7 @@ get_all_gain_sfilters <- function(horizon, xlim = c(0, 2*pi/12), resolution = 80
                                  n_kernel <- "Parabolic"
                                x_values <- seq(from = xlim[1], to = xlim[2],
                                                length.out = resolution)
-                               k_f <- filterproperties(horizon = horizon, kernel = n_kernel)
+                               k_f <- lp_filter(horizon = horizon, kernel = n_kernel)
                                k_gain <- get_properties_function(k_f, "Symmetric Gain")
                                
                                data.frame(x = x_values, y = k_gain(x_values),
@@ -130,7 +130,7 @@ get_all_gain_sfilters2 <- function(horizon){
                                   if(kernel == "Epanechnikov")
                                     n_kernel <- "Parabolic"
                                   
-                                  k_f <- filterproperties(horizon = horizon, kernel = n_kernel)
+                                  k_f <- lp_filter(horizon = horizon, kernel = n_kernel)
                                   k_gain <- k_f$filters.gain
                                   k_gain <- k_gain[,ncol(k_gain)]
                                   x_values <- seq(from = 0, to = pi,
@@ -196,7 +196,7 @@ variance_reduction <- function(){
                                     n_kernel <- kernel
                                     if(kernel == "Epanechnikov")
                                       n_kernel <- "Parabolic"
-                                    diag <- filterproperties(horizon = horizon, kernel = n_kernel)$filters.diagnostics
+                                    diag <- lp_filter(horizon = horizon, kernel = n_kernel)$filters.diagnostics
                                     
                                     data.frame(variance_reduction = diag[1,3],
                                                kernel = factor(kernel,
@@ -223,7 +223,7 @@ rapport_coeff <- function(){
                                     n_kernel <- kernel
                                     if(kernel == "Epanechnikov")
                                       n_kernel <- "Parabolic"
-                                    k_coef <- filterproperties(horizon = horizon, kernel = n_kernel)$filters.coef
+                                    k_coef <- lp_filter(horizon = horizon, kernel = n_kernel)$filters.coef
                                     k_coef <- k_coef[1:(horizon+1),ncol(k_coef)]
                                     k_coef_max <- max(k_coef)
                                     k_coef_neg <- k_coef[k_coef<= 0]
@@ -277,6 +277,27 @@ for(h in 2:30){
   print(h)
   p <- get_all_gain_sfilters2(h)
   ggsave(filename = sprintf("Rapport de stage/img/symmetricFilters/gain%s.pdf",h), p,
+         width = 8, height = 8)
+}
+
+for(h in 2:30){
+  print(h)
+  p <- plot_filter(data = get_all_kernels(h), h)
+  ggsave(filename = sprintf("Stage_2A/img/kernels/%s.png",h), p,
+         width = 8, height = 8)
+}
+
+for(h in 2:30){
+  print(h)
+  p <- plot_filter(get_all_sfilters(h), h)
+  ggsave(filename = sprintf("Stage_2A/img/symmetricFilters/%s.png",h), p,
+         width = 8, height = 8)
+}
+
+for(h in 2:30){
+  print(h)
+  p <- get_all_gain_sfilters2(h)
+  ggsave(filename = sprintf("Stage_2A/img/symmetricFilters/gain%s.png",h), p,
          width = 8, height = 8)
 }
 get_all_gain_sfilters(3, resolution = 500)
@@ -392,7 +413,7 @@ specific_filter <- function(horizon= 20, kernels = c("Henderson","Uniform", "Tri
                                   if(kernel == "Epanechnikov")
                                     n_kernel <- "Parabolic"
                                   tryCatch({
-                                    k_coef <- filterproperties(horizon = horizon, kernel = n_kernel,degree = degree)$filters.coef
+                                    k_coef <- lp_filter(horizon = horizon, kernel = n_kernel,degree = degree)$filters.coef
                                     k_coef <- k_coef[,ncol(k_coef)]
                                     
                                     data.frame(x = seq(-horizon,horizon), y = k_coef,

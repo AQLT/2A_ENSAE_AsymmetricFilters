@@ -32,7 +32,7 @@ asymmetric_lp<-function(y,
                         ic = 4.5,
                         q = 0,
                         tweight = 0, passband = pi/12){
-  coef <- lpp_properties(horizon = horizon, degree = degree,
+  coef <- lp_filter(horizon = horizon, degree = degree,
                          kernel = kernel, endpoints = endpoints,
                          ic = ic, tweight = tweight,
                          passband = passband)
@@ -71,7 +71,7 @@ diff_pic <- function(secteur = "CL1", q,...){
      spectral_pic(q=q, secteur = secteur,...))*12
 }
 diff_pic(q=0,endpoints = "CQ")
-henderson_f <- lpp_properties(horizon = 6, kernel = "Henderson",ic = 3.5)
+henderson_f <- lp_filter(horizon = 6, kernel = "Henderson",ic = 3.5)
 tmp_asym <- asymmetric_lp(ipi_fr[,"CL1"],6, ic = 3.5, q = 6)
 hc_stocks(tmp_asym)
 asymmetric_lp(ipi_fr[,"CL1"],6, ic = 3.5, q =0) -

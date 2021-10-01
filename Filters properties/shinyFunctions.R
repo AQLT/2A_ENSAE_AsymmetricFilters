@@ -5,7 +5,7 @@ all_filters <- function(horizon = 6, degree = 3, ic = 3.5){
   t <- lapply(c("LC", "QL", "CQ", "DAF"), function(endpoints){
     t <- lapply(c("Henderson", "Uniform", "Biweight", "Trapezoidal", "Triweight", "Tricube", "Gaussian", "Triangular", "Parabolic"),function(kernel){
       
-      tryCatch(lpp_properties(horizon = horizon, degree = degree,
+      tryCatch(lp_filter(horizon = horizon, degree = degree,
                                 kernel = kernel, endpoints = endpoints, ic = ic),
                error = function(e){
                  NULL

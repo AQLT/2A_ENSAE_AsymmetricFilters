@@ -70,7 +70,7 @@ shinyUI(fluidPage(
             
         #     tabsetPanel(type = "tabs",
         #                 tabPanel("General results",
-        #                          plotOutput("plotlpp_properties", height = "80vh")),
+        #                          plotOutput("plotlp_filter", height = "80vh")),
         #                 tabPanel("Fixed endpoints",
         #                          tabsetPanel(type = "tabs",
         #                            tabPanel("Coefficients",
