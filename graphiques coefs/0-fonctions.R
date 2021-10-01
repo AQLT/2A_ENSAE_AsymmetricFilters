@@ -3,8 +3,22 @@ library(ggplot2)
 library(reshape2)
 library(patchwork)
 
+replaceTrailing0 <- function(x){
+    i <- length(x)
+    remove_i <- NULL
+    while ((x[i] == 0) && i > 0) {
+        remove_i <- c(i, remove_i)
+        i <- i - 1
+    }
+    if(is.null(remove_i)){
+        x
+    } else{
+        x[remove_i] <- NA
+    }
+    x
+}
 format_data <- function(coefs){
-    data_coefs <- reshape2::melt(coefs)
+    data_coefs <- reshape2::melt(apply(coefs,2, replaceTrailing0))
     colnames(data_coefs) <- c("x", "label","y")
     data_coefs$x <- factor(data_coefs$x,levels = rownames(coefs), ordered = TRUE)
     data_coefs$label <- as.character(data_coefs$label)
