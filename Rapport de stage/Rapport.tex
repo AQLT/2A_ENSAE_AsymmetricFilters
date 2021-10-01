@@ -7,14 +7,13 @@
   12pt,
   ,
   a4paper]{article}
+\usepackage{amsmath,amssymb}
 \usepackage{lmodern}
-\usepackage{amsmath}
 \usepackage{ifxetex,ifluatex}
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
-  \usepackage{amssymb}
 \else % if luatex or xetex
   \usepackage{unicode-math}
   \defaultfontfeatures{Scale=MatchLowercase}
@@ -51,7 +50,7 @@
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
 \usepackage[margin=1in]{geometry}
-\usepackage{longtable,booktabs}
+\usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -252,7 +251,10 @@ frametitle={%
   \usepackage{polyglossia}
   \setmainlanguage[]{}
 \else
-  \usepackage[shorthands=off,main=]{babel}
+  \usepackage[main=]{babel}
+% get rid of language-specific shorthands (see #6817):
+\let\LanguageShortHands\languageshorthands
+\def\languageshorthands#1{}
 \fi
 \ifluatex
   \usepackage{selnolig}  % disable illegal ligatures
@@ -279,7 +281,6 @@ frametitle={%
 \addcontentsline{toc}{section}{Abstracts}
 
 \begin{abstract}
-
 In the business cycle analysis, estimates are usually derived from moving average (also called linear filters) techniques.
 In the center of the series, symmetric filters are applied.
 However, due to the lack of future observations, real-time estimates must rely on asymmetric moving averages.
@@ -297,7 +298,6 @@ Finally, the FST approach seems to outperform the other methods.
 \renewcommand{\abstractname}{Résumé}
 
 \begin{abstract}
-
 Les moyennes mobiles (ou les filtres linéaires) sont omniprésents dans les méthodes d'extraction du cycle économique.
 Au centre de la série, des filtres symétriques sont appliqués.
 Cependant, en raison du manque d'observations futures, les estimations en temps réel doivent s'appuyer sur des moyennes mobiles asymétriques.
@@ -1159,7 +1159,7 @@ The asymmetric filters are computed minimizing a weighted sum of the past three 
 s.t. & C\theta=a
 \end{cases}
 \]
-The conditions \(\alpha,\beta,\gamma\geq 0\text{ and }\alpha+\beta\ne 0\) guarantee that \(J(\theta)\) is a strictly convex function: therefore the optimization problem has a unique solution.
+The conditions \(\alpha,\beta,\gamma\geq 0\text{ and }\alpha\beta\ne 0\) guarantee that \(J(\theta)\) is a strictly convex function: therefore the optimization problem has a unique solution.
 
 The Henderson symmetric filters can for example be computed with
 \[C=\begin{pmatrix}
@@ -1549,7 +1549,6 @@ LC, QL, \(b_{q,\gamma}\) filters introduce a delay only for real-time filter (\(
 Surprisingly, the FST filter that minimize the phase shift introduce a time lag for \(q=0\) and \(q=1\) (the upturn is detected earlier), whereas \(b_{q,\phi}\) doesn't introduce any time lag.
 
 \begin{remarque}
-
 Those results differ from the one obtained in the real-time during the economic crisis.
 Indeed, here we take the time series already seasonally adjusted in the overall period, whereas during the real-time estimates, the seasonal adjustment process also introduce a time lag.
 
