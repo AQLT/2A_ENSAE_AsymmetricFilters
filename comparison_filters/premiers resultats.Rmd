@@ -1,0 +1,193 @@
+---
+date: "6/18/2021"
+output: 
+    bookdown::pdf_document2:
+        toc: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+  fig.align = "center",
+  fig.dim = c(7,4)*1.4,
+  out.width = "100%", fig.show="hold")
+
+formatage_db <- function(nom_f,
+                         date_deb= NULL, date_fin= NULL,
+                         type = c("downturn","upturn")){
+    full_tp <- readRDS(file = nom_f)
+    full_tp <- lapply(full_tp, function(x_){
+        lapply(x_, function(x){
+            x[, !apply(is.na(x),2,any), drop = FALSE]
+        })
+    })
+    full_tp <- full_tp[sapply(full_tp,function(x) sum(sapply(x,length)))>0]
+    full_db <- list(downturn = t(do.call(cbind,sapply(full_tp,`[[`, "downturn"))),
+                    upturn = t(do.call(cbind,sapply(full_tp,`[[`, "upturn"))))
+    if(!is.null(date_fin)){
+        full_db <- lapply(full_db, function(x) x[rownames(x)<date_fin,])
+    }
+    if(!is.null(date_deb)){
+        full_db <- lapply(full_db, function(x) x[rownames(x)>date_deb,])
+    }
+    full_db
+}
+remove_more_than <- function(x, n = 24){
+    x[apply(x,1,function(x) all(abs(x) < n)),]
+}
+
+covid_tp <- formatage_db("full_turning_points_du.RDS",
+                         date_deb = 2020, date_fin = 2021)
+covid_tp_first <- formatage_db("full_turning_points_first_du.RDS",
+                               date_deb = 2020, date_fin = 2021)
+covid_tp_fixedylin <- formatage_db("full_turning_points_du_fixedylin.RDS",
+                         date_deb = 2020, date_fin = 2021)
+
+
+
+fc_tp <- formatage_db("full_turning_points_du.RDS", date_deb = 2008, date_fin = 2010)
+fc_tp_first <- formatage_db("full_turning_points_first_du.RDS", date_deb = 2009, date_fin = 2010)
+fc_tp_fixedylin <- formatage_db("full_turning_points_du_fixedylin.RDS", date_deb = 2008, date_fin = 2010)
+
+
+total_first <- formatage_db("full_turning_points_first_du.RDS")
+library(ggplot2)
+library(patchwork)
+violin_diag <- function(x, n_group = 7, diff = FALSE){
+    gg_color_hue <- function(n) {
+        hues = seq(15, 375, length = n + 1)
+        hcl(h = hues, l = 65, c = 100)[1:n]
+    }
+    n_points <- nrow(x)
+    n_col <- ncol(x)
+    if(diff){
+        x <- apply(x[,-1],2, function(y) y-x[,1])
+    }
+    covid_tp_gg <- reshape2::melt(x)
+    colnames(covid_tp_gg) <- c("date","method","y")
+    p <- ggplot(covid_tp_gg, aes(method, y, fill = method))
+    p + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) + 
+        theme_bw() + guides(fill = FALSE) + 
+        scale_fill_manual(values=gg_color_hue(n_group)[(n_group - n_col + 1):n_group])
+}
+```
+Je n’ai pour l’instant comparé que les MM issues de RKHS (en utilisant les programmes de Jean, du coup du fait de problèmes de minimisations, les filtres sont parfois différents de ceux utilisés par Estella) et ceux de Proietti :
+
+- Pour RKHS je n'ai gardé que les moyennes mobiles obtenues en minimisant la timeliness. J'ai également comparé à la version où l'on multiplie la quantité à intégrer par la densité spectrale d'une marche aléatoire (`RKHS_timeliness_rw`)
+
+- Pour Proietti : LC = Musgrave, QL = MM symétrique conserve les tendances quadratiques et la MM asymétrique les droites, CQ = MM symétrique conserve les tendances cubiques et la MM asymétrique les tendances quadratiques et DAF = MM asymétrique les tendances cubiques.
+
+J’ai utilisé 2 404 séries de l’IPI, déjà CJO,en utilisant la méthodologie suivante à chaque date :
+
+1.	Désaisonnalisation avec X13 pour récupérer : la série linéarisée, le schéma de décomposition, l’IC ratio (utilisé pour le choix de la moyenne mobile de Henderson), la longueur du filtre saisonnier et de Henderson
+
+2.	J’effectue une désaisonnalisation, à partir de la série linéarisée sans les prévisions, en changeant le filtre utilisé pour extraire la tendance et en gardant les autres paramètres fixes (longueur des filtres tendance et saisonnier, schéma de décomposition et ic-ratio). Cela me permet d’avoir une estimation dynamique de la tendance.
+
+3. Pour chaque estimation de la tendance je calcule les points de retournement selon la définition de Zellner : deux baisses puis deux hausses pour une reprise ($y_{t-3}\geq y_{t-2}\geq y_{t-1}<y_t\leq y_{t+1}$) et l’inverse pour une récession ($y_{t-3}\leq y_{t-2}\leq y_{t-1}>y_t\geq y_{t+1}$). Les points de retournement « définitifs » sont déterminés en appliquant cette définition sur la tendance estimée sur l’ensemble de la série à partir de X13.
+
+Pour calculer le retard dans la détection des points de retournement, j’ai retenu deux définitions :
+
+1.	Le nombre de mois nécessaires pour détecter de manière pérenne le point de retournement (i.e. : qu’il n’y ait pas de future estimation qui donne un résultat différent).
+
+2.	Le nombre de mois nécessaires pour détecter pour la première fois le point de retournement.
+
+# Résultats autour de la crise du covid
+
+**Définition 1 (figure \@ref(fig:def1covid)) :** Les filtres de Musgrave (LC) semblent donner des résultats proches que la prévision par ARIMA et les filtres RKHS semblent être les pires. 
+
+**Définition 2 (figure \@ref(fig:def2covid)) :** Cette fois ce sont les filtres QL/CQ/DAF qui donnent des meilleurs résultats. De ces deux schémas j’en déduis que l’estimation des points de retournement avec les filtres QL/CQ/DAF est moins stable qu’avec les autres méthodes.
+
+```{r def1covid, fig.cap= "définition 1 : estimation pérenne"}
+(violin_diag(covid_tp$upturn) + labs(x = NULL, y = "Time delay")) /
+    (violin_diag(covid_tp$upturn, diff = TRUE) + labs(x = NULL, y = "Difference with X-13")) + 
+    plot_annotation(
+        title = 'Time delay to detect upturn in 2020 (602 observations)',
+        caption = 'Note: time delay = number of months needed to detect the turning point without any further revision'
+    ) 
+
+(violin_diag(covid_tp$downturn) + labs(x = NULL, y = "Time delay")) /
+    (violin_diag(covid_tp$downturn, diff = TRUE) + labs(x = NULL, y = "Difference with X-13")) + 
+    plot_annotation(
+        title = 'Time delay to detect downturn in 2020 (426 observations)',
+        caption = 'Note: time delay = number of months needed to detect the turning point without any further revision'
+    ) 
+```
+
+
+```{r def2covid, echo=FALSE, fig.cap= "définition 2 : première estimation"}
+(violin_diag(covid_tp_first$upturn) + labs(x = NULL, y = "Time delay")) /
+    (violin_diag(covid_tp_first$upturn, diff = TRUE) + labs(x = NULL, y = "Difference with X-13")) + 
+    plot_annotation(
+        title = 'Time delay to detect upturn in 2020 (885 observations)',
+        caption = 'Note: time delay = number of months needed to detect the turning point for the first time'
+    ) 
+
+(violin_diag(covid_tp_first$downturn) + labs(x = NULL, y = "Time delay")) /
+    (violin_diag(covid_tp_first$downturn, diff = TRUE) + labs(x = NULL, y = "Difference with X-13")) + 
+    plot_annotation(
+        title = 'Time delay to detect downturn in 2020 (658 observations)',
+        caption = 'Note: time delay = number of months needed to detect the turning point for the first time'
+    ) 
+```
+
+
+```{r def1covidfixedylin, fig.cap= "définition 1 : estimation pérenne (fixed ylin)"}
+(violin_diag(covid_tp_fixedylin$upturn) + labs(x = NULL, y = "Time delay")) /
+    (violin_diag(covid_tp_fixedylin$upturn, diff = TRUE) + labs(x = NULL, y = "Difference with X-13")) + 
+    plot_annotation(
+        title = 'Time delay to detect upturn in 2020 (602 observations)',
+        caption = 'Note: time delay = number of months needed to detect the turning point without any further revision'
+    ) 
+
+(violin_diag(covid_tp_fixedylin$downturn) + labs(x = NULL, y = "Time delay")) /
+    (violin_diag(covid_tp_fixedylin$downturn, diff = TRUE) + labs(x = NULL, y = "Difference with X-13")) + 
+    plot_annotation(
+        title = 'Time delay to detect downturn in 2020 (426 observations)',
+        caption = 'Note: time delay = number of months needed to detect the turning point without any further revision'
+    ) 
+```
+
+# Résultats autour de la crise financière
+
+J'ai été très étonné des résultats de cette partie puisque pour toutes les méthodes il faut en général beaucoup d'observations avant d'avoir une estimation stable. Je pense que cela vient de la correction des points atypiques (en préajustement ou dans X11) et ça invite donc à s'intéresser aux méthodes robustes. Je vais essayer de creuser quelques exemples pour comprendre ce qu'il se passe.
+
+
+```{r def1fc, fig.cap= "définition 1 : estimation pérenne"}
+data <- do.call(rbind, fc_tp)[,-3]
+data_diff <- apply(data[,-1],2, function(y) y-data[,1])
+i_keep <- apply(data_diff,1,function(x) all(abs(x) < 11))
+
+(violin_diag(data[i_keep,], n_group = 6) + labs(x = NULL, y = "Time delay")) /
+    (violin_diag(data[i_keep,], diff = TRUE, n_group = 6) + labs(x = NULL, y = "Difference with X-13"))  + 
+    plot_annotation(
+        title = 'Time delay to detect turning points (downturn and upturn) in 2009 (2 518 observations)',
+        caption = 'Note: time delay = number of months needed to detect the turning point without any further revision'
+    ) 
+```
+
+```{r def1fcylinfixed, fig.cap= "définition 1 : estimation pérenne (ylin fixed)"}
+data <- do.call(rbind, fc_tp_fixedylin)
+data_diff <- apply(data[,-1],2, function(y) y-data[,1])
+i_keep <- apply(data_diff,1,function(x) all(abs(x) < 11))
+
+(violin_diag(data[i_keep,], n_group = 6) + labs(x = NULL, y = "Time delay")) /
+    (violin_diag(data[i_keep,], diff = TRUE, n_group = 6) + labs(x = NULL, y = "Difference with X-13"))  + 
+    plot_annotation(
+        title = 'Time delay to detect turning points (downturn and upturn) in 2009 (2 518 observations)',
+        caption = 'Note: time delay = number of months needed to detect the turning point without any further revision'
+    ) 
+```
+
+```{r def2fc, echo=FALSE, fig.cap= "définition 2 : première estimation (en supprimant les 400 séries pour lesquels le délai était supérieur à 40)"}
+
+data <- do.call(rbind, fc_tp_first)[,-3]
+
+nrow(data) - nrow(remove_more_than(data, 40))
+
+
+(violin_diag(remove_more_than(data, 40), n_group = 6) + labs(x = NULL, y = "Time delay")) /
+    (violin_diag(remove_more_than(data, 40), diff = TRUE, n_group = 6) + labs(x = NULL, y = "Difference with X-13"))  + 
+    plot_annotation(
+        title = 'Time delay to detect turning points (downturn and upturn) in 2009 (1 957 observations)',
+        caption = 'Note: time delay = number of months needed to detect the turning point without any further revision'
+    ) 
+```
