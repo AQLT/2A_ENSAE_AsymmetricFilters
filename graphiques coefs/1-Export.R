@@ -48,19 +48,52 @@ for(i in names(all_filters)){
          width = 8, height = 5)
 }
 
-
-mse_theo <- sapply(all_filters[c("LC", "QL", "CQ", "DAF", "rkhs_timeliness", "fst_lc", "fst_lc_min", "fst_lc_med", "fst_rkhs_timeliness")], function(x){
-    mse_ <- rjdfilters::mse(x[,"q=6"], x[,"q=0"])
+sweights = all_filters[["QL"]][,"q=6"]
+aweights = as.numeric(na.omit(rjdfilters:::trailingZeroAsNa(x[,"q=0"])))
+aweights = as.numeric(na.omit(rjdfilters:::trailingZeroAsNa(x[,"q=0"])))
+if(length(sweights)>length(aweights)){
+  # we asume sweights were specify from [-n to n] instead of [0,n]
+  n <- (length(sweights)-1)/2
+  sweights <- sweights[-seq_len(n)]
+}
+library(rJava)
+SymmetricFilter <- J("jdplus.math.linearfilters.SymmetricFilter")
+sf = SymmetricFilter$ofInternal(sweights)
+FiniteFilter af = FiniteFilter.of(afilter, -sfilter.length+1);
+spectral = match.arg(density)
+rslt<-.jcall("demetra/saexperimental/r/FiltersToolkit", "[D", "mseDecomposition",
+             sweights, aweights, spectral, passband)
+mse_theo <- sapply(all_filters[c("LC", "QL", "CQ", "DAF", "rkhs_timeliness", "fst_lc", "fst_lc_min", "fst_lc_med", "fst_rkhs_timeliness")],
+                   function(x){
+    mse_ <- rjdfilters::mse(x[,"q=6"], as.numeric(na.omit(rjdfilters:::trailingZeroAsNa(x[,"q=0"]))),
+                            passband = pi/6+0.00001)
     tot <- sum(mse_)
     res = c(mse_, tot)
     names(res)[5] <- "MSE"
     res
 })
-rownames(mse_theo) <- c("Accuracy", "Smoothness", "Timeliness", "Residual", "RMSE")
+rownames(mse_theo) <- c("Accuracy", "Smoothness", "Timeliness", "Residual", "MSE")
 colnames(mse_theo) <- c("LC", "QL", "CQ", "DAF", "$b_{q,\\varphi}$",
                         "Min.", "Max.", 
                         "Méd.", "Min.")
 saveRDS(mse_theo, "graphiques coefs/filters_used/mse_theo.RDS")
+
+mse_theo2 <- lapply(0:5, function(q){
+  sapply(all_filters[c("LC", "QL", "CQ", "DAF", "rkhs_timeliness", "fst_lc", "fst_lc_min", "fst_lc_med", "fst_rkhs_timeliness")], function(x){
+    mse_ <- rjdfilters::diagnostic_matrix(x[,sprintf("q=%i",q)],6,sweights = x[,"q=6"])
+    tot <- sum(mse_)
+    res = c(mse_, tot)
+    names(res)[length(res)] <- "MSE"
+    res
+  })
+})
+mse_theo2 <- lapply(mse_theo2, round, 3)
+
+rownames(mse_theo) <- c("Accuracy", "Smoothness", "Timeliness", "Residual", "RMSE")
+colnames(mse_theo) <- c("LC", "QL", "CQ", "DAF", "$b_{q,\\varphi}$",
+                        "Min.", "Max.", 
+                        "Méd.", "Min.")
+
 format.args = list(decimal.mark = ",",
                    nsmall = 1)
 library(kableExtra)

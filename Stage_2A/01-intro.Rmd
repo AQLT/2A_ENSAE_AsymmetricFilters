@@ -17,4 +17,40 @@ Due to the link between seasonal adjustment and trend-cycle extraction (section 
 After a description of the general properties of a linear filter (section \@ref(sec:propMM)), we describe the linear filters methods developed by @proietti2008, @ch15HBSA, @trilemmaWMR2019 and @dagumbianconcini2008 (sections \@ref(sec:lppfilters) to \@ref(sec:Dagum)).
 Finally, in section \@ref(sec:comparison), we compare the different methods, first theoretically and then applying them to a real time series.
 
+```{r, echo = FALSE}
+# library(htmltools)
+# carousel <- function(files, div_id, enableControl = TRUE){
+#     carousel_file <- function(x, active = FALSE){
+#         tags$img(class=sprintf("d-block w-100%s", ifelse(active, " active", "")), src = x)
+#     }
+#     control <- NULL
+#     if(enableControl){
+#         p1 <- withTags({
+#             a(class ="carousel-control-prev", href = div_id, `data-slide`="prev",
+#               span(class="carousel-control-prev-icon")
+#             )})
+#         p2 <- withTags({
+#             a(class ="carousel-control-next", href = div_id, `data-slide`="next",
+#               span(class="carousel-control-next-icon")
+#             )})
+#         control <- tagList(p1, p2)
+#     }
+#     first_file <- carousel_file(files[[1]], active = TRUE)
+#     all_files <- c(list(first_file), lapply(files[-1], carousel_file, active = FALSE))
+#     all_files <- tags$div(class = "carousel-inner",
+#                           tagList(all_files)
+#     )
+#     all_files
+#     withTags({
+#         div(class="carousel slide", `data-ride`="carousel",
+#             all_files,
+#             control
+#         )
+#     })
+# }
+# carousel(div_id = "carouselExampleSlidesOnly",
+# files = sprintf("img/kernels/%i.png",2:4))
+```
+
+    
 \newpage

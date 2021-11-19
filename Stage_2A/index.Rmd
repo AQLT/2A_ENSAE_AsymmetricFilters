@@ -14,6 +14,7 @@ bibliography: [biblio.bib]
 biblio-style: authoryear
 urlcolor: blue
 geometry: margin=1in
+always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
@@ -28,8 +29,8 @@ if(knitr::is_html_output()){
  fa_r_project <- '<i class="fab fa-r-project"></i>'
 }else {
     if(knitr::is_latex_output()){
-        fa_arrow_circle_right <- "\faIcon{arrow-circle-right}"
-        fa_r_project <- "\faIcon{r-project}"
+        fa_arrow_circle_right <- "\\faIcon{arrow-circle-right}"
+        fa_r_project <- "\\faIcon{r-project}"
     }else {
         fa_arrow_circle_right <- "->"
         fa_r_project <- 'R'

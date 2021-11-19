@@ -8,3 +8,16 @@ comparison_filters/data_x11
 comparison_filters/lp
 comparison_filters/rkhs
 comparison_filters/train
+comparison_filters/*.RDS
+comparison_filters/fst
+comparison_filters/revisions
+comparison_filters/turning_points
+
+comparaison_fst/data
+IC_ratio/data*
+graphiques coefs/filters_used
+*.toc
+*.log
+*.aux
+*.bcf
+*.run*

@@ -1,9 +1,9 @@
 # Moving average and filters {#sec:propMM}
 
-Lots of papers describe the definition and the properties of moving average and linear filters (see for example @ch12HBSA). 
+In this section we describe some definitions and properties of moving average and linear filters (see for example @ch12HBSA for more details).
 In this section we summarize some of the main results.
 
-Let $p$ et $f$ two integers, a moving average $M_\theta$ or $M$ is defined by a set of coefficients $\theta=(\theta_{-p},\dots,\theta_{f})'$ such as for all time series $X_t$:
+Let $p$ and $f$ two integers, a moving average $M_\theta$ or $M$ is defined by a set of coefficients $\theta=(\theta_{-p},\dots,\theta_{f})'$ such as for all time series $X_t$:
 $$
 M_\theta(X_t)=\sum_{k=-p}^{+f}\theta_kX_{t+k}
 $$
@@ -86,7 +86,7 @@ knitr::include_graphics("img/tikz-def-mm.png")
 ## Desirable properties of a moving average
 
 The moving average are often constructed under some specific constraints. 
-In the report we will focus on two constraints:
+In this report we will focus on two constraints:
 
 - the preservation of certain kind of trends;
 
