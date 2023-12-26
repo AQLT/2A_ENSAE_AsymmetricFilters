@@ -16,26 +16,26 @@ L’objectif du stage est de faire une comparaison théorique de ces filtres et 
 
 # Avancée du stage
 
-- 16/06 : lecture de Proietti, Luati, Real Time Estimation in Local Polynomial Regression, with Application to Trend-Cycle Analysis (2008), https://aqlt.github.io/3A_ENSAE_AsymmetricFilters/06:15%20-%20Proietti%20%26%20Luati/Proietti-Luati.pdf
+- 16/06 : lecture de Proietti, Luati, Real Time Estimation in Local Polynomial Regression, with Application to Trend-Cycle Analysis (2008), https://aqlt.github.io/2A_ENSAE_AsymmetricFilters/06:15%20-%20Proietti%20%26%20Luati/Proietti-Luati.pdf
 
 - 23/06 : application pour analyser les filtres https://aqlt.shinyapps.io/FiltersProperties/
 
-- 02/07 : début rapport https://aqlt.github.io/3A_ENSAE_AsymmetricFilters/Rapport%20de%20stage/Rapport.pdf
+- 02/07 : début rapport https://aqlt.github.io/2A_ENSAE_AsymmetricFilters/Rapport%20de%20stage/Rapport.pdf
 
 - filtres fst : https://aqlt.shinyapps.io/FSTfilters/
 
 - Filtres asymétriques vs filtres symétriques :
 
-  + [H3x3 vs FST6x3](https://aqlt.github.io/3A_ENSAE_AsymmetricFilters/FST/H3x3vsFST6x3.pdf)
+  + [H3x3 vs FST6x3](https://aqlt.github.io/2A_ENSAE_AsymmetricFilters/FST/H3x3vsFST6x3.pdf)
 
-  + [H6x6 vs FST9x6](https://aqlt.github.io/3A_ENSAE_AsymmetricFilters/FST/H6x6vsFST9x6.pdf)
+  + [H6x6 vs FST9x6](https://aqlt.github.io/2A_ENSAE_AsymmetricFilters/FST/H6x6vsFST9x6.pdf)
 
-  + [H6x6 vs FST10x6](https://aqlt.github.io/3A_ENSAE_AsymmetricFilters/FST/H6x6vsFST10x6.pdf)
+  + [H6x6 vs FST10x6](https://aqlt.github.io/2A_ENSAE_AsymmetricFilters/FST/H6x6vsFST10x6.pdf)
   
 - Examples :
 
-  + [IPI manuf FR](https://aqlt.github.io/3A_ENSAE_AsymmetricFilters/Examples/ipi_manuf_fr.pdf)
+  + [IPI manuf FR](https://aqlt.github.io/2A_ENSAE_AsymmetricFilters/Examples/ipi_manuf_fr.pdf)
 
-  + [IPI manuf FR jusqu'en 2009](https://aqlt.github.io/3A_ENSAE_AsymmetricFilters/Examples/ipi_manuf_fr_2008.pdf) 
+  + [IPI manuf FR jusqu'en 2009](https://aqlt.github.io/2A_ENSAE_AsymmetricFilters/Examples/ipi_manuf_fr_2008.pdf) 
   
-Rapport de stage final : https://aqlt.github.io/3A_ENSAE_AsymmetricFilters/Stage_2A/_book/
+Rapport de stage final : https://aqlt.github.io/2A_ENSAE_AsymmetricFilters/Stage_2A/_book/
